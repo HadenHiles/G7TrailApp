@@ -112,7 +112,7 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
   List<FluidNavBarButton> _buildButtons() {
     List<IconData> icons = [
       Icons.hiking_rounded,
-      Icons.person_rounded,
+      Icons.history_rounded,
       Icons.map_rounded,
     ];
     return List.generate(3, (i) => FluidNavBarButton(icons[i], _selectedIndex == i, () => _handlePressed(i)));
