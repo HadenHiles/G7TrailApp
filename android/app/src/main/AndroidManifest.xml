@@ -2,7 +2,7 @@
     package="com.groupofseven.g7trailapp">
    <application
         android:label="g7trailapp"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
