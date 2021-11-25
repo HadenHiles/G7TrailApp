@@ -1,4 +1,4 @@
-package com.example.g7trailapp
+package com.groupofseven.g7trailapp
 
 import io.flutter.embedding.android.FlutterActivity
 
