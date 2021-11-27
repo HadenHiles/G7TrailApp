@@ -14,9 +14,9 @@ import 'package:g7trailapp/services/bootstrap.dart';
 import 'package:g7trailapp/theme/theme.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key, required this.context}) : super(key: key);
+  const Login({Key? key, required this.scaffoldKey}) : super(key: key);
 
-  final BuildContext context;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -46,7 +46,6 @@ class _LoginState extends State<Login> {
   final TextEditingController _signUpEmail = TextEditingController();
   final TextEditingController _signUpPass = TextEditingController();
   final TextEditingController _signUpConfirmPass = TextEditingController();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // State variables
   bool _signedIn = FirebaseAuth.instance.currentUser != null;
@@ -106,9 +105,9 @@ class _LoginState extends State<Login> {
                         socialSignIn(context, 'google', (error) {
                           // ignore: deprecated_member_use
                           // ignore: deprecated_member_use
-                          _scaffoldKey.currentState!.hideCurrentSnackBar();
+                          widget.scaffoldKey.currentState!.hideCurrentSnackBar();
                           // ignore: deprecated_member_use
-                          _scaffoldKey.currentState!.showSnackBar(
+                          widget.scaffoldKey.currentState!.showSnackBar(
                             SnackBar(
                               backgroundColor: Theme.of(context).cardTheme.color,
                               content: Text(
@@ -122,7 +121,7 @@ class _LoginState extends State<Login> {
                                 label: "Dismiss",
                                 onPressed: () {
                                   // ignore: deprecated_member_use
-                                  _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                  widget.scaffoldKey.currentState!.hideCurrentSnackBar();
                                 },
                               ),
                             ),
@@ -144,9 +143,9 @@ class _LoginState extends State<Login> {
                                 socialSignIn(context, 'apple', (error) {
                                   // ignore: deprecated_member_use
                                   // ignore: deprecated_member_use
-                                  _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                  widget.scaffoldKey.currentState!.hideCurrentSnackBar();
                                   // ignore: deprecated_member_use
-                                  _scaffoldKey.currentState!.showSnackBar(
+                                  widget.scaffoldKey.currentState!.showSnackBar(
                                     SnackBar(
                                       backgroundColor: Theme.of(context).cardTheme.color,
                                       content: Text(
@@ -160,7 +159,7 @@ class _LoginState extends State<Login> {
                                         label: "Dismiss",
                                         onPressed: () {
                                           // ignore: deprecated_member_use
-                                          _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                          widget.scaffoldKey.currentState!.hideCurrentSnackBar();
                                         },
                                       ),
                                     ),
@@ -335,9 +334,9 @@ class _LoginState extends State<Login> {
                                                         ), (error) async {
                                                       // ignore: deprecated_member_use
                                                       // ignore: deprecated_member_use
-                                                      _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                      widget.scaffoldKey.currentState!.hideCurrentSnackBar();
                                                       // ignore: deprecated_member_use
-                                                      _scaffoldKey.currentState!.showSnackBar(
+                                                      widget.scaffoldKey.currentState!.showSnackBar(
                                                         SnackBar(
                                                           backgroundColor: Theme.of(context).cardTheme.color,
                                                           content: Text(
@@ -351,7 +350,7 @@ class _LoginState extends State<Login> {
                                                             label: "Dismiss",
                                                             onPressed: () {
                                                               // ignore: deprecated_member_use
-                                                              _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                              widget.scaffoldKey.currentState!.hideCurrentSnackBar();
                                                             },
                                                           ),
                                                         ),
@@ -453,7 +452,7 @@ class _LoginState extends State<Login> {
                                                                                   label: "Dismiss",
                                                                                   onPressed: () {
                                                                                     // ignore: deprecated_member_use
-                                                                                    _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                                                    widget.scaffoldKey.currentState!.hideCurrentSnackBar();
                                                                                   },
                                                                                 ),
                                                                               ),
@@ -649,9 +648,9 @@ class _LoginState extends State<Login> {
                                                               _signUpPass.text,
                                                             ), (error) async {
                                                           // ignore: deprecated_member_use
-                                                          _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                          widget.scaffoldKey.currentState!.hideCurrentSnackBar();
                                                           // ignore: deprecated_member_use
-                                                          _scaffoldKey.currentState!.showSnackBar(
+                                                          widget.scaffoldKey.currentState!.showSnackBar(
                                                             SnackBar(
                                                               backgroundColor: Theme.of(context).cardTheme.color,
                                                               content: Text(
@@ -665,7 +664,7 @@ class _LoginState extends State<Login> {
                                                                 label: "Dismiss",
                                                                 onPressed: () {
                                                                   // ignore: deprecated_member_use
-                                                                  _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                                  widget.scaffoldKey.currentState!.hideCurrentSnackBar();
                                                                 },
                                                               ),
                                                             ),
