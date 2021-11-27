@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
+import 'package:g7trailapp/theme/theme.dart';
 import './curves.dart';
 
 typedef FluidNavBarButtonPressedCallback = void Function();
@@ -81,8 +82,8 @@ class _FluidNavBarButtonState extends State<FluidNavBarButton> with SingleTicker
           // This container just draws a circle with a certain radius and offset
           margin: EdgeInsets.all(ne.width / 2 - _radius),
           constraints: BoxConstraints.tight(const Size.square(_radius * 2)),
-          decoration: const ShapeDecoration(
-            color: Color(0xff35435D),
+          decoration: ShapeDecoration(
+            color: darken(Color(0xffA9B7A7), 0.2),
             shape: CircleBorder(),
           ),
           transform: Matrix4.translationValues(0, -offset, 0),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:g7trailapp/navigation/nav.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:g7trailapp/login.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/services/network_status_service.dart';
@@ -51,9 +51,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       child: NetworkAwareWidget(
         offlineChild: Scaffold(
           body: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
             margin: EdgeInsets.only(
               top: MediaQuery.of(context).padding.top,
               right: 0,
@@ -93,7 +90,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 SliverAppBar(
                   collapsedHeight: 65,
                   expandedHeight: 65,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
                   floating: true,
                   pinned: true,
                   leading: Container(
@@ -101,7 +97,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     child: IconButton(
                       icon: Icon(
                         Icons.arrow_back,
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).textTheme.bodyText1!.color,
                         size: 28,
                       ),
                       onPressed: () {
@@ -131,9 +127,6 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               children: [
                 SizedBox(
                   child: SettingsList(
-                    backgroundColor: Theme.of(context).colorScheme.primaryVariant,
-                    lightBackgroundColor: Theme.of(context).colorScheme.primaryVariant,
-                    darkBackgroundColor: Theme.of(context).colorScheme.primaryVariant,
                     sections: [
                       SettingsSection(
                         title: 'General',
@@ -144,7 +137,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             title: 'Dark Mode',
                             leading: Icon(
                               Icons.brightness_2,
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).textTheme.bodyText1!.color,
                             ),
                             switchValue: _darkMode,
                             onToggle: (bool value) async {
@@ -174,7 +167,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             subtitleTextStyle: Theme.of(context).textTheme.bodyText2,
                             leading: Icon(
                               Icons.person,
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).textTheme.bodyText1!.color,
                             ),
                             onPressed: (BuildContext context) {
                               navigatorKey.currentState!.push(
@@ -204,7 +197,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                               navigatorKey.currentState!.pushReplacement(
                                 MaterialPageRoute(
                                   builder: (context) {
-                                    return const Login();
+                                    return FluidNavigationBar();
                                   },
                                 ),
                               );
@@ -284,7 +277,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                               ),
                               TextButton(
                                 child: Text(
-                                  "How To Hockey Inc.".toLowerCase(),
+                                  "BugsLife Solutions Inc.".toLowerCase(),
                                   style: TextStyle(
                                     color: Theme.of(context).colorScheme.onPrimary,
                                     fontSize: 14,
@@ -296,7 +289,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                                   backgroundColor: MaterialStateProperty.all(Colors.transparent),
                                 ),
                                 onPressed: () async {
-                                  String link = "https://howtohockey.com";
+                                  String link = "http://www.bugslifesolutions.com/";
                                   await canLaunch(link).then((can) {
                                     launch(link).catchError((err) {
                                       // ignore: avoid_print

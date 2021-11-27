@@ -1,130 +1,157 @@
 // ignore_for_file: file_names
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:g7trailapp/login.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/user_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:g7trailapp/screens/profile/settings/settings.dart';
 import 'package:g7trailapp/widgets/user_avatar.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({Key? key, required this.sessionPanelController, required this.updateSessionShotsCB}) : super(key: key);
-
-  final PanelController sessionPanelController;
-  final Function updateSessionShotsCB;
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
-  _ProfileState createState() => _ProfileState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileScreenState extends State<ProfileScreen> {
   // Static variables
   final user = FirebaseAuth.instance.currentUser;
 
-  UserProfile userProfile = UserProfile('', '', FirebaseAuth.instance.currentUser!.photoURL, true, null);
+  UserProfile userProfile = UserProfile('', '', '', true, null);
 
   @override
   void initState() {
-    FirebaseFirestore.instance.collection('users').doc(user!.uid).get().then((uDoc) {
-      userProfile = UserProfile.fromSnapshot(uDoc);
-    });
+    if (user != null) {
+      FirebaseFirestore.instance.collection('users').doc(user!.uid).get().then((uDoc) {
+        userProfile = UserProfile.fromSnapshot(uDoc);
+      });
+    }
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 15),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        actions: [
+          Container(
+            width: 60,
+            height: 100,
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+            child: InkWell(
+              radius: 34,
+              child: Icon(
+                Icons.settings,
+                color: Theme.of(context).textTheme.bodyText1!.color,
+                size: 28,
+              ),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                  return ProfileSettings();
+                }));
+              },
+            ),
+          ),
+        ],
+      ),
+      body: user == null
+          ? Login(context: context)
+          : Container(
+              padding: const EdgeInsets.only(top: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(60),
-                          ),
-                          child: SizedBox(
-                            height: 60,
-                            width: 60,
-                            child: UserAvatar(
-                              user: UserProfile(user!.displayName, user!.email, userProfile.photoUrl, true, preferences.fcmToken),
-                              backgroundColor: Colors.transparent,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width - 100) * 0.6,
-                        child: StreamBuilder<DocumentSnapshot>(
-                          // ignore: deprecated_member_use
-                          stream: FirebaseFirestore.instance.collection('users').doc(user!.uid).snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: const [
-                                  Center(
-                                    child: SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(),
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(60),
+                                  ),
+                                  child: SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: UserAvatar(
+                                      user: UserProfile(user!.displayName, user!.email, userProfile.photoUrl, true, preferences.fcmToken),
+                                      backgroundColor: Colors.transparent,
                                     ),
                                   ),
-                                ],
-                              );
-                            }
+                                ),
+                              ],
+                            ),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: (MediaQuery.of(context).size.width - 100) * 0.6,
+                                child: StreamBuilder<DocumentSnapshot>(
+                                  stream: FirebaseFirestore.instance.collection('users').doc(user!.uid).snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: const [
+                                          Center(
+                                            child: SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      UserProfile userProfile = UserProfile.fromSnapshot(snapshot.data);
 
-                            UserProfile userProfile = UserProfile.fromSnapshot(snapshot.data);
-
-                            return SizedBox(
-                              width: (MediaQuery.of(context).size.width - 100) * 0.5,
-                              child: AutoSizeText(
-                                userProfile.displayName!,
-                                maxLines: 1,
-                                maxFontSize: 22,
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).textTheme.bodyText1!.color,
+                                      return SizedBox(
+                                        width: (MediaQuery.of(context).size.width - 100) * 0.5,
+                                        child: AutoSizeText(
+                                          userProfile.displayName!,
+                                          maxLines: 1,
+                                          maxFontSize: 22,
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context).textTheme.bodyText1!.color,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
                                 ),
                               ),
-                            );
-                          },
-                        ),
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ],
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
     );
   }
 

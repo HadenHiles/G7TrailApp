@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:g7trailapp/theme/theme.dart';
 import './fluid_button.dart';
 import './curves.dart';
 
@@ -91,7 +92,7 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
           begin: Curves.easeInExpo.transform(_yController.value),
           end: inCurve.transform(_yController.value),
         ).transform(_yController.velocity.sign * 0.5 + 0.5),
-        const Color(0xff35435D),
+        darken(Color(0xffA9B7A7), 0.2),
       ),
     );
   }
@@ -112,8 +113,8 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
   List<FluidNavBarButton> _buildButtons() {
     List<IconData> icons = [
       Icons.hiking_rounded,
-      Icons.history_rounded,
       Icons.map_rounded,
+      Icons.location_history,
     ];
     return List.generate(3, (i) => FluidNavBarButton(icons[i], _selectedIndex == i, () => _handlePressed(i)));
   }

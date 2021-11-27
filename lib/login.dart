@@ -14,7 +14,9 @@ import 'package:g7trailapp/services/bootstrap.dart';
 import 'package:g7trailapp/theme/theme.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({Key? key, required this.context}) : super(key: key);
+
+  final BuildContext context;
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -64,157 +66,446 @@ class _LoginState extends State<Login> {
       return const FluidNavigationBar();
     }
 
-    return Scaffold(
-      key: _scaffoldKey,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-              ),
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * .05),
-                      height: MediaQuery.of(context).size.height * .35,
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                      ),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.bottom - MediaQuery.of(context).padding.top,
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .45,
+                    child: Image.asset(
+                      'assets/images/logo.png',
                     ),
-                    SizedBox(
-                      height: 50,
-                      width: 300,
-                      child: SignInButton(
-                        Buttons.Google,
-                        onPressed: () {
-                          socialSignIn(context, 'google', (error) {
-                            // ignore: deprecated_member_use
-                            // ignore: deprecated_member_use
-                            _scaffoldKey.currentState!.hideCurrentSnackBar();
-                            // ignore: deprecated_member_use
-                            _scaffoldKey.currentState!.showSnackBar(
-                              SnackBar(
-                                backgroundColor: Theme.of(context).cardTheme.color,
-                                content: Text(
-                                  error,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onPrimary,
-                                  ),
-                                ),
-                                duration: const Duration(seconds: 10),
-                                action: SnackBarAction(
-                                  label: "Dismiss",
-                                  onPressed: () {
-                                    // ignore: deprecated_member_use
-                                    _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                  },
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * .02),
+                    child: Text(
+                      "Sign in to save your hikes, share them with friends, and more.",
+                      style: TextStyle(
+                        fontFamily: "LGCafe",
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).textTheme.bodyText1!.color,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                    width: 300,
+                    child: SignInButton(
+                      Buttons.Google,
+                      onPressed: () {
+                        socialSignIn(context, 'google', (error) {
+                          // ignore: deprecated_member_use
+                          // ignore: deprecated_member_use
+                          _scaffoldKey.currentState!.hideCurrentSnackBar();
+                          // ignore: deprecated_member_use
+                          _scaffoldKey.currentState!.showSnackBar(
+                            SnackBar(
+                              backgroundColor: Theme.of(context).cardTheme.color,
+                              content: Text(
+                                error,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),
-                            );
-                          });
-                        },
-                      ),
-                    ),
-                    !appleSignInAvailable.isAvailable
-                        ? Container()
-                        : Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            child: SizedBox(
-                              height: 50,
-                              width: 300,
-                              child: SignInButton(
-                                Buttons.AppleDark,
+                              duration: const Duration(seconds: 10),
+                              action: SnackBarAction(
+                                label: "Dismiss",
                                 onPressed: () {
-                                  socialSignIn(context, 'apple', (error) {
-                                    // ignore: deprecated_member_use
-                                    // ignore: deprecated_member_use
-                                    _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                    // ignore: deprecated_member_use
-                                    _scaffoldKey.currentState!.showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: Theme.of(context).cardTheme.color,
-                                        content: Text(
-                                          error,
-                                          style: TextStyle(
-                                            color: Theme.of(context).colorScheme.onPrimary,
-                                          ),
-                                        ),
-                                        duration: const Duration(seconds: 10),
-                                        action: SnackBarAction(
-                                          label: "Dismiss",
-                                          onPressed: () {
-                                            // ignore: deprecated_member_use
-                                            _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  });
+                                  // ignore: deprecated_member_use
+                                  _scaffoldKey.currentState!.hideCurrentSnackBar();
                                 },
                               ),
                             ),
-                          ),
-                    const Divider(
-                      color: Colors.transparent,
-                      height: 5,
+                          );
+                        });
+                      },
                     ),
-                    SizedBox(
-                      width: 220,
+                  ),
+                  !appleSignInAvailable.isAvailable
+                      ? Container()
+                      : Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child: SizedBox(
+                            height: 50,
+                            width: 300,
+                            child: SignInButton(
+                              Buttons.AppleDark,
+                              onPressed: () {
+                                socialSignIn(context, 'apple', (error) {
+                                  // ignore: deprecated_member_use
+                                  // ignore: deprecated_member_use
+                                  _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                  // ignore: deprecated_member_use
+                                  _scaffoldKey.currentState!.showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Theme.of(context).cardTheme.color,
+                                      content: Text(
+                                        error,
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onPrimary,
+                                        ),
+                                      ),
+                                      duration: const Duration(seconds: 10),
+                                      action: SnackBarAction(
+                                        label: "Dismiss",
+                                        onPressed: () {
+                                          // ignore: deprecated_member_use
+                                          _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                  const Divider(
+                    color: Colors.transparent,
+                    height: 5,
+                  ),
+                  SizedBox(
+                    width: 220,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(
+                            top: 15,
+                            bottom: 15,
+                          ),
+                          child: Text(
+                            'Or'.toUpperCase(),
+                            style: TextStyle(
+                              color: Theme.of(context).textTheme.bodyText1!.color,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                    width: 300,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        onPrimary: Theme.of(context).colorScheme.onPrimary,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            margin: const EdgeInsets.only(
-                              top: 15,
-                              bottom: 15,
+                            margin: const EdgeInsets.only(right: 15),
+                            child: Icon(
+                              Icons.email,
+                              color: Theme.of(context).primaryColor,
                             ),
-                            child: Text(
-                              'Or'.toUpperCase(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(right: 50),
+                            child: const Text(
+                              'Sign in with Email',
+                              style: TextStyle(
+                                color: Colors.black54,
                               ),
                             ),
                           ),
                         ],
                       ),
+                      onPressed: () {
+                        setState(() {
+                          _hidePassword = true;
+                        });
+
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SimpleDialog(
+                              contentPadding: const EdgeInsets.all(25),
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        SizedBox(
+                                          height: 50,
+                                          child: Image.asset(
+                                            'assets/images/logo-small.png',
+                                            width: 120,
+                                          ),
+                                        ),
+                                        const Text(
+                                          'SIGN IN',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    Form(
+                                      key: _signInFormKey,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextFormField(
+                                              controller: _signInEmail,
+                                              decoration: InputDecoration(
+                                                labelText: 'Email',
+                                                labelStyle: TextStyle(
+                                                  color: Theme.of(context).textTheme.bodyText1!.color,
+                                                ),
+                                                hintText: 'Enter your email',
+                                                hintStyle: TextStyle(
+                                                  color: Theme.of(context).cardTheme.color,
+                                                ),
+                                              ),
+                                              keyboardType: TextInputType.emailAddress,
+                                              validator: (String? value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Please enter your email';
+                                                } else if (!validEmail(value)) {
+                                                  return 'Invalid email address';
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextFormField(
+                                              controller: _signInPass,
+                                              obscureText: _hidePassword,
+                                              decoration: InputDecoration(
+                                                labelText: 'Password',
+                                                labelStyle: TextStyle(
+                                                  color: Theme.of(context).textTheme.bodyText1!.color,
+                                                ),
+                                                hintText: 'Enter your password',
+                                                hintStyle: TextStyle(
+                                                  color: Theme.of(context).cardTheme.color,
+                                                ),
+                                              ),
+                                              keyboardType: TextInputType.visiblePassword,
+                                              validator: (String? value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Please enter a password';
+                                                }
+
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              width: double.infinity,
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: Theme.of(context).primaryColor,
+                                                  onPrimary: Colors.white,
+                                                ),
+                                                child: const Text("Sign in"),
+                                                onPressed: () async {
+                                                  if (_signInFormKey.currentState!.validate()) {
+                                                    _signInFormKey.currentState!.save();
+
+                                                    signIn(
+                                                        context,
+                                                        AuthAttempt(
+                                                          _signInEmail.text,
+                                                          _signInPass.text,
+                                                        ), (error) async {
+                                                      // ignore: deprecated_member_use
+                                                      // ignore: deprecated_member_use
+                                                      _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                      // ignore: deprecated_member_use
+                                                      _scaffoldKey.currentState!.showSnackBar(
+                                                        SnackBar(
+                                                          backgroundColor: Theme.of(context).cardTheme.color,
+                                                          content: Text(
+                                                            error,
+                                                            style: TextStyle(
+                                                              color: Theme.of(context).colorScheme.onPrimary,
+                                                            ),
+                                                          ),
+                                                          duration: const Duration(seconds: 10),
+                                                          action: SnackBarAction(
+                                                            label: "Dismiss",
+                                                            onPressed: () {
+                                                              // ignore: deprecated_member_use
+                                                              _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                            },
+                                                          ),
+                                                        ),
+                                                      );
+                                                    });
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ElevatedButton(
+                                              child: const Text("Forgot password?"),
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return SimpleDialog(
+                                                      contentPadding: const EdgeInsets.all(25),
+                                                      children: [
+                                                        Column(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              children: [
+                                                                SizedBox(
+                                                                  height: 50,
+                                                                  child: Image.asset(
+                                                                    'assets/images/logo-small.png',
+                                                                    width: 120,
+                                                                  ),
+                                                                ),
+                                                                const Text(
+                                                                  'Forgot Password',
+                                                                  style: TextStyle(
+                                                                    fontSize: 16,
+                                                                    fontWeight: FontWeight.bold,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            Form(
+                                                              key: _forgotPasswordFormKey,
+                                                              child: Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: <Widget>[
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: TextFormField(
+                                                                      controller: _forgotPasswordEmail,
+                                                                      decoration: InputDecoration(
+                                                                        labelText: 'Email',
+                                                                        labelStyle: TextStyle(
+                                                                          color: Theme.of(context).textTheme.bodyText1!.color,
+                                                                        ),
+                                                                        hintText: 'Confirm your password',
+                                                                        hintStyle: TextStyle(
+                                                                          color: Theme.of(context).cardTheme.color,
+                                                                        ),
+                                                                      ),
+                                                                      keyboardType: TextInputType.emailAddress,
+                                                                      validator: (String? value) {
+                                                                        if (value!.isEmpty) {
+                                                                          return 'Please enter your email';
+                                                                        } else if (!validEmail(value)) {
+                                                                          return 'Invalid email address';
+                                                                        }
+
+                                                                        return null;
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: ElevatedButton(
+                                                                      child: const Text("Send reset email"),
+                                                                      onPressed: () {
+                                                                        if (_forgotPasswordFormKey.currentState!.validate()) {
+                                                                          FirebaseAuth.instance.sendPasswordResetEmail(email: _forgotPasswordEmail.text.toString()).then((value) {
+                                                                            _forgotPasswordEmail.text = "";
+
+                                                                            navigatorKey.currentState!.pop();
+                                                                            navigatorKey.currentState!.pop();
+
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                                              SnackBar(
+                                                                                backgroundColor: Theme.of(context).cardTheme.color,
+                                                                                content: Text(
+                                                                                  "Reset email link sent to ${_forgotPasswordEmail.text.toString()}",
+                                                                                  style: TextStyle(
+                                                                                    color: Theme.of(context).colorScheme.onPrimary,
+                                                                                  ),
+                                                                                ),
+                                                                                duration: const Duration(seconds: 10),
+                                                                                action: SnackBarAction(
+                                                                                  label: "Dismiss",
+                                                                                  onPressed: () {
+                                                                                    // ignore: deprecated_member_use
+                                                                                    _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                                                  },
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          });
+                                                                        }
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                     ),
-                    SizedBox(
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: 10,
+                      bottom: MediaQuery.of(context).size.height * .025,
+                    ),
+                    child: SizedBox(
                       height: 50,
                       width: 300,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Theme.of(context).colorScheme.onPrimary,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: darken(Theme.of(context).primaryColor, 0.1),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(right: 15),
-                              child: Icon(
-                                Icons.email,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(right: 50),
-                              child: const Text(
-                                'Sign in with Email',
-                                style: TextStyle(
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          'Sign up'.toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         onPressed: () {
                           setState(() {
@@ -227,249 +518,169 @@ class _LoginState extends State<Login> {
                               return SimpleDialog(
                                 contentPadding: const EdgeInsets.all(25),
                                 children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          SizedBox(
-                                            height: 50,
-                                            child: Image.asset(
-                                              'assets/images/logo-small.png',
-                                              width: 120,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'SIGN IN',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Form(
-                                        key: _signInFormKey,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: TextFormField(
-                                                controller: _signInEmail,
-                                                decoration: InputDecoration(
-                                                  labelText: 'Email',
-                                                  labelStyle: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimary,
-                                                  ),
-                                                  hintText: 'Enter your email',
-                                                  hintStyle: TextStyle(
-                                                    color: Theme.of(context).cardTheme.color,
-                                                  ),
-                                                ),
-                                                keyboardType: TextInputType.emailAddress,
-                                                validator: (String? value) {
-                                                  if (value!.isEmpty) {
-                                                    return 'Please enter your email';
-                                                  } else if (!validEmail(value)) {
-                                                    return 'Invalid email address';
-                                                  }
-                                                },
+                                  SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            SizedBox(
+                                              height: 50,
+                                              child: Image.asset(
+                                                'assets/images/logo-small.png',
+                                                width: 120,
                                               ),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: TextFormField(
-                                                controller: _signInPass,
-                                                obscureText: _hidePassword,
-                                                decoration: InputDecoration(
-                                                  labelText: 'Password',
-                                                  labelStyle: TextStyle(
-                                                    color: Theme.of(context).colorScheme.onPrimary,
-                                                  ),
-                                                  hintText: 'Enter your password',
-                                                  hintStyle: TextStyle(
-                                                    color: Theme.of(context).cardTheme.color,
-                                                  ),
-                                                ),
-                                                keyboardType: TextInputType.visiblePassword,
-                                                validator: (String? value) {
-                                                  if (value!.isEmpty) {
-                                                    return 'Please enter a password';
-                                                  }
-
-                                                  return null;
-                                                },
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                width: double.infinity,
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    primary: Theme.of(context).primaryColor,
-                                                    onPrimary: Colors.white,
-                                                  ),
-                                                  child: const Text("Sign in"),
-                                                  onPressed: () async {
-                                                    if (_signInFormKey.currentState!.validate()) {
-                                                      _signInFormKey.currentState!.save();
-
-                                                      signIn(
-                                                          context,
-                                                          AuthAttempt(
-                                                            _signInEmail.text,
-                                                            _signInPass.text,
-                                                          ), (error) async {
-                                                        // ignore: deprecated_member_use
-                                                        // ignore: deprecated_member_use
-                                                        _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                        // ignore: deprecated_member_use
-                                                        _scaffoldKey.currentState!.showSnackBar(
-                                                          SnackBar(
-                                                            backgroundColor: Theme.of(context).cardTheme.color,
-                                                            content: Text(
-                                                              error,
-                                                              style: TextStyle(
-                                                                color: Theme.of(context).colorScheme.onPrimary,
-                                                              ),
-                                                            ),
-                                                            duration: const Duration(seconds: 10),
-                                                            action: SnackBarAction(
-                                                              label: "Dismiss",
-                                                              onPressed: () {
-                                                                // ignore: deprecated_member_use
-                                                                _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                              },
-                                                            ),
-                                                          ),
-                                                        );
-                                                      });
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                child: const Text("Forgot password?"),
-                                                onPressed: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return SimpleDialog(
-                                                        contentPadding: const EdgeInsets.all(25),
-                                                        children: [
-                                                          Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                mainAxisSize: MainAxisSize.max,
-                                                                children: [
-                                                                  SizedBox(
-                                                                    height: 50,
-                                                                    child: Image.asset(
-                                                                      'assets/images/logo-small.png',
-                                                                      width: 120,
-                                                                    ),
-                                                                  ),
-                                                                  const Text(
-                                                                    'Forgot Password',
-                                                                    style: TextStyle(
-                                                                      fontSize: 16,
-                                                                      fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              Form(
-                                                                key: _forgotPasswordFormKey,
-                                                                child: Column(
-                                                                  mainAxisSize: MainAxisSize.min,
-                                                                  children: <Widget>[
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.all(8.0),
-                                                                      child: TextFormField(
-                                                                        controller: _forgotPasswordEmail,
-                                                                        decoration: InputDecoration(
-                                                                          labelText: 'Email',
-                                                                          labelStyle: TextStyle(
-                                                                            color: Theme.of(context).colorScheme.onPrimary,
-                                                                          ),
-                                                                          hintText: 'Confirm your password',
-                                                                          hintStyle: TextStyle(
-                                                                            color: Theme.of(context).cardTheme.color,
-                                                                          ),
-                                                                        ),
-                                                                        keyboardType: TextInputType.emailAddress,
-                                                                        validator: (String? value) {
-                                                                          if (value!.isEmpty) {
-                                                                            return 'Please enter your email';
-                                                                          } else if (!validEmail(value)) {
-                                                                            return 'Invalid email address';
-                                                                          }
-
-                                                                          return null;
-                                                                        },
-                                                                      ),
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.all(8.0),
-                                                                      child: ElevatedButton(
-                                                                        child: const Text("Send reset email"),
-                                                                        onPressed: () {
-                                                                          if (_forgotPasswordFormKey.currentState!.validate()) {
-                                                                            FirebaseAuth.instance.sendPasswordResetEmail(email: _forgotPasswordEmail.text.toString()).then((value) {
-                                                                              _forgotPasswordEmail.text = "";
-
-                                                                              navigatorKey.currentState!.pop();
-                                                                              navigatorKey.currentState!.pop();
-
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                SnackBar(
-                                                                                  backgroundColor: Theme.of(context).cardTheme.color,
-                                                                                  content: Text(
-                                                                                    "Reset email link sent to ${_forgotPasswordEmail.text.toString()}",
-                                                                                    style: TextStyle(
-                                                                                      color: Theme.of(context).colorScheme.onPrimary,
-                                                                                    ),
-                                                                                  ),
-                                                                                  duration: const Duration(seconds: 10),
-                                                                                  action: SnackBarAction(
-                                                                                    label: "Dismiss",
-                                                                                    onPressed: () {
-                                                                                      // ignore: deprecated_member_use
-                                                                                      _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                                                    },
-                                                                                  ),
-                                                                                ),
-                                                                              );
-                                                                            });
-                                                                          }
-                                                                        },
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                },
+                                            const Text(
+                                              'SIGN UP',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
                                               ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ],
+                                        Form(
+                                          key: _signUpFormKey,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: TextFormField(
+                                                  controller: _signUpEmail,
+                                                  decoration: InputDecoration(
+                                                    labelText: 'Email',
+                                                    labelStyle: TextStyle(
+                                                      color: Theme.of(context).colorScheme.onPrimary,
+                                                    ),
+                                                    hintText: 'Enter your email',
+                                                    hintStyle: TextStyle(
+                                                      color: Theme.of(context).cardTheme.color,
+                                                    ),
+                                                  ),
+                                                  keyboardType: TextInputType.emailAddress,
+                                                  validator: (String? value) {
+                                                    if (value!.isEmpty) {
+                                                      return 'Please enter your email';
+                                                    }
+                                                    if (!validEmail(value)) {
+                                                      return 'Invalid email address';
+                                                    }
+
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: TextFormField(
+                                                  controller: _signUpPass,
+                                                  obscureText: _hidePassword,
+                                                  decoration: InputDecoration(
+                                                    labelText: 'Password',
+                                                    labelStyle: TextStyle(
+                                                      color: Theme.of(context).colorScheme.onPrimary,
+                                                    ),
+                                                    hintText: 'Enter your password',
+                                                    hintStyle: TextStyle(
+                                                      color: Theme.of(context).cardTheme.color,
+                                                    ),
+                                                  ),
+                                                  keyboardType: TextInputType.visiblePassword,
+                                                  validator: (String? value) {
+                                                    if (value!.isEmpty) {
+                                                      return 'Please enter a password';
+                                                    } else if (!validPassword(value)) {
+                                                      return 'Please enter a stronger password';
+                                                    }
+
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: TextFormField(
+                                                  controller: _signUpConfirmPass,
+                                                  obscureText: _hidePassword,
+                                                  decoration: InputDecoration(
+                                                    labelText: 'Confirm Password',
+                                                    labelStyle: TextStyle(
+                                                      color: Theme.of(context).colorScheme.onPrimary,
+                                                    ),
+                                                    hintText: 'Confirm your password',
+                                                    hintStyle: TextStyle(
+                                                      color: Theme.of(context).cardTheme.color,
+                                                    ),
+                                                  ),
+                                                  keyboardType: TextInputType.visiblePassword,
+                                                  validator: (String? value) {
+                                                    if (value!.isEmpty) {
+                                                      return 'Please confirm your password';
+                                                    } else if (value != _signUpPass.text) {
+                                                      return 'Passwords do not match';
+                                                    }
+
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      primary: Theme.of(context).primaryColor,
+                                                      onPrimary: Colors.white,
+                                                    ),
+                                                    child: const Text("Sign up"),
+                                                    onPressed: () async {
+                                                      if (_signUpFormKey.currentState!.validate()) {
+                                                        _signUpFormKey.currentState!.save();
+
+                                                        signUp(
+                                                            context,
+                                                            AuthAttempt(
+                                                              _signUpEmail.text,
+                                                              _signUpPass.text,
+                                                            ), (error) async {
+                                                          // ignore: deprecated_member_use
+                                                          _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                          // ignore: deprecated_member_use
+                                                          _scaffoldKey.currentState!.showSnackBar(
+                                                            SnackBar(
+                                                              backgroundColor: Theme.of(context).cardTheme.color,
+                                                              content: Text(
+                                                                error,
+                                                                style: TextStyle(
+                                                                  color: Theme.of(context).colorScheme.onPrimary,
+                                                                ),
+                                                              ),
+                                                              duration: const Duration(seconds: 10),
+                                                              action: SnackBarAction(
+                                                                label: "Dismiss",
+                                                                onPressed: () {
+                                                                  // ignore: deprecated_member_use
+                                                                  _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                                },
+                                                              ),
+                                                            ),
+                                                          );
+                                                        });
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               );
@@ -478,215 +689,12 @@ class _LoginState extends State<Login> {
                         },
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 10,
-                        bottom: MediaQuery.of(context).size.height * .025,
-                      ),
-                      child: SizedBox(
-                        height: 50,
-                        width: 300,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: darken(Theme.of(context).primaryColor, 0.1),
-                          ),
-                          child: Text(
-                            'Sign up'.toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _hidePassword = true;
-                            });
-
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return SimpleDialog(
-                                  contentPadding: const EdgeInsets.all(25),
-                                  children: [
-                                    SingleChildScrollView(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              SizedBox(
-                                                height: 50,
-                                                child: Image.asset(
-                                                  'assets/images/logo-small-red.png',
-                                                  width: 120,
-                                                ),
-                                              ),
-                                              const Text(
-                                                'SIGN UP',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Form(
-                                            key: _signUpFormKey,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: _signUpEmail,
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Email',
-                                                      labelStyle: TextStyle(
-                                                        color: Theme.of(context).colorScheme.onPrimary,
-                                                      ),
-                                                      hintText: 'Enter your email',
-                                                      hintStyle: TextStyle(
-                                                        color: Theme.of(context).cardTheme.color,
-                                                      ),
-                                                    ),
-                                                    keyboardType: TextInputType.emailAddress,
-                                                    validator: (String? value) {
-                                                      if (value!.isEmpty) {
-                                                        return 'Please enter your email';
-                                                      }
-                                                      if (!validEmail(value)) {
-                                                        return 'Invalid email address';
-                                                      }
-
-                                                      return null;
-                                                    },
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: _signUpPass,
-                                                    obscureText: _hidePassword,
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Password',
-                                                      labelStyle: TextStyle(
-                                                        color: Theme.of(context).colorScheme.onPrimary,
-                                                      ),
-                                                      hintText: 'Enter your password',
-                                                      hintStyle: TextStyle(
-                                                        color: Theme.of(context).cardTheme.color,
-                                                      ),
-                                                    ),
-                                                    keyboardType: TextInputType.visiblePassword,
-                                                    validator: (String? value) {
-                                                      if (value!.isEmpty) {
-                                                        return 'Please enter a password';
-                                                      } else if (!validPassword(value)) {
-                                                        return 'Please enter a stronger password';
-                                                      }
-
-                                                      return null;
-                                                    },
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: _signUpConfirmPass,
-                                                    obscureText: _hidePassword,
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Confirm Password',
-                                                      labelStyle: TextStyle(
-                                                        color: Theme.of(context).colorScheme.onPrimary,
-                                                      ),
-                                                      hintText: 'Confirm your password',
-                                                      hintStyle: TextStyle(
-                                                        color: Theme.of(context).cardTheme.color,
-                                                      ),
-                                                    ),
-                                                    keyboardType: TextInputType.visiblePassword,
-                                                    validator: (String? value) {
-                                                      if (value!.isEmpty) {
-                                                        return 'Please confirm your password';
-                                                      } else if (value != _signUpPass.text) {
-                                                        return 'Passwords do not match';
-                                                      }
-
-                                                      return null;
-                                                    },
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: SizedBox(
-                                                    width: double.infinity,
-                                                    child: ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(
-                                                        primary: Theme.of(context).primaryColor,
-                                                        onPrimary: Colors.white,
-                                                      ),
-                                                      child: const Text("Sign up"),
-                                                      onPressed: () async {
-                                                        if (_signUpFormKey.currentState!.validate()) {
-                                                          _signUpFormKey.currentState!.save();
-
-                                                          signUp(
-                                                              context,
-                                                              AuthAttempt(
-                                                                _signUpEmail.text,
-                                                                _signUpPass.text,
-                                                              ), (error) async {
-                                                            // ignore: deprecated_member_use
-                                                            _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                            // ignore: deprecated_member_use
-                                                            _scaffoldKey.currentState!.showSnackBar(
-                                                              SnackBar(
-                                                                backgroundColor: Theme.of(context).cardTheme.color,
-                                                                content: Text(
-                                                                  error,
-                                                                  style: TextStyle(
-                                                                    color: Theme.of(context).colorScheme.onPrimary,
-                                                                  ),
-                                                                ),
-                                                                duration: const Duration(seconds: 10),
-                                                                action: SnackBarAction(
-                                                                  label: "Dismiss",
-                                                                  onPressed: () {
-                                                                    // ignore: deprecated_member_use
-                                                                    _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                                  },
-                                                                ),
-                                                              ),
-                                                            );
-                                                          });
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

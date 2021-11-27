@@ -6,9 +6,9 @@ class HomeTheme {
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColorBrightness: Brightness.dark,
-    backgroundColor: const Color(0xffA9B7A7),
+    backgroundColor: const Color(0xffF2F2F2),
     primaryColor: const Color(0xff0053B1),
-    scaffoldBackgroundColor: const Color(0xffF4F4F4),
+    scaffoldBackgroundColor: const Color(0xffE5E5E5),
     appBarTheme: const AppBarTheme(
       color: Color(0xffF2F2F2),
       iconTheme: IconThemeData(
@@ -21,7 +21,7 @@ class HomeTheme {
       primary: Color(0xffF2F2F2),
       onPrimary: Colors.black54,
       primaryVariant: Color(0xffF4F4F4),
-      secondary: Color(0xff7FADF9),
+      secondary: Color(0xffA9B7A7),
       onSecondary: Colors.white,
       onBackground: Colors.black,
     ),

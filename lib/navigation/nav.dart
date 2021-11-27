@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../screens/home.dart';
-import '../screens/account.dart';
+import 'package:g7trailapp/screens/profile.dart';
 import '../screens/explore.dart';
+import '../screens/map.dart';
 import './fluid_nav_bar.dart';
 
 class FluidNavigationBar extends StatefulWidget {
@@ -19,16 +18,16 @@ class _FluidNavigationBarState extends State {
 
   @override
   void initState() {
-    _child = const HomeScreen();
+    _child = const ExploreScreen();
     super.initState();
   }
 
   @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
     // Build a simple container that switches content based of off the selected navigation item
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: const Color(0xffE9E9E9),
+        backgroundColor: Theme.of(context).colorScheme.background,
         extendBody: true,
         body: _child,
         bottomNavigationBar: FluidNavBar(onChange: _handleNavigationChange),
@@ -40,13 +39,13 @@ class _FluidNavigationBarState extends State {
     setState(() {
       switch (index) {
         case 0:
-          _child = const HomeScreen();
+          _child = const ExploreScreen();
           break;
         case 1:
-          _child = const AccountScreen();
+          _child = const MapScreen();
           break;
         case 2:
-          _child = const ExploreScreen();
+          _child = const ProfileScreen();
           break;
       }
       _child = AnimatedSwitcher(
