@@ -25,13 +25,11 @@ class _FluidNavigationBarState extends State {
   @override
   Widget build(BuildContext context) {
     // Build a simple container that switches content based of off the selected navigation item
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        extendBody: true,
-        body: _child,
-        bottomNavigationBar: FluidNavBar(onChange: _handleNavigationChange),
-      ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      extendBody: true,
+      body: _child,
+      bottomNavigationBar: FluidNavBar(onChange: _handleNavigationChange),
     );
   }
 

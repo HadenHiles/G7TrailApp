@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:g7trailapp/services/bootstrap.dart';
-import 'package:g7trailapp/theme/theme.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key, required this.scaffoldKey}) : super(key: key);
@@ -496,7 +495,7 @@ class _LoginState extends State<Login> {
                       width: 300,
                       child: TextButton(
                         style: TextButton.styleFrom(
-                          backgroundColor: darken(Theme.of(context).primaryColor, 0.1),
+                          backgroundColor: Theme.of(context).primaryColor,
                         ),
                         child: Text(
                           'Sign up'.toUpperCase(),
