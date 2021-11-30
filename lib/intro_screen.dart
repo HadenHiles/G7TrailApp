@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/navigation/nav.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:introduction_screen/introduction_screen.dart';
@@ -55,20 +56,18 @@ class _IntroScreenState extends State<IntroScreen> {
       _textColor = Color(0xff8c8c8c);
       _buttonColor = Color(0xff7FADF9);
       _buttonTextColor = Colors.white;
-      _controlsBackground = Color(0xffA9B7A7);
-      _controlsContrast = darken(Color(0xffA9B7A7), 0.1);
-      _controlsActive = darken(Color(0xffA9B7A7), 0.2);
+      _controlsBackground = Color(0xff7FADF9);
+      _controlsContrast = darken(Color(0xff7FADF9), 0.1);
+      _controlsActive = darken(Color(0xff7FADF9), 0.2);
     } else {
-      setState(() {
-        _background = Color(0xff1A1A1A);
-        _titleColor = Color(0xffF2F2F2);
-        _textColor = Color(0xffF2f2f2);
-        _buttonColor = Color(0xff7FADF9);
-        _buttonTextColor = Colors.white;
-        _controlsBackground = darken(Color(0xffA9B7A7), 0.3);
-        _controlsContrast = darken(Color(0xffA9B7A7), 0.4);
-        _controlsActive = Color(0xffA9B7A7);
-      });
+      _background = Color(0xff1A1A1A);
+      _titleColor = Color(0xffF2F2F2);
+      _textColor = Color(0xffF2f2f2);
+      _buttonColor = Color(0xff7FADF9);
+      _buttonTextColor = Colors.white;
+      _controlsBackground = Color(0xff7FADF9);
+      _controlsContrast = darken(Color(0xff7FADF9), 0.1);
+      _controlsActive = darken(Color(0xff7FADF9), 0.2);
     }
 
     var bodyStyle = TextStyle(
@@ -103,38 +102,38 @@ class _IntroScreenState extends State<IntroScreen> {
           PageViewModel(
             title: "",
             bodyWidget: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
                 Container(
-                  margin: const EdgeInsets.only(bottom: 25),
-                  child: _buildImage('logo.png', MediaQuery.of(context).size.width * .55),
+                  margin: const EdgeInsets.only(bottom: 5),
+                  child: _buildImage('logo.png', MediaQuery.of(context).size.width * .7),
                 ),
-                Text(
-                  "Appreciate all that the Group of Seven Lake Superior Trail has to offer",
-                  style: bodyStyle,
-                  textAlign: TextAlign.center,
-                ),
+                // Text(
+                //   "Appreciate all that the Group of Seven Lake Superior Trail has to offer",
+                //   style: bodyStyle,
+                //   textAlign: TextAlign.center,
+                // ),
               ],
             ),
             decoration: pageDecoration,
           ),
           PageViewModel(
-            title: "Learn while you hike".toUpperCase(),
-            body: "There's so many interesting things to learn about the trail's history",
+            title: "",
+            body: "Connecting a land trail from Pukaskwa National Park to Neys Provincial Park to celebrate the beauty of Lake Superior shown through the paintings of the Group of Seven.",
             image: Icon(
-              Icons.school_rounded,
-              size: MediaQuery.of(context).size.width * 0.5,
+              FontAwesomeIcons.route,
+              size: MediaQuery.of(context).size.width * 0.45,
               color: _buttonColor,
             ),
             decoration: pageDecoration,
           ),
           PageViewModel(
             title: "Get notified when you reach key destinations".toUpperCase(),
-            body: "Listen to trail stories, or look at the artwork and history from that destination",
+            body: "Listen to trail stories, or look at the artwork and history for that destination",
             image: Icon(
               Icons.notifications_active_rounded,
-              size: MediaQuery.of(context).size.width * 0.5,
+              size: MediaQuery.of(context).size.width * 0.45,
               color: _buttonColor,
             ),
             decoration: pageDecoration,
@@ -144,7 +143,7 @@ class _IntroScreenState extends State<IntroScreen> {
             body: "Don't want to get distracted while you're hiking? Review your hikes when you get home to learn about interesting areas that you visited on your hike.",
             image: Icon(
               Icons.location_history,
-              size: MediaQuery.of(context).size.width * 0.5,
+              size: MediaQuery.of(context).size.width * 0.45,
               color: _buttonColor,
             ),
             decoration: pageDecoration,
@@ -240,7 +239,7 @@ class _IntroScreenState extends State<IntroScreen> {
             ),
             image: Icon(
               Icons.brightness_4,
-              size: MediaQuery.of(context).size.width * 0.5,
+              size: MediaQuery.of(context).size.width * 0.45,
               color: _buttonColor,
             ),
             decoration: pageDecoration,
