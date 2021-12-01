@@ -76,12 +76,6 @@ class _LoginState extends State<Login> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * .45,
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                    ),
-                  ),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * .02),
                     child: Text(
