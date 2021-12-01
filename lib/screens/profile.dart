@@ -7,6 +7,7 @@ import 'package:g7trailapp/models/firestore/user_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:g7trailapp/screens/profile/settings/settings.dart';
+import 'package:g7trailapp/widgets/basic_title.dart';
 import 'package:g7trailapp/widgets/user_avatar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -38,33 +39,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        actions: [
-          Container(
-            width: 60,
-            height: 100,
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-            child: InkWell(
-              radius: 34,
-              child: Icon(
-                Icons.settings,
-                color: Theme.of(context).textTheme.bodyText1!.color,
-                size: 28,
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          SliverAppBar(
+            collapsedHeight: 65,
+            expandedHeight: 100,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            iconTheme: Theme.of(context).iconTheme,
+            actionsIconTheme: Theme.of(context).iconTheme,
+            floating: true,
+            pinned: true,
+            flexibleSpace: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Theme.of(context).backgroundColor,
               ),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                  return ProfileSettings(user: user);
-                }));
-              },
+              child: FlexibleSpaceBar(
+                collapseMode: CollapseMode.parallax,
+                titlePadding: null,
+                centerTitle: false,
+                title: BasicTitle(title: "My Hikes"),
+                background: Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+              ),
             ),
+            actions: [
+              Container(
+                width: 60,
+                height: 60,
+                margin: EdgeInsets.only(top: 10),
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                child: InkWell(
+                  radius: 34,
+                  child: Icon(
+                    Icons.settings,
+                    color: Theme.of(context).textTheme.bodyText1!.color,
+                    size: 28,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                      return ProfileSettings(user: user);
+                    }));
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ];
+      },
       body: user == null
           ? Login(scaffoldKey: _scaffoldKey)
           : Container(

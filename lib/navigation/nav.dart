@@ -22,7 +22,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
   void initState() {
     switch (widget.defaultTab ?? 0) {
       case 0:
-        _child = const ExploreScreen();
+        _child = ExploreScreen();
         break;
       case 1:
         _child = const MapScreen();
@@ -58,7 +58,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
     setState(() {
       switch (index) {
         case 0:
-          _child = const ExploreScreen();
+          _child = ExploreScreen();
           break;
         case 1:
           _child = const MapScreen();
