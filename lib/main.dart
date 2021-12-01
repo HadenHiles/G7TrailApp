@@ -111,7 +111,7 @@ class Home extends StatelessWidget {
 
     return Consumer<PreferencesStateNotifier>(
       builder: (context, settingsState, child) {
-        preferences = settingsState.preferences;
+        preferences = settingsState.prefs;
 
         return MaterialApp(
           title: 'Group of Seven Lake Superior Trail',
