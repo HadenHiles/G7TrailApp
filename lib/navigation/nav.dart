@@ -5,7 +5,9 @@ import '../screens/map.dart';
 import './fluid_nav_bar.dart';
 
 class FluidNavigationBar extends StatefulWidget {
-  const FluidNavigationBar({Key? key}) : super(key: key);
+  const FluidNavigationBar({Key? key, this.defaultTab}) : super(key: key);
+
+  final int? defaultTab;
 
   @override
   State createState() {
@@ -13,12 +15,28 @@ class FluidNavigationBar extends StatefulWidget {
   }
 }
 
-class _FluidNavigationBarState extends State {
+class _FluidNavigationBarState extends State<FluidNavigationBar> {
   late Widget _child;
 
   @override
   void initState() {
-    _child = const ExploreScreen();
+    switch (widget.defaultTab ?? 0) {
+      case 0:
+        _child = const ExploreScreen();
+        break;
+      case 1:
+        _child = const MapScreen();
+        break;
+      case 2:
+        _child = const ProfileScreen();
+        break;
+    }
+    _child = AnimatedSwitcher(
+      switchInCurve: Curves.easeOut,
+      switchOutCurve: Curves.easeIn,
+      duration: const Duration(milliseconds: 500),
+      child: _child,
+    );
     super.initState();
   }
 
@@ -29,7 +47,10 @@ class _FluidNavigationBarState extends State {
       backgroundColor: Theme.of(context).colorScheme.background,
       extendBody: true,
       body: _child,
-      bottomNavigationBar: FluidNavBar(onChange: _handleNavigationChange),
+      bottomNavigationBar: FluidNavBar(
+        onChange: _handleNavigationChange,
+        selectedIndex: widget.defaultTab,
+      ),
     );
   }
 

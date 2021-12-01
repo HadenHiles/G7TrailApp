@@ -9,8 +9,9 @@ class FluidNavBar extends StatefulWidget {
   static const double nominalHeight = 56.0;
 
   final FluidNavBarChangeCallback onChange;
+  final int? selectedIndex;
 
-  const FluidNavBar({Key? key, required this.onChange}) : super(key: key);
+  const FluidNavBar({Key? key, required this.onChange, this.selectedIndex}) : super(key: key);
 
   @override
   State createState() => _FluidNavBarState();
@@ -26,6 +27,10 @@ class _FluidNavBarState extends State<FluidNavBar> with TickerProviderStateMixin
   void initState() {
     _xController = AnimationController(vsync: this, animationBehavior: AnimationBehavior.preserve);
     _yController = AnimationController(vsync: this, animationBehavior: AnimationBehavior.preserve);
+
+    setState(() {
+      _selectedIndex = widget.selectedIndex ?? 0;
+    });
 
     Listenable.merge([_xController, _yController]).addListener(() {
       setState(() {});

@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:g7trailapp/login.dart';
+import 'package:g7trailapp/screens/profile/login.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/user_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -56,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                  return ProfileSettings();
+                  return ProfileSettings(user: user);
                 }));
               },
             ),

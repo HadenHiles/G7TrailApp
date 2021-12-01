@@ -47,7 +47,6 @@ class _LoginState extends State<Login> {
   final TextEditingController _signUpConfirmPass = TextEditingController();
 
   // State variables
-  bool _signedIn = FirebaseAuth.instance.currentUser != null;
   bool _hidePassword = true;
 
   @override
@@ -58,11 +57,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final appleSignInAvailable = Provider.of<AppleSignInAvailable>(context, listen: false);
-
-    //If user is signed in
-    if (_signedIn) {
-      return const FluidNavigationBar();
-    }
 
     return SingleChildScrollView(
       child: Column(
@@ -714,9 +708,9 @@ class _LoginState extends State<Login> {
 
         bootstrap();
 
-        setState(() {
-          _signedIn = true;
-        });
+        navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+          return FluidNavigationBar(defaultTab: 2);
+        }));
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -761,9 +755,9 @@ class _LoginState extends State<Login> {
 
         bootstrap();
 
-        setState(() {
-          _signedIn = true;
-        });
+        navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+          return FluidNavigationBar(defaultTab: 2);
+        }));
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -808,9 +802,9 @@ class _LoginState extends State<Login> {
 
         bootstrap();
 
-        setState(() {
-          _signedIn = true;
-        });
+        navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+          return FluidNavigationBar(defaultTab: 2);
+        }));
       }).catchError((e) async {
         var message = "There was an error signing in with Google";
         // if (e.code == "user-disabled") {
@@ -847,9 +841,9 @@ class _LoginState extends State<Login> {
 
         bootstrap();
 
-        setState(() {
-          _signedIn = true;
-        });
+        navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+          return FluidNavigationBar(defaultTab: 2);
+        }));
       }).catchError((e) async {
         var message = "There was an error signing in with Apple";
         // if (e.code == "user-disabled") {
