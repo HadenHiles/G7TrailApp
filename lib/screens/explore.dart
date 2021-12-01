@@ -43,7 +43,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         ];
       },
       body: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -52,6 +52,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               child: Container(
                 padding: EdgeInsets.only(top: 15, right: 0, bottom: 15, left: 15),
                 child: Column(
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -214,16 +215,18 @@ class _ExploreScreenState extends State<ExploreScreen> {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: Card(
-        semanticContainer: true,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Column(
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: FittedBox(
-                clipBehavior: Clip.antiAlias,
-                fit: BoxFit.cover,
-                child: image,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: (MediaQuery.of(context).size.width * 0.8) * .73,
+                child: FittedBox(
+                  clipBehavior: Clip.antiAlias,
+                  fit: BoxFit.cover,
+                  child: image,
+                ),
               ),
             ),
             ListTile(
