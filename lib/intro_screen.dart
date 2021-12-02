@@ -39,8 +39,8 @@ class _IntroScreenState extends State<IntroScreen> {
     );
   }
 
-  Widget _buildImage(String assetName, [double width = 350]) {
-    return Image.asset('assets/images/$assetName', width: width);
+  Widget _buildImage(String assetName, [double height = 350]) {
+    return Image.asset('assets/images/$assetName', height: height);
   }
 
   @override
@@ -107,7 +107,7 @@ class _IntroScreenState extends State<IntroScreen> {
               children: [
                 Container(
                   margin: const EdgeInsets.only(bottom: 5),
-                  child: _buildImage('logo.png', MediaQuery.of(context).size.width * .7),
+                  child: _buildImage('logo.png', MediaQuery.of(context).size.height * .6),
                 ),
                 // Text(
                 //   "Appreciate all that the Group of Seven Lake Superior Trail has to offer",
