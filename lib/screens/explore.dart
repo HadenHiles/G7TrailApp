@@ -50,21 +50,25 @@ class _ExploreScreenState extends State<ExploreScreen> {
           Expanded(
             child: SingleChildScrollView(
               child: Container(
-                padding: EdgeInsets.only(top: 15, right: 0, bottom: 15, left: 15),
+                padding: EdgeInsets.only(top: 15, right: 0, bottom: 15, left: 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 15),
-                    Text(
-                      "Easy".toUpperCase(),
-                      style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.start,
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text(
+                        "Easy".toUpperCase(),
+                        style: Theme.of(context).textTheme.headline4,
+                        textAlign: TextAlign.start,
+                      ),
                     ),
                     SizedBox(
                       height: 310,
                       child: ListView(
+                        padding: EdgeInsets.only(left: 10),
                         scrollDirection: Axis.horizontal,
                         children: [
                           _buildDestination(
@@ -107,14 +111,18 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       ),
                     ),
                     SizedBox(height: 15),
-                    Text(
-                      "Moderate".toUpperCase(),
-                      style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.start,
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text(
+                        "Moderate".toUpperCase(),
+                        style: Theme.of(context).textTheme.headline4,
+                        textAlign: TextAlign.start,
+                      ),
                     ),
                     SizedBox(
                       height: 310,
                       child: ListView(
+                        padding: EdgeInsets.only(left: 10),
                         scrollDirection: Axis.horizontal,
                         children: [
                           _buildDestination(
@@ -157,14 +165,18 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       ),
                     ),
                     SizedBox(height: 15),
-                    Text(
-                      "Difficult".toUpperCase(),
-                      style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.start,
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text(
+                        "Difficult".toUpperCase(),
+                        style: Theme.of(context).textTheme.headline4,
+                        textAlign: TextAlign.start,
+                      ),
                     ),
                     SizedBox(
                       height: 310,
                       child: ListView(
+                        padding: EdgeInsets.only(left: 10),
                         scrollDirection: Axis.horizontal,
                         children: [
                           _buildDestination(
@@ -240,7 +252,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         elevation: 0,
-        margin: EdgeInsets.only(right: 10, top: 10),
+        margin: EdgeInsets.only(top: 10, right: 10),
       ),
     );
   }
