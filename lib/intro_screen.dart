@@ -76,15 +76,20 @@ class _IntroScreenState extends State<IntroScreen> {
     );
 
     PageDecoration pageDecoration = PageDecoration(
+      bodyFlex: 2,
+      fullScreen: false,
       titleTextStyle: TextStyle(
         fontSize: 32.0,
         fontFamily: 'LGCafe',
         color: _titleColor,
       ),
+      titlePadding: EdgeInsets.only(top: 40, bottom: 15),
+      bodyAlignment: Alignment.topCenter,
       bodyTextStyle: bodyStyle,
       descriptionPadding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
       pageColor: Colors.transparent,
-      imagePadding: EdgeInsets.zero,
+      imagePadding: EdgeInsets.only(top: 100),
+      imageAlignment: Alignment.center,
     );
 
     return Container(
@@ -116,14 +121,25 @@ class _IntroScreenState extends State<IntroScreen> {
                 // ),
               ],
             ),
-            decoration: pageDecoration,
+            decoration: PageDecoration(
+              titleTextStyle: TextStyle(
+                fontSize: 32.0,
+                fontFamily: 'LGCafe',
+                color: _titleColor,
+              ),
+              bodyTextStyle: bodyStyle,
+              descriptionPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+              pageColor: Colors.transparent,
+              imagePadding: EdgeInsets.zero,
+              imageAlignment: Alignment.topCenter,
+            ),
           ),
           PageViewModel(
-            title: "",
+            title: "Connecting Parks".toUpperCase(),
             body: "Connecting a land trail from Pukaskwa National Park to Neys Provincial Park to celebrate the beauty of Lake Superior shown through the paintings of the Group of Seven.",
             image: Icon(
               FontAwesomeIcons.route,
-              size: MediaQuery.of(context).size.width * 0.45,
+              size: MediaQuery.of(context).size.width * 0.4,
               color: _buttonColor,
             ),
             decoration: pageDecoration,
