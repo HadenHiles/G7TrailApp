@@ -7,7 +7,7 @@ import 'package:g7trailapp/models/firestore/user_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:g7trailapp/screens/profile/settings/settings.dart';
-import 'package:g7trailapp/widgets/basic_title.dart';
+import 'package:g7trailapp/widgets/screen_title.dart';
 import 'package:g7trailapp/widgets/user_avatar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -56,9 +56,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: FlexibleSpaceBar(
                 collapseMode: CollapseMode.parallax,
-                titlePadding: null,
+                titlePadding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                 centerTitle: false,
-                title: BasicTitle(title: "My Hikes"),
+                title: ScreenTitle(icon: Icons.location_history, title: "My Hikes"),
                 background: Container(
                   color: Theme.of(context).scaffoldBackgroundColor,
                 ),

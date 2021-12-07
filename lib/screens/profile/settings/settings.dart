@@ -9,7 +9,7 @@ import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/services/network_status_service.dart';
 import 'package:g7trailapp/services/authentication/auth.dart';
 import 'package:g7trailapp/theme/preferences_state_notifier.dart';
-import 'package:g7trailapp/widgets/basic_title.dart';
+import 'package:g7trailapp/widgets/screen_title.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -80,7 +80,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     collapseMode: CollapseMode.parallax,
                     titlePadding: null,
                     centerTitle: false,
-                    title: const BasicTitle(title: "Settings"),
+                    title: const ScreenTitle(title: "Settings"),
                     background: Container(
                       color: Theme.of(context).scaffoldBackgroundColor,
                     ),
