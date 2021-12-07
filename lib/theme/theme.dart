@@ -83,7 +83,7 @@ class HomeTheme {
       primary: Color(0xff1A1A1A),
       onPrimary: Color.fromRGBO(255, 255, 255, 0.75),
       primaryVariant: Color(0xff1D1D1D),
-      secondary: Color(0xff0053B1),
+      secondary: Color(0xffA9B7A7),
       onSecondary: Colors.white,
       onBackground: Colors.white,
     ),
