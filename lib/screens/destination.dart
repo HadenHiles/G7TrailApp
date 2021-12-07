@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/main.dart';
-import 'package:g7trailapp/theme/theme.dart';
 import 'package:simple_animations/stateless_animation/custom_animation.dart';
 
 class DestinationScreen extends StatefulWidget {
@@ -13,6 +12,8 @@ class DestinationScreen extends StatefulWidget {
 
 class _DestinationScreenState extends State<DestinationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
+  bool _autoplay = true;
 
   @override
   Widget build(BuildContext context) {
@@ -96,16 +97,41 @@ class _DestinationScreenState extends State<DestinationScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                        child: Text(
-                          "Listen".toUpperCase(),
-                          style: TextStyle(
-                            color: Theme.of(context).backgroundColor,
-                            fontSize: 20,
-                            fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                            child: Text(
+                              "Listen".toUpperCase(),
+                              style: TextStyle(
+                                color: Theme.of(context).backgroundColor,
+                                fontSize: 20,
+                                fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
+                              ),
+                            ),
                           ),
-                        ),
+                          Row(
+                            children: [
+                              Text(
+                                "Autoplay".toUpperCase(),
+                                style: TextStyle(
+                                  color: Theme.of(context).backgroundColor,
+                                  fontFamily: Theme.of(context).textTheme.bodyText2!.fontFamily,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Switch(
+                                value: _autoplay,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _autoplay = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ],
                   ),
@@ -218,151 +244,91 @@ class _DestinationScreenState extends State<DestinationScreen> {
                 ),
               ),
               Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: GridView.count(
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
+                  crossAxisCount: 3,
+                  clipBehavior: Clip.antiAlias,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 20, right: 15, bottom: 10, left: 15),
-                      child: Text(
-                        "My Photos".toUpperCase(),
-                        style: Theme.of(context).textTheme.headline5,
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 130,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.only(left: 5),
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(right: 5),
-                            child: Image(
-                              image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(right: 5),
-                            child: Image(
-                              image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(right: 5),
-                            child: Image(
-                              image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
                     ),
                     Container(
-                      padding: EdgeInsets.only(right: 15),
-                      child: Divider(
-                        color: darken(Theme.of(context).colorScheme.background, 0.25),
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20, right: 15, bottom: 10, left: 15),
-                      child: Text(
-                        "Photos".toUpperCase(),
-                        style: Theme.of(context).textTheme.headline5,
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
+                        ),
                       ),
                     ),
-                    Expanded(
-                      child: GridView.count(
-                        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-                        crossAxisSpacing: 5,
-                        mainAxisSpacing: 5,
-                        crossAxisCount: 3,
-                        clipBehavior: Clip.antiAlias,
-                        children: [
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                              ),
-                            ),
-                          ),
-                        ],
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
+                        ),
                       ),
                     ),
                   ],
