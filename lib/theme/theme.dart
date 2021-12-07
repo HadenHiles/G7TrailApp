@@ -55,11 +55,11 @@ class HomeTheme {
         fontWeight: FontWeight.bold,
       ),
       bodyText1: TextStyle(
-        color: Colors.black87,
-        fontSize: 16,
+        color: Colors.black54,
+        fontSize: 14,
       ),
       bodyText2: TextStyle(
-        color: Colors.black87,
+        color: Colors.black54,
         fontSize: 12,
       ),
     ),
@@ -117,11 +117,11 @@ class HomeTheme {
         fontWeight: FontWeight.bold,
       ),
       bodyText1: TextStyle(
-        color: Colors.white,
-        fontSize: 16,
+        color: Color.fromRGBO(255, 255, 255, 0.9),
+        fontSize: 14,
       ),
       bodyText2: TextStyle(
-        color: Color.fromRGBO(255, 255, 255, 0.8),
+        color: Color.fromRGBO(255, 255, 255, 0.7),
         fontSize: 12,
       ),
     ),

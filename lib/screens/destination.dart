@@ -171,48 +171,62 @@ class _DestinationScreenState extends State<DestinationScreen> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: Card(
-                          child: Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.9,
-                                  height: (MediaQuery.of(context).size.width * 0.9) * .73,
-                                  child: FittedBox(
-                                    clipBehavior: Clip.antiAlias,
-                                    fit: BoxFit.cover,
-                                    child: Image(
-                                      image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          child: Card(
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.9,
+                                    height: (MediaQuery.of(context).size.width * 0.9) * .73,
+                                    child: FittedBox(
+                                      clipBehavior: Clip.antiAlias,
+                                      fit: BoxFit.cover,
+                                      child: Image(
+                                        image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                            color: Theme.of(context).colorScheme.background,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            elevation: 0,
+                            margin: EdgeInsets.only(top: 10, right: 10),
                           ),
-                          color: Theme.of(context).colorScheme.background,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          elevation: 0,
-                          margin: EdgeInsets.only(top: 10, right: 10),
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            "Pic Island is the iconic backdrop of many famous Group of Seven Paintings. Some examples are: Pic Island by Lawren Harris and Pic Island, Lake Superior by A.Y. Jackson.",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: Card(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    child: Column(
+                      children: [
+                        Card(
                           child: Column(
                             children: [
                               ClipRRect(
@@ -238,8 +252,60 @@ class _DestinationScreenState extends State<DestinationScreen> {
                           elevation: 0,
                           margin: EdgeInsets.only(top: 10, right: 10),
                         ),
-                      ),
-                    ],
+                        Card(
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.9,
+                                  height: (MediaQuery.of(context).size.width * 0.9) * .73,
+                                  child: FittedBox(
+                                    clipBehavior: Clip.antiAlias,
+                                    fit: BoxFit.cover,
+                                    child: Image(
+                                      image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          color: Theme.of(context).colorScheme.background,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          elevation: 0,
+                          margin: EdgeInsets.only(top: 10, right: 10),
+                        ),
+                        Card(
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.9,
+                                  height: (MediaQuery.of(context).size.width * 0.9) * .73,
+                                  child: FittedBox(
+                                    clipBehavior: Clip.antiAlias,
+                                    fit: BoxFit.cover,
+                                    child: Image(
+                                      image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          color: Theme.of(context).colorScheme.background,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          elevation: 0,
+                          margin: EdgeInsets.only(top: 10, right: 10),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
