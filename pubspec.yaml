@@ -59,6 +59,7 @@ dependencies:
   flutter_local_notifications: ^9.1.4
   font_awesome_flutter: ^9.2.0
   simple_animations: ^4.0.1
+  google_maps_flutter: ^2.1.1
 
 
   # The following adds the Cupertino Icons font to your application.
