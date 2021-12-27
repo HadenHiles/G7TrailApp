@@ -1,9 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:g7trailapp/main.dart';
+import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/models/firestore/destination_image.dart';
+import 'package:g7trailapp/models/firestore/file.dart';
 import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/theme/theme.dart';
+import 'package:g7trailapp/utitlity/firebase_storage.dart';
+import 'package:g7trailapp/utitlity/string_extension.dart';
 import 'package:g7trailapp/widgets/screen_title.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -14,6 +20,61 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
+  // Static variables
+  final bool _nearEntryPoint = false; // TODO: make stateful when beacon functionality is introduced
+
+  // State variables
+  List<Destination> _easyDestinations = [];
+  List<Destination> _moderateDestinations = [];
+  List<Destination> _difficultDestinations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDestinations();
+  }
+
+  Future<void> _loadDestinations() async {
+    await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").get().then((snapshot) async {
+      if (snapshot.docs.isNotEmpty) {
+        List<Destination> easy = [];
+        List<Destination> moderate = [];
+        List<Destination> difficult = [];
+        for (var doc in snapshot.docs) {
+          Destination d = Destination.fromSnapshot(doc);
+          await _loadDestinationImage(d.images[0]).then((url) => d.imgURL = url);
+
+          switch (d.difficulty) {
+            case "easy":
+              easy.add(d);
+              break;
+            case "moderate":
+              moderate.add(d);
+              break;
+            case "difficult":
+              difficult.add(d);
+              break;
+          }
+
+          setState(() {
+            _easyDestinations = easy;
+            _moderateDestinations = moderate;
+            _difficultDestinations = difficult;
+          });
+        }
+      }
+    });
+  }
+
+  Future<String> _loadDestinationImage(DestinationImage image) async {
+    return await image.image.get().then((doc) async {
+      File i = File.fromSnapshot(doc);
+      return imageDownloadURL("/flamelink/media/sized/${i.sizes[1]['path']}/${i.file}").then((imgURL) {
+        return imgURL;
+      });
+    });
+  }
+
   @override
   Widget build(context) {
     return NestedScrollView(
@@ -59,65 +120,109 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 15),
-                    Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Near Me".toUpperCase(),
-                            style: Theme.of(context).textTheme.headline4,
-                            textAlign: TextAlign.start,
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Text(
-                            "(Entry Point B)".toUpperCase(),
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 310,
-                      child: ListView(
-                        padding: EdgeInsets.only(left: 10),
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          _buildDestination(
-                            "Peninsula Harbour",
-                            Image(
-                              image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text("Easy", style: Theme.of(context).textTheme.bodyText1),
-                                SizedBox(
-                                  width: 5,
+                    !_nearEntryPoint
+                        ? Container()
+                        : Column(
+                            children: [
+                              SizedBox(height: 15),
+                              Container(
+                                margin: EdgeInsets.only(left: 10),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Near Me".toUpperCase(),
+                                      style: Theme.of(context).textTheme.headline4,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                    Text(
+                                      "(Entry Point B)".toUpperCase(),
+                                      style: Theme.of(context).textTheme.headline6,
+                                    ),
+                                  ],
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: 3,
-                                  ),
-                                  child: Text(
-                                    "4.5km",
-                                    style: Theme.of(context).textTheme.bodyText2,
-                                  ),
+                              ),
+                              SizedBox(
+                                height: 310,
+                                child: ListView(
+                                  padding: EdgeInsets.only(left: 10),
+                                  scrollDirection: Axis.horizontal,
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.8,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+                                            return DestinationScreen();
+                                          }));
+                                        },
+                                        child: Card(
+                                          child: Column(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(10.0),
+                                                child: SizedBox(
+                                                  width: MediaQuery.of(context).size.width * 0.8,
+                                                  height: (MediaQuery.of(context).size.width * 0.8) * .73,
+                                                  child: FittedBox(
+                                                    clipBehavior: Clip.antiAlias,
+                                                    fit: BoxFit.cover,
+                                                    child: Image(
+                                                      image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              ListTile(
+                                                title: AutoSizeText(
+                                                  "Peninsula Harbour".toUpperCase(),
+                                                  maxLines: 1,
+                                                  maxFontSize: 22,
+                                                  style: Theme.of(context).textTheme.headline5,
+                                                ),
+                                                trailing: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text("Easy", style: Theme.of(context).textTheme.bodyText1),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                        top: 3,
+                                                      ),
+                                                      child: Text(
+                                                        "4.5km",
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          color: Theme.of(context).colorScheme.background,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          elevation: 0,
+                                          margin: EdgeInsets.only(top: 10, right: 10),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(right: 15),
+                                child: Divider(
+                                  color: darken(Theme.of(context).colorScheme.background, 0.25),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(right: 15),
-                      child: Divider(
-                        color: darken(Theme.of(context).colorScheme.background, 0.25),
-                      ),
-                    ),
                     SizedBox(height: 15),
                     Container(
                       margin: EdgeInsets.only(left: 10),
@@ -129,32 +234,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     ),
                     SizedBox(
                       height: 310,
-                      child: ListView(
+                      child: ListView.builder(
                         padding: EdgeInsets.only(left: 10),
                         scrollDirection: Axis.horizontal,
-                        children: [
-                          _buildDestination(
-                            "Pic Island",
-                            Image(
-                              image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                            ),
-                            Text("Easy", style: Theme.of(context).textTheme.bodyText1),
-                          ),
-                          _buildDestination(
-                            "Painters Peak",
-                            Image(
-                              image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
-                            ),
-                            Text("Easy", style: Theme.of(context).textTheme.bodyText1),
-                          ),
-                          _buildDestination(
-                            "Peninsula Harbour",
-                            Image(
-                              image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                            ),
-                            Text("Easy", style: Theme.of(context).textTheme.bodyText1),
-                          ),
-                        ],
+                        itemCount: _easyDestinations.length,
+                        itemBuilder: (context, i) {
+                          return _buildDestination(
+                            _easyDestinations[i].destinationName,
+                            _easyDestinations[i].imgURL,
+                            Text(_easyDestinations[i].difficulty.capitalize(), style: Theme.of(context).textTheme.bodyText1),
+                          );
+                        },
                       ),
                     ),
                     Container(
@@ -174,32 +264,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     ),
                     SizedBox(
                       height: 310,
-                      child: ListView(
+                      child: ListView.builder(
                         padding: EdgeInsets.only(left: 10),
                         scrollDirection: Axis.horizontal,
-                        children: [
-                          _buildDestination(
-                            "Pic Island",
-                            Image(
-                              image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                            ),
-                            Text("Moderate", style: Theme.of(context).textTheme.bodyText1),
-                          ),
-                          _buildDestination(
-                            "Painters Peak",
-                            Image(
-                              image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
-                            ),
-                            Text("Moderate", style: Theme.of(context).textTheme.bodyText1),
-                          ),
-                          _buildDestination(
-                            "Peninsula Harbour",
-                            Image(
-                              image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                            ),
-                            Text("Moderate", style: Theme.of(context).textTheme.bodyText1),
-                          ),
-                        ],
+                        itemCount: _moderateDestinations.length,
+                        itemBuilder: (context, i) {
+                          return _buildDestination(
+                            _moderateDestinations[i].destinationName,
+                            _moderateDestinations[i].imgURL,
+                            Text(_moderateDestinations[i].difficulty.capitalize(), style: Theme.of(context).textTheme.bodyText1),
+                          );
+                        },
                       ),
                     ),
                     Container(
@@ -219,32 +294,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     ),
                     SizedBox(
                       height: 310,
-                      child: ListView(
+                      child: ListView.builder(
                         padding: EdgeInsets.only(left: 10),
                         scrollDirection: Axis.horizontal,
-                        children: [
-                          _buildDestination(
-                            "Pic Island",
-                            Image(
-                              image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                            ),
-                            Text("Difficult", style: Theme.of(context).textTheme.bodyText1),
-                          ),
-                          _buildDestination(
-                            "Painters Peak",
-                            Image(
-                              image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
-                            ),
-                            Text("Difficult", style: Theme.of(context).textTheme.bodyText1),
-                          ),
-                          _buildDestination(
-                            "Peninsula Harbour",
-                            Image(
-                              image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                            ),
-                            Text("Difficult", style: Theme.of(context).textTheme.bodyText1),
-                          ),
-                        ],
+                        itemCount: _difficultDestinations.length,
+                        itemBuilder: (context, i) {
+                          return _buildDestination(
+                            _difficultDestinations[i].destinationName,
+                            _difficultDestinations[i].imgURL,
+                            Text(_difficultDestinations[i].difficulty.capitalize(), style: Theme.of(context).textTheme.bodyText1),
+                          );
+                        },
                       ),
                     ),
                     SizedBox(height: 50),
@@ -258,7 +318,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
-  Widget _buildDestination(String title, Image image, Widget trailing) {
+  Widget _buildDestination(String title, String? imgURL, Widget trailing) {
+    Image img = imgURL != null ? Image(image: NetworkImage(imgURL)) : Image(image: AssetImage("/assets/images/app-icon.png"));
+
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       child: GestureDetector(
@@ -278,7 +340,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   child: FittedBox(
                     clipBehavior: Clip.antiAlias,
                     fit: BoxFit.cover,
-                    child: image,
+                    child: img,
                   ),
                 ),
               ),
