@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class BasicTextField extends StatefulWidget {
   const BasicTextField({Key? key, required this.hintText, required this.controller, required this.keyboardType, required this.validator}) : super(key: key);

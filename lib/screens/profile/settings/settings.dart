@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:g7trailapp/navigation/nav.dart';
 import 'package:provider/provider.dart';
-import 'package:settings_ui/settings_ui.dart';
+import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/preferences.dart';

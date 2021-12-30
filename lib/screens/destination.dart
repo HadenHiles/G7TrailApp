@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/main.dart';
+import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:simple_animations/stateless_animation/custom_animation.dart';
 
 class DestinationScreen extends StatefulWidget {
-  const DestinationScreen({Key? key}) : super(key: key);
+  const DestinationScreen({Key? key, required this.destination}) : super(key: key);
+
+  final Destination destination;
 
   @override
   _DestinationScreenState createState() => _DestinationScreenState();
@@ -57,7 +60,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
             ],
             backgroundColor: Theme.of(context).colorScheme.secondary,
             title: Text(
-              "Pic Island".toUpperCase(),
+              widget.destination.destinationName.toUpperCase(),
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSecondary,
                 fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
@@ -86,85 +89,94 @@ class _DestinationScreenState extends State<DestinationScreen> {
             ),
           ),
           endDrawer: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Color(0xff7FADF9),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                            child: Text(
-                              "Listen".toUpperCase(),
-                              style: TextStyle(
-                                color: Theme.of(context).backgroundColor,
-                                fontSize: 20,
-                                fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
+            child: SizedBox(
+              height: double.maxFinite,
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: widget.destination.audio.length,
+                itemBuilder: (context, i) {
+                  return i == 0
+                      ? Column(
+                          children: [
+                            DrawerHeader(
+                              decoration: BoxDecoration(
+                                color: Color(0xff7FADF9),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                                        child: Text(
+                                          "Listen".toUpperCase(),
+                                          style: TextStyle(
+                                            color: Theme.of(context).backgroundColor,
+                                            fontSize: 20,
+                                            fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Autoplay".toUpperCase(),
+                                            style: TextStyle(
+                                              color: Theme.of(context).backgroundColor,
+                                              fontFamily: Theme.of(context).textTheme.bodyText2!.fontFamily,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          Switch(
+                                            value: _autoplay,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _autoplay = value;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "Autoplay".toUpperCase(),
-                                style: TextStyle(
-                                  color: Theme.of(context).backgroundColor,
-                                  fontFamily: Theme.of(context).textTheme.bodyText2!.fontFamily,
-                                  fontSize: 12,
+                            ListTile(
+                              leading: IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.play_arrow_rounded,
+                                  color: Theme.of(context).primaryColor,
                                 ),
                               ),
-                              Switch(
-                                value: _autoplay,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _autoplay = value;
-                                  });
-                                },
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                ListTile(
-                  leading: IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.pause_rounded,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  title: Text('Pic Island discovery'.toUpperCase()),
-                  onTap: () {
-                    // Update the state of the app.
-                    // ...
-                  },
-                ),
-                ListTile(
-                  leading: IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.play_arrow_rounded,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  title: Text('Painting story'.toUpperCase()),
-                  onTap: () {
-                    // Update the state of the app.
-                    // ...
-                  },
-                ),
-              ],
+                              title: Text(widget.destination.audio[i].title.toUpperCase()),
+                              onTap: () {
+                                // Update the state of the app.
+                                // ...
+                              },
+                            ),
+                          ],
+                        )
+                      : ListTile(
+                          leading: IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.play_arrow_rounded,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          title: Text(widget.destination.audio[i].title.toUpperCase()),
+                          onTap: () {
+                            // Update the state of the app.
+                            // ...
+                          },
+                        );
+                },
+              ),
             ),
           ),
           body: TabBarView(

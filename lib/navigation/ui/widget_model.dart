@@ -7,7 +7,6 @@ import 'package:path/path.dart' as path;
 import 'package:vector_math/vector_math.dart' as vec32;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() => runApp(const OBJApp());
 

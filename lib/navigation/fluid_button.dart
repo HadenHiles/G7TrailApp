@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/animation.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import './curves.dart';
 

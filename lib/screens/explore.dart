@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/models/firestore/destination_image.dart';
@@ -153,11 +152,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width * 0.8,
                                       child: GestureDetector(
-                                        onTap: () {
-                                          navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-                                            return DestinationScreen();
-                                          }));
-                                        },
+                                        onTap: () {},
                                         child: Card(
                                           child: Column(
                                             children: [
@@ -239,11 +234,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         scrollDirection: Axis.horizontal,
                         itemCount: _easyDestinations.length,
                         itemBuilder: (context, i) {
-                          return _buildDestination(
-                            _easyDestinations[i].destinationName,
-                            _easyDestinations[i].imgURL,
-                            Text(_easyDestinations[i].difficulty.capitalize(), style: Theme.of(context).textTheme.bodyText1),
-                          );
+                          return _buildDestination(_easyDestinations[i]);
                         },
                       ),
                     ),
@@ -269,11 +260,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         scrollDirection: Axis.horizontal,
                         itemCount: _moderateDestinations.length,
                         itemBuilder: (context, i) {
-                          return _buildDestination(
-                            _moderateDestinations[i].destinationName,
-                            _moderateDestinations[i].imgURL,
-                            Text(_moderateDestinations[i].difficulty.capitalize(), style: Theme.of(context).textTheme.bodyText1),
-                          );
+                          return _buildDestination(_moderateDestinations[i]);
                         },
                       ),
                     ),
@@ -299,11 +286,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         scrollDirection: Axis.horizontal,
                         itemCount: _difficultDestinations.length,
                         itemBuilder: (context, i) {
-                          return _buildDestination(
-                            _difficultDestinations[i].destinationName,
-                            _difficultDestinations[i].imgURL,
-                            Text(_difficultDestinations[i].difficulty.capitalize(), style: Theme.of(context).textTheme.bodyText1),
-                          );
+                          return _buildDestination(_difficultDestinations[i]);
                         },
                       ),
                     ),
@@ -318,7 +301,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 
-  Widget _buildDestination(String title, String? imgURL, Widget trailing) {
+  Widget _buildDestination(Destination destination) {
+    String title = destination.destinationName;
+    String? imgURL = destination.imgURL;
+    Widget trailing = Text(destination.difficulty.capitalize(), style: Theme.of(context).textTheme.bodyText1);
     Image img = imgURL != null ? Image(image: NetworkImage(imgURL)) : Image(image: AssetImage("/assets/images/app-icon.png"));
 
     return SizedBox(
@@ -326,7 +312,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       child: GestureDetector(
         onTap: () {
           navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-            return DestinationScreen();
+            return DestinationScreen(destination: destination);
           }));
         },
         child: Card(

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
-
-import 'dart:ui';
 
 /// Acts exactly like a `Stack` however the first child acts like an alpha mask when rendering the rest of the children
 class RenderWidgetMask extends RenderStack {

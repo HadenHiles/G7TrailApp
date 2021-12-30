@@ -48,8 +48,8 @@ dependencies:
   google_sign_in: ^5.1.1
   the_apple_sign_in: ^1.1.1
   flutter_signin_button: ^2.0.0
-  password_strength: ^0.2.0
-  settings_ui: ^1.0.0
+  password_strength: ^0.2.0 
+  flutter_settings_ui: ^2.0.1
   url_launcher: ^6.0.17
   sliding_up_panel: ^2.0.0+1
   auto_size_text: ^3.0.0
