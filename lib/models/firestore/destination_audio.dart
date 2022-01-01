@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DestinationAudio {
   String? id;
-  DocumentReference file;
+  DocumentReference? file;
   String textToSpeech;
   String title;
   String uniqueKey;
@@ -12,7 +12,7 @@ class DestinationAudio {
 
   DestinationAudio.fromMap(Map<String, dynamic> map, {this.reference})
       : id = map['id'],
-        file = map['file'][0],
+        file = map['file'].isEmpty ? null : map['file'][0],
         textToSpeech = map['textToSpeech'],
         title = map['title'],
         uniqueKey = map['uniqueKey'];

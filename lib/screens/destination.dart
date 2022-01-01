@@ -1,7 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/theme/theme.dart';
+import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:simple_animations/stateless_animation/custom_animation.dart';
 
 class DestinationScreen extends StatefulWidget {
@@ -45,7 +49,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                 curve: Curves.easeInOut,
                 startPosition: 0,
                 animationStatusListener: (status) {
-                  print('status updated: $status');
+                  // print('status updated: $status');
                 },
                 builder: (context, child, value) {
                   return IconButton(
@@ -189,227 +193,99 @@ class _DestinationScreenState extends State<DestinationScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          child: Card(
-                            child: Column(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.9,
-                                    height: (MediaQuery.of(context).size.width * 0.9) * .73,
-                                    child: FittedBox(
-                                      clipBehavior: Clip.antiAlias,
-                                      fit: BoxFit.cover,
-                                      child: Image(
-                                        image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
+                        Html(
+                          data: widget.destination.destinationSummary,
+                          style: preferences.darkMode ? HomeTheme.darkHtmlStyle : HomeTheme.lightHtmlStyle,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  itemCount: widget.destination.art.length,
+                  itemBuilder: (context, i) {
+                    return FutureBuilder(
+                      future: loadFirestoreImage(widget.destination.art[i].image),
+                      builder: (context, snap) {
+                        String imgUrl = snap.data.toString();
+                        return !snap.hasData
+                            ? SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: (MediaQuery.of(context).size.width) * .73,
+                                child: FittedBox(
+                                  clipBehavior: Clip.antiAlias,
+                                  fit: BoxFit.contain,
+                                  child: CircularProgressIndicator(
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
+                              )
+                            : Card(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: SizedBox(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: (MediaQuery.of(context).size.width) * .73,
+                                        child: FittedBox(
+                                          clipBehavior: Clip.antiAlias,
+                                          fit: BoxFit.cover,
+                                          child: CachedNetworkImage(imageUrl: imgUrl),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            color: Theme.of(context).colorScheme.background,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            elevation: 0,
-                            margin: EdgeInsets.only(top: 10, right: 10),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                            "Pic Island is the iconic backdrop of many famous Group of Seven Paintings. Some examples are: Pic Island by Lawren Harris and Pic Island, Lake Superior by A.Y. Jackson.",
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                                color: Theme.of(context).colorScheme.background,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                elevation: 0,
+                                margin: EdgeInsets.only(top: 10, right: 10),
+                              );
+                      },
+                    );
+                  },
                 ),
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    child: Column(
-                      children: [
-                        Card(
-                          child: Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.9,
-                                  height: (MediaQuery.of(context).size.width * 0.9) * .73,
-                                  child: FittedBox(
-                                    clipBehavior: Clip.antiAlias,
-                                    fit: BoxFit.cover,
-                                    child: Image(
-                                      image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          color: Theme.of(context).colorScheme.background,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          elevation: 0,
-                          margin: EdgeInsets.only(top: 10, right: 10),
-                        ),
-                        Card(
-                          child: Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.9,
-                                  height: (MediaQuery.of(context).size.width * 0.9) * .73,
-                                  child: FittedBox(
-                                    clipBehavior: Clip.antiAlias,
-                                    fit: BoxFit.cover,
-                                    child: Image(
-                                      image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          color: Theme.of(context).colorScheme.background,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          elevation: 0,
-                          margin: EdgeInsets.only(top: 10, right: 10),
-                        ),
-                        Card(
-                          child: Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.9,
-                                  height: (MediaQuery.of(context).size.width * 0.9) * .73,
-                                  child: FittedBox(
-                                    clipBehavior: Clip.antiAlias,
-                                    fit: BoxFit.cover,
-                                    child: Image(
-                                      image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          color: Theme.of(context).colorScheme.background,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          elevation: 0,
-                          margin: EdgeInsets.only(top: 10, right: 10),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GridView.count(
+                child: GridView.builder(
                   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                  crossAxisCount: 3,
+                  itemCount: widget.destination.images.length,
                   clipBehavior: Clip.antiAlias,
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/destinations/painters-peak-example.jpg"),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/destinations/pic-island-example.jpeg"),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                        ),
-                      ),
-                    ),
-                  ],
+                  scrollDirection: Axis.vertical,
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 100,
+                    childAspectRatio: 1 / 1,
+                    crossAxisSpacing: 2,
+                    mainAxisSpacing: 2,
+                  ),
+                  itemBuilder: (context, i) {
+                    return FutureBuilder(
+                      future: loadFirestoreImage(widget.destination.images[i].image),
+                      builder: (context, snap) {
+                        String imgUrl = snap.data.toString();
+
+                        return !snap.hasData
+                            ? Container()
+                            : Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: CachedNetworkImageProvider(imgUrl),
+                                  ),
+                                ),
+                              );
+                      },
+                    );
+                  },
                 ),
               ),
             ],

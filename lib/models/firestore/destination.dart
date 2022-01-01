@@ -22,24 +22,24 @@ class Destination {
   Destination.fromMap(Map<String, dynamic> map, {this.reference})
       : id = map['id'],
         flMeta = map['_fl_meta_'],
-        images = map["images"] == ""
+        images = map['content']["images"] == ""
             ? []
-            : map["images"].map<DestinationImage>((map) {
+            : map['content']["images"].map<DestinationImage>((map) {
                 return DestinationImage.fromMap(map);
               }).toList(),
-        art = map["art"] == ""
+        art = map['content']["art"] == ""
             ? []
-            : map["art"].map<DestinationArt>((map) {
+            : map['content']["art"].map<DestinationArt>((map) {
                 return DestinationArt.fromMap(map);
               }).toList(),
-        audio = map['audio'] == ""
+        audio = map['content']['audio'] == ""
             ? []
-            : map["audio"].map<DestinationAudio>((map) {
+            : map['content']["audio"].map<DestinationAudio>((map) {
                 return DestinationAudio.fromMap(map);
               }).toList(),
         destinationName = map['destinationName'],
-        destinationSummary = map['destinationSummary'],
-        difficulty = map['difficulty'],
+        destinationSummary = map['content']['destinationSummary'],
+        difficulty = map['content']['difficulty'],
         entryPoint = map['entryPoint'],
         order = map['order'];
 
@@ -61,13 +61,15 @@ class Destination {
     return {
       'id': id,
       '_fl_meta_': flMeta,
-      'images': mappedImages,
-      'art': mappedArt,
-      'audio': mappedAudio,
       'destinationName': destinationName,
-      'destinationSummary': destinationSummary,
-      'difficulty': difficulty,
       'entryPoint': entryPoint,
+      'content': {
+        'images': mappedImages,
+        'art': mappedArt,
+        'audio': mappedAudio,
+        'destinationSummary': destinationSummary,
+        'difficulty': difficulty,
+      },
       'order': order,
     };
   }

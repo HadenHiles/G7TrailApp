@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:g7trailapp/models/firestore/user_profile.dart';
 
@@ -16,7 +17,7 @@ class UserAvatar extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: CircleAvatar(
           radius: radius,
-          backgroundImage: NetworkImage(
+          backgroundImage: CachedNetworkImageProvider(
             user!.photoUrl!,
           ),
           backgroundColor: backgroundColor,
