@@ -233,7 +233,22 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                       child: FittedBox(
                                         clipBehavior: Clip.antiAlias,
                                         fit: BoxFit.cover,
-                                        child: CachedNetworkImage(imageUrl: imgUrl),
+                                        child: CachedNetworkImage(
+                                          imageUrl: imgUrl,
+                                          placeholder: (context, _) {
+                                            return SizedBox(
+                                              width: 100,
+                                              height: 100,
+                                              child: FittedBox(
+                                                clipBehavior: Clip.antiAlias,
+                                                fit: BoxFit.contain,
+                                                child: CircularProgressIndicator(
+                                                  color: Theme.of(context).colorScheme.secondary,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ),
