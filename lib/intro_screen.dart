@@ -71,7 +71,7 @@ class _IntroScreenState extends State<IntroScreen> {
     }
 
     var bodyStyle = TextStyle(
-      fontSize: 20.0,
+      fontSize: 17,
       color: _textColor,
     );
 
@@ -86,7 +86,7 @@ class _IntroScreenState extends State<IntroScreen> {
       titlePadding: EdgeInsets.only(top: 40, bottom: 15),
       bodyAlignment: Alignment.topCenter,
       bodyTextStyle: bodyStyle,
-      descriptionPadding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+      descriptionPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
       pageColor: Colors.transparent,
       imagePadding: EdgeInsets.only(top: 100),
       imageAlignment: Alignment.center,
@@ -135,8 +135,8 @@ class _IntroScreenState extends State<IntroScreen> {
             ),
           ),
           PageViewModel(
-            title: "Connecting Parks".toUpperCase(),
-            body: "Connecting a land trail from Pukaskwa National Park to Neys Provincial Park to celebrate the beauty of Lake Superior shown through the paintings of the Group of Seven.",
+            title: "Why this trail?".toUpperCase(),
+            body: "To celebrate the beauty of Lake Superior shown through the Group of Seven paintings.\n\nWe are connecting a land trail from Pukaskwa National Park to Neys Provincial Park so that more of this historic landmark can be explored and appreciated.",
             image: Icon(
               FontAwesomeIcons.route,
               size: MediaQuery.of(context).size.width * 0.4,
@@ -145,8 +145,8 @@ class _IntroScreenState extends State<IntroScreen> {
             decoration: pageDecoration,
           ),
           PageViewModel(
-            title: "Get notified when you reach key destinations".toUpperCase(),
-            body: "Listen to trail stories, or look at the artwork and history for that destination",
+            title: "Discover Iconic Locations".toUpperCase(),
+            body: "Get notified whenever you reach key destinations on the trail.",
             image: Icon(
               Icons.notifications_active_rounded,
               size: MediaQuery.of(context).size.width * 0.45,
@@ -155,8 +155,18 @@ class _IntroScreenState extends State<IntroScreen> {
             decoration: pageDecoration,
           ),
           PageViewModel(
+            title: "Explore".toUpperCase(),
+            body: "Listen to stories, learn about art, and follow our scenery guide for each trail destination.",
+            image: Icon(
+              FontAwesomeIcons.binoculars,
+              size: MediaQuery.of(context).size.width * 0.45,
+              color: _buttonColor,
+            ),
+            decoration: pageDecoration,
+          ),
+          PageViewModel(
             title: "My Hikes".toUpperCase(),
-            body: "Don't want to get distracted while you're hiking? Review your hikes when you get home to learn about interesting areas that you visited on your hike.",
+            body: "Don't want to get distracted?\n\nLearn about the destinations you visit in \"My Hikes\" after you get home.",
             image: Icon(
               Icons.location_history,
               size: MediaQuery.of(context).size.width * 0.45,
