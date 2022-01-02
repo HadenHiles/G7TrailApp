@@ -24,7 +24,8 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Container(
+      padding: EdgeInsets.all(0),
       child: DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -185,108 +186,102 @@ class _DestinationScreenState extends State<DestinationScreen> {
           ),
           body: TabBarView(
             children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Html(
-                          data: widget.destination.destinationSummary,
-                          style: preferences.darkMode ? HomeTheme.darkHtmlStyle : HomeTheme.lightHtmlStyle,
-                        )
-                      ],
-                    ),
+              SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Html(
+                        data: widget.destination.destinationSummary,
+                        style: preferences.darkMode ? HomeTheme.darkHtmlStyle : HomeTheme.lightHtmlStyle,
+                      )
+                    ],
                   ),
                 ),
               ),
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  itemCount: widget.destination.art.length,
-                  itemBuilder: (context, i) {
-                    return FutureBuilder(
-                      future: loadFirestoreImage(widget.destination.art[i].image),
-                      builder: (context, snap) {
-                        String imgUrl = snap.data.toString();
-                        return !snap.hasData
-                            ? SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                height: (MediaQuery.of(context).size.width) * .73,
-                                child: FittedBox(
-                                  clipBehavior: Clip.antiAlias,
-                                  fit: BoxFit.contain,
-                                  child: CircularProgressIndicator(
-                                    color: Theme.of(context).colorScheme.secondary,
-                                  ),
+              ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                itemCount: widget.destination.art.length,
+                itemBuilder: (context, i) {
+                  return FutureBuilder(
+                    future: loadFirestoreImage(widget.destination.art[i].image),
+                    builder: (context, snap) {
+                      String imgUrl = snap.data.toString();
+                      return !snap.hasData
+                          ? SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: (MediaQuery.of(context).size.width) * .73,
+                              child: FittedBox(
+                                clipBehavior: Clip.antiAlias,
+                                fit: BoxFit.contain,
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.secondary,
                                 ),
-                              )
-                            : Card(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      child: SizedBox(
-                                        width: MediaQuery.of(context).size.width,
-                                        height: (MediaQuery.of(context).size.width) * .73,
-                                        child: FittedBox(
-                                          clipBehavior: Clip.antiAlias,
-                                          fit: BoxFit.cover,
-                                          child: CachedNetworkImage(imageUrl: imgUrl),
-                                        ),
+                              ),
+                            )
+                          : Card(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: (MediaQuery.of(context).size.width) * .73,
+                                      child: FittedBox(
+                                        clipBehavior: Clip.antiAlias,
+                                        fit: BoxFit.cover,
+                                        child: CachedNetworkImage(imageUrl: imgUrl),
                                       ),
                                     ),
-                                  ],
-                                ),
-                                color: Theme.of(context).colorScheme.background,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                elevation: 0,
-                                margin: EdgeInsets.only(top: 10, right: 10),
-                              );
-                      },
-                    );
-                  },
-                ),
-              ),
-              Expanded(
-                child: GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  itemCount: widget.destination.images.length,
-                  clipBehavior: Clip.antiAlias,
-                  scrollDirection: Axis.vertical,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 100,
-                    childAspectRatio: 1 / 1,
-                    crossAxisSpacing: 2,
-                    mainAxisSpacing: 2,
-                  ),
-                  itemBuilder: (context, i) {
-                    return FutureBuilder(
-                      future: loadFirestoreImage(widget.destination.images[i].image),
-                      builder: (context, snap) {
-                        String imgUrl = snap.data.toString();
-
-                        return !snap.hasData
-                            ? Container()
-                            : Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: CachedNetworkImageProvider(imgUrl),
                                   ),
-                                ),
-                              );
-                      },
-                    );
-                  },
+                                ],
+                              ),
+                              color: Theme.of(context).colorScheme.background,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              elevation: 0,
+                              margin: EdgeInsets.only(top: 10, right: 10),
+                            );
+                    },
+                  );
+                },
+              ),
+              GridView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                itemCount: widget.destination.images.length,
+                clipBehavior: Clip.antiAlias,
+                scrollDirection: Axis.vertical,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 100,
+                  childAspectRatio: 1 / 1,
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 2,
                 ),
+                itemBuilder: (context, i) {
+                  return FutureBuilder(
+                    future: loadFirestoreImage(widget.destination.images[i].image),
+                    builder: (context, snap) {
+                      String imgUrl = snap.data.toString();
+
+                      return !snap.hasData
+                          ? Container()
+                          : Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: CachedNetworkImageProvider(imgUrl),
+                                ),
+                              ),
+                            );
+                    },
+                  );
+                },
               ),
             ],
           ),
