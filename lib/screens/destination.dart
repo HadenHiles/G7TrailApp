@@ -30,6 +30,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
         length: 3,
         child: Scaffold(
           key: _scaffoldKey,
+          backgroundColor: preferences.darkMode ? Theme.of(context).backgroundColor : Colors.white,
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
@@ -202,7 +203,6 @@ class _DestinationScreenState extends State<DestinationScreen> {
                 ),
               ),
               ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                 itemCount: widget.destination.art.length,
                 itemBuilder: (context, i) {
                   return FutureBuilder(
@@ -210,56 +210,54 @@ class _DestinationScreenState extends State<DestinationScreen> {
                     builder: (context, snap) {
                       String imgUrl = snap.data.toString();
                       return !snap.hasData
-                          ? SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: (MediaQuery.of(context).size.width) * .73,
-                              child: FittedBox(
-                                clipBehavior: Clip.antiAlias,
-                                fit: BoxFit.contain,
-                                child: CircularProgressIndicator(
-                                  color: Theme.of(context).colorScheme.secondary,
-                                ),
-                              ),
-                            )
+                          ? Container()
                           : Card(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                              margin: EdgeInsets.all(0),
+                              elevation: 1,
+                              color: i % 2 != 0 ? Theme.of(context).cardTheme.color : (preferences.darkMode ? Theme.of(context).backgroundColor : Colors.white),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: (MediaQuery.of(context).size.width) * .73,
-                                      child: FittedBox(
-                                        clipBehavior: Clip.antiAlias,
-                                        fit: BoxFit.cover,
-                                        child: CachedNetworkImage(
-                                          imageUrl: imgUrl,
-                                          placeholder: (context, _) {
-                                            return SizedBox(
-                                              width: 100,
-                                              height: 100,
-                                              child: FittedBox(
-                                                clipBehavior: Clip.antiAlias,
-                                                fit: BoxFit.contain,
-                                                child: CircularProgressIndicator(
-                                                  color: Theme.of(context).colorScheme.secondary,
-                                                ),
+                                  SizedBox(
+                                    width: 120,
+                                    height: 95,
+                                    child: FittedBox(
+                                      clipBehavior: Clip.antiAlias,
+                                      fit: BoxFit.cover,
+                                      child: CachedNetworkImage(
+                                        imageUrl: imgUrl,
+                                        placeholder: (context, _) {
+                                          return SizedBox(
+                                            width: 50,
+                                            height: 50,
+                                            child: FittedBox(
+                                              clipBehavior: Clip.antiAlias,
+                                              fit: BoxFit.contain,
+                                              child: CircularProgressIndicator(
+                                                color: Theme.of(context).colorScheme.secondary,
                                               ),
-                                            );
-                                          },
-                                        ),
+                                            ),
+                                          );
+                                        },
                                       ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 25),
+                                          child: Text(
+                                            widget.destination.art[i].title.toUpperCase(),
+                                            style: Theme.of(context).textTheme.bodyText1,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                              color: Theme.of(context).colorScheme.background,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              elevation: 0,
-                              margin: EdgeInsets.only(top: 10, right: 10),
                             );
                     },
                   );

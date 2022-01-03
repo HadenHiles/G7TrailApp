@@ -110,17 +110,17 @@ class HomeTheme {
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColorBrightness: Brightness.dark,
-    backgroundColor: const Color(0xffF2F2F2),
-    primaryColor: const Color(0xff0053B1),
-    scaffoldBackgroundColor: const Color(0xffE5E5E5),
-    appBarTheme: const AppBarTheme(
+    backgroundColor: Color(0xffF2F2F2),
+    primaryColor: Color(0xff0053B1),
+    scaffoldBackgroundColor: Color(0xffE5E5E5),
+    appBarTheme: AppBarTheme(
       color: Color(0xffF2F2F2),
       iconTheme: IconThemeData(
         color: Colors.white,
       ),
     ),
-    toggleableActiveColor: const Color(0xff0053B1),
-    colorScheme: const ColorScheme.light(
+    toggleableActiveColor: Color(0xff0053B1),
+    colorScheme: ColorScheme.light(
       brightness: Brightness.light,
       primary: Color(0xffF2F2F2),
       onPrimary: Colors.black54,
@@ -130,12 +130,12 @@ class HomeTheme {
       onBackground: Colors.black,
     ),
     cardTheme: CardTheme(
-      color: Colors.grey.shade300,
+      color: Color(0xffF2F2F2),
     ),
-    iconTheme: const IconThemeData(
+    iconTheme: IconThemeData(
       color: Colors.black87,
     ),
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       headline1: TextStyle(
         fontSize: 42,
         fontFamily: 'LGCafe',
@@ -177,17 +177,17 @@ class HomeTheme {
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     primaryColorBrightness: Brightness.dark,
-    backgroundColor: const Color(0xff222222),
-    primaryColor: const Color(0xff0053B1),
-    scaffoldBackgroundColor: const Color(0xff1A1A1A),
-    appBarTheme: const AppBarTheme(
+    backgroundColor: Color(0xff222222),
+    primaryColor: Color(0xff0053B1),
+    scaffoldBackgroundColor: Color(0xff1A1A1A),
+    appBarTheme: AppBarTheme(
       color: Colors.white,
       iconTheme: IconThemeData(
         color: Colors.white,
       ),
     ),
-    toggleableActiveColor: const Color(0xff0053B1),
-    colorScheme: const ColorScheme.dark(
+    toggleableActiveColor: Color(0xff0053B1),
+    colorScheme: ColorScheme.dark(
       brightness: Brightness.dark,
       primary: Color(0xff1A1A1A),
       onPrimary: Color.fromRGBO(255, 255, 255, 0.75),
@@ -196,13 +196,13 @@ class HomeTheme {
       onSecondary: Colors.white,
       onBackground: Colors.white,
     ),
-    cardTheme: const CardTheme(
+    cardTheme: CardTheme(
       color: Color(0xff333333),
     ),
-    iconTheme: const IconThemeData(
+    iconTheme: IconThemeData(
       color: Color.fromRGBO(255, 255, 255, 0.8),
     ),
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       headline1: TextStyle(
         color: Colors.white,
       ),
