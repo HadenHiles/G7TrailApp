@@ -6,6 +6,7 @@ import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
+import 'package:g7trailapp/utility/fullscreen_image.dart';
 import 'package:simple_animations/stateless_animation/custom_animation.dart';
 
 class DestinationScreen extends StatefulWidget {
@@ -206,7 +207,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                 itemCount: widget.destination.art.length,
                 itemBuilder: (context, i) {
                   return FutureBuilder(
-                    future: loadFirestoreImage(widget.destination.art[i].image),
+                    future: loadFirestoreImage(widget.destination.art[i].image, null),
                     builder: (context, snap) {
                       String imgUrl = snap.data.toString();
                       return !snap.hasData
@@ -228,13 +229,16 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                         imageUrl: imgUrl,
                                         placeholder: (context, _) {
                                           return SizedBox(
-                                            width: 50,
-                                            height: 50,
+                                            width: 20,
+                                            height: 20,
                                             child: FittedBox(
                                               clipBehavior: Clip.antiAlias,
                                               fit: BoxFit.contain,
-                                              child: CircularProgressIndicator(
-                                                color: Theme.of(context).colorScheme.secondary,
+                                              child: Padding(
+                                                padding: EdgeInsets.all(50),
+                                                child: CircularProgressIndicator(
+                                                  color: Theme.of(context).colorScheme.secondary,
+                                                ),
                                               ),
                                             ),
                                           );
@@ -276,19 +280,22 @@ class _DestinationScreenState extends State<DestinationScreen> {
                 ),
                 itemBuilder: (context, i) {
                   return FutureBuilder(
-                    future: loadFirestoreImage(widget.destination.images[i].image),
+                    future: loadFirestoreImage(widget.destination.images[i].image, null),
                     builder: (context, snap) {
                       String imgUrl = snap.data.toString();
 
                       return !snap.hasData
                           ? Container()
-                          : Container(
+                          : SizedBox(
                               width: 100,
                               height: 100,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: CachedNetworkImageProvider(imgUrl),
+                              child: ClipRRect(
+                                child: ImageFullScreenWrapperWidget(
+                                  dark: false,
+                                  child: CachedNetworkImage(
+                                    imageUrl: imgUrl,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             );

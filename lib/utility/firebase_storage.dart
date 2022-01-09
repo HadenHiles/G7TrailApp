@@ -6,12 +6,17 @@ Future<String> imageDownloadURL(String refString) async {
   return await firebase_storage.FirebaseStorage.instance.ref(refString).getDownloadURL();
 }
 
-Future<String?> loadFirestoreImage(DocumentReference? image) async {
+Future<String?> loadFirestoreImage(DocumentReference? image, int? sizeIndex) async {
+  int sizeIdx = sizeIndex ?? 1;
+  bool raw = sizeIndex == null;
+  String path = raw ? "/flamelink/media/" : "/flamelink/media/sized/";
   return image == null
       ? null
       : await image.get().then((doc) async {
           File i = File.fromSnapshot(doc);
-          return imageDownloadURL("/flamelink/media/sized/${i.sizes[1]['path']}/${i.file}").then((imgURL) {
+          String url = raw ? path + i.file : path + "${i.sizes[sizeIdx]['path']}/" + i.file;
+
+          return imageDownloadURL(url).then((imgURL) {
             return imgURL;
           });
         });
