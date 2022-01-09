@@ -84,7 +84,6 @@ class _FullScreenPageState extends State<FullScreenPage> {
                 left: 0,
                 right: 0,
                 child: InteractiveViewer(
-                  boundaryMargin: EdgeInsets.only(top: 50, right: 25, bottom: 40, left: 25),
                   constrained: false,
                   panEnabled: true,
                   minScale: 0.1,
