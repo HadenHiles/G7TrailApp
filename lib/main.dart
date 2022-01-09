@@ -77,20 +77,6 @@ void main() async {
   // Listen for message clicks
   FirebaseMessaging.onMessageOpenedApp.listen(_messageClickHandler);
 
-  /**
-   * Request permissions for iBeacon functionality. See https://pub.dev/packages/flutter_beacon#how-to
-   */
-  try {
-    // if you want to manage manual checking about the required permissions
-    await flutterBeacon.initializeScanning;
-
-    // or if you want to include automatic checking permission
-    await flutterBeacon.initializeAndCheckScanning;
-  } on PlatformException catch (e) {
-    // library failed to initialize, check code and message
-    log(e.message ?? "There was an error requesting bluetooth beacon location permissions", error: e);
-  }
-
   runApp(
     Provider<AppleSignInAvailable>.value(
       value: appleSignInAvailable,
@@ -111,6 +97,20 @@ Future<void> _messageHandler(RemoteMessage message) async {
 
 Future<void> _messageClickHandler(RemoteMessage message) async {
   // print('Background message clicked!');
+}
+
+// Request permissions for iBeacon functionality. See https://pub.dev/packages/flutter_beacon#how-to
+Future<void> initializeBeaconPermissions() async {
+  try {
+    // if you want to manage manual checking about the required permissions
+    await flutterBeacon.initializeScanning;
+
+    // or if you want to include automatic checking permission
+    await flutterBeacon.initializeAndCheckScanning;
+  } on PlatformException catch (e) {
+    // library failed to initialize, check code and message
+    log(e.message ?? "There was an error requesting bluetooth beacon location permissions", error: e);
+  }
 }
 
 class Home extends StatelessWidget {

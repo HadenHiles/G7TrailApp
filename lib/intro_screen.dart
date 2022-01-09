@@ -34,6 +34,8 @@ class _IntroScreenState extends State<IntroScreen> {
   List<WelcomeScreen> _screens = [];
 
   Future<void> _onIntroEnd(context) async {
+    initializeBeaconPermissions();
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('intro_shown', true);
 
@@ -293,6 +295,38 @@ class _IntroScreenState extends State<IntroScreen> {
                   ),
                   image: Icon(
                     Icons.brightness_4,
+                    size: MediaQuery.of(context).size.width * 0.45,
+                    color: _buttonColor,
+                  ),
+                  decoration: pageDecoration,
+                ),
+                PageViewModel(
+                  title: _screens[4].title.toUpperCase(),
+                  bodyWidget: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SizedBox(
+                        width: 300,
+                        child: Column(
+                          children: [
+                            Text(
+                              'This app requires access to your location in order to detect when you are approaching trail beacons.\n\nPlease grant the permissions on the following screen.',
+                              style: TextStyle(
+                                fontFamily: 'LGCafe',
+                                fontSize: 18,
+                                color: _textColor,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  image: Icon(
+                    Icons.location_on_rounded,
                     size: MediaQuery.of(context).size.width * 0.45,
                     color: _buttonColor,
                   ),
