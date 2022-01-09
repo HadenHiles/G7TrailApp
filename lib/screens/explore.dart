@@ -229,13 +229,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
-                                    child: Text(
-                                      "No easy hikes found".toUpperCase(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: Theme.of(context).textTheme.headline5?.fontFamily,
-                                        fontSize: 18,
-                                      ),
+                                    child: LinearProgressIndicator(
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
                                 ],
@@ -273,13 +268,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
-                                    child: Text(
-                                      "No moderate hikes found".toUpperCase(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: Theme.of(context).textTheme.headline5?.fontFamily,
-                                        fontSize: 18,
-                                      ),
+                                    child: LinearProgressIndicator(
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
                                 ],
@@ -317,13 +307,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
-                                    child: Text(
-                                      "No difficult hikes found".toUpperCase(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: Theme.of(context).textTheme.headline5?.fontFamily,
-                                        fontSize: 18,
-                                      ),
+                                    child: LinearProgressIndicator(
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
                                 ],
