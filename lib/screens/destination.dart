@@ -207,7 +207,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                 itemCount: widget.destination.art.length,
                 itemBuilder: (context, i) {
                   return FutureBuilder(
-                    future: loadFirestoreImage(widget.destination.art[i].image, null),
+                    future: loadFirestoreImage(widget.destination.art[i].image, 1),
                     builder: (context, snap) {
                       String imgUrl = snap.data.toString();
                       return !snap.hasData

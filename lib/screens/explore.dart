@@ -40,18 +40,20 @@ class _ExploreScreenState extends State<ExploreScreen> {
         List<Destination> difficult = [];
         for (var doc in snapshot.docs) {
           Destination d = Destination.fromSnapshot(doc);
-          await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
+          if (!d.entryPoint && d.images.isNotEmpty) {
+            await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
 
-          switch (d.difficulty) {
-            case "easy":
-              easy.add(d);
-              break;
-            case "moderate":
-              moderate.add(d);
-              break;
-            case "difficult":
-              difficult.add(d);
-              break;
+            switch (d.difficulty) {
+              case "easy":
+                easy.add(d);
+                break;
+              case "moderate":
+                moderate.add(d);
+                break;
+              case "difficult":
+                difficult.add(d);
+                break;
+            }
           }
 
           setState(() {

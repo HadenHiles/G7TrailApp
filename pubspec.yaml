@@ -40,6 +40,7 @@ dependencies:
   package_info: ^2.0.2
   introduction_screen: ^2.1.0
   ci_connectivity: ^1.1.0
+  flutter_beacon: ^0.5.1
   http: ^0.13.4
   flutter_cache_manager: ^3.3.0
   cached_network_image: ^3.2.0
