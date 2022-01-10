@@ -42,6 +42,8 @@ class FullScreenPage extends StatefulWidget {
 }
 
 class _FullScreenPageState extends State<FullScreenPage> {
+  final TransformationController _interactiveViewerController = TransformationController();
+
   @override
   void initState() {
     var brightness = widget.dark ? Brightness.light : Brightness.dark;
@@ -56,6 +58,7 @@ class _FullScreenPageState extends State<FullScreenPage> {
       systemNavigationBarDividerColor: color,
       systemNavigationBarIconBrightness: brightness,
     ));
+
     super.initState();
   }
 
@@ -83,12 +86,28 @@ class _FullScreenPageState extends State<FullScreenPage> {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: InteractiveViewer(
-                  constrained: false,
-                  panEnabled: true,
-                  minScale: 0.1,
-                  maxScale: 8,
-                  child: widget.child,
+                child: LayoutBuilder(
+                  builder: (__, constraint) {
+                    return InteractiveViewer(
+                      transformationController: _interactiveViewerController,
+                      constrained: false,
+                      panEnabled: true,
+                      minScale: 0.1,
+                      maxScale: 8,
+                      child: Builder(
+                        builder: (context) {
+                          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+                            final renderBox = context.findRenderObject() as RenderBox?;
+                            final childSize = renderBox?.size ?? Size.zero;
+                            if (childSize != Size.zero) {
+                              _interactiveViewerController.value = Matrix4.identity() * _coverRatio(constraint.biggest, childSize);
+                            }
+                          });
+                          return widget.child;
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -96,27 +115,38 @@ class _FullScreenPageState extends State<FullScreenPage> {
           SafeArea(
             child: Align(
               alignment: Alignment.topLeft,
-              child: MaterialButton(
-                padding: const EdgeInsets.all(15),
-                elevation: 0,
-                child: Icon(
-                  Icons.arrow_back,
-                  color: widget.dark ? Colors.white : Colors.black,
-                  size: 25,
+              child: Padding(
+                padding: EdgeInsets.all(5),
+                child: MaterialButton(
+                  padding: const EdgeInsets.all(15),
+                  elevation: 0,
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: widget.dark ? Colors.white : Colors.black,
+                    size: 25,
+                  ),
+                  color: widget.dark ? Colors.black12 : Colors.white70,
+                  highlightElevation: 0,
+                  minWidth: double.minPositive,
+                  height: double.minPositive,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
-                color: widget.dark ? Colors.black12 : Colors.white70,
-                highlightElevation: 0,
-                minWidth: double.minPositive,
-                height: double.minPositive,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                onPressed: () => Navigator.of(context).pop(),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  double _coverRatio(Size outside, Size inside) {
+    if (outside.width / outside.height > inside.width / inside.height) {
+      return outside.width / inside.width;
+    } else {
+      return outside.height / inside.height;
+    }
   }
 }
