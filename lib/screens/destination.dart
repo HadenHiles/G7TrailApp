@@ -307,7 +307,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                   if (ttsState != TtsState.playing) {
                                     _speak(widget.destination.audio[i].textToSpeech);
                                   } else {
-                                    _pause();
+                                    _stop();
                                   }
                                 }
                               },
@@ -328,7 +328,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                               if (ttsState != TtsState.playing) {
                                 _speak(widget.destination.audio[i].textToSpeech);
                               } else {
-                                _pause();
+                                _stop();
                               }
                             }
                           },
