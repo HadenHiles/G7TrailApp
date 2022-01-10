@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
@@ -20,10 +22,147 @@ class DestinationScreen extends StatefulWidget {
   _DestinationScreenState createState() => _DestinationScreenState();
 }
 
+enum TtsState { playing, stopped, paused, continued }
+
 class _DestinationScreenState extends State<DestinationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
+  late FlutterTts flutterTts;
   bool _autoplay = true;
+  String? language;
+  String? engine;
+  double volume = 1.0;
+  double pitch = 1.0;
+  double rate = 0.5;
+  bool isCurrentLanguageInstalled = false;
+
+  TtsState ttsState = TtsState.stopped;
+
+  get isPlaying => ttsState == TtsState.playing;
+  get isStopped => ttsState == TtsState.stopped;
+  get isPaused => ttsState == TtsState.paused;
+  get isContinued => ttsState == TtsState.continued;
+
+  bool get isIOS => Platform.isIOS;
+  bool get isAndroid => Platform.isAndroid;
+
+  @override
+  initState() {
+    super.initState();
+    initTts();
+  }
+
+  initTts() {
+    flutterTts = FlutterTts();
+
+    _setAwaitOptions();
+
+    if (isAndroid) {
+      _getDefaultEngine();
+    }
+
+    flutterTts.setStartHandler(() {
+      setState(() {
+        print("Playing");
+        ttsState = TtsState.playing;
+      });
+    });
+
+    flutterTts.setCompletionHandler(() {
+      setState(() {
+        print("Complete");
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    flutterTts.setCancelHandler(() {
+      setState(() {
+        print("Cancel");
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    if (isIOS) {
+      flutterTts.setPauseHandler(() {
+        setState(() {
+          print("Paused");
+          ttsState = TtsState.paused;
+        });
+      });
+
+      flutterTts.setContinueHandler(() {
+        setState(() {
+          print("Continued");
+          ttsState = TtsState.continued;
+        });
+      });
+    }
+
+    flutterTts.setErrorHandler((msg) {
+      setState(() {
+        print("error: $msg");
+        ttsState = TtsState.stopped;
+      });
+    });
+  }
+
+  Future _getDefaultEngine() async {
+    var engine = await flutterTts.getDefaultEngine;
+    if (engine != null) {
+      print(engine);
+    }
+  }
+
+  Future _speak(String text) async {
+    if (text.isNotEmpty) {
+      await flutterTts.speak(text);
+    }
+  }
+
+  Future _setAwaitOptions() async {
+    await flutterTts.awaitSpeakCompletion(false);
+
+    await flutterTts.setLanguage("en-US");
+
+    await flutterTts.setSpeechRate(rate);
+
+    await flutterTts.setVolume(volume);
+
+    await flutterTts.setPitch(pitch);
+
+    await flutterTts.isLanguageAvailable("en-US");
+
+    // iOS only
+    await flutterTts.setSharedInstance(true);
+    // Android only
+    await flutterTts.setSilence(2);
+
+    await flutterTts.setVoice({"name": "Karen", "locale": "en-AU"});
+
+    await flutterTts.isLanguageInstalled("en-AU");
+
+    await flutterTts.areLanguagesInstalled(["en-AU", "en-US"]);
+
+    await flutterTts.setQueueMode(1);
+
+    await flutterTts.getMaxSpeechInputLength;
+  }
+
+  Future _stop() async {
+    var result = await flutterTts.stop();
+    if (result == 1) setState(() => ttsState = TtsState.stopped);
+  }
+
+  Future _pause() async {
+    var result = await flutterTts.pause();
+    if (result == 1) setState(() => ttsState = TtsState.paused);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    flutterTts.stop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +238,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
           ),
           endDrawer: Drawer(
             child: SizedBox(
-              height: double.maxFinite,
+              height: double.infinity,
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 itemCount: widget.destination.audio.length,
@@ -155,33 +294,43 @@ class _DestinationScreenState extends State<DestinationScreen> {
                               ),
                             ),
                             ListTile(
-                              leading: IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.play_arrow_rounded,
-                                  color: Theme.of(context).primaryColor,
-                                ),
+                              leading: Icon(
+                                Icons.play_arrow_rounded,
+                                color: Theme.of(context).primaryColor,
                               ),
                               title: Text(widget.destination.audio[i].title.toUpperCase()),
                               onTap: () {
-                                // Update the state of the app.
-                                // ...
+                                if (widget.destination.audio[i].file != null) {
+                                  // Play audio file
+                                } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
+                                  // Speak text - play/pause toggle
+                                  if (ttsState != TtsState.playing) {
+                                    _speak(widget.destination.audio[i].textToSpeech);
+                                  } else {
+                                    _pause();
+                                  }
+                                }
                               },
                             ),
                           ],
                         )
                       : ListTile(
-                          leading: IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.play_arrow_rounded,
-                              color: Theme.of(context).primaryColor,
-                            ),
+                          leading: Icon(
+                            Icons.play_arrow_rounded,
+                            color: Theme.of(context).primaryColor,
                           ),
                           title: Text(widget.destination.audio[i].title.toUpperCase()),
                           onTap: () {
-                            // Update the state of the app.
-                            // ...
+                            if (widget.destination.audio[i].file != null) {
+                              // Play audio file
+                            } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
+                              // Speak text - play/pause toggle
+                              if (ttsState != TtsState.playing) {
+                                _speak(widget.destination.audio[i].textToSpeech);
+                              } else {
+                                _pause();
+                              }
+                            }
                           },
                         );
                 },
