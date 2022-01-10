@@ -81,8 +81,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     color: Theme.of(context).backgroundColor,
                   ),
                   child: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    titlePadding: null,
+                    collapseMode: CollapseMode.none,
+                    titlePadding: EdgeInsets.only(top: 25, left: 50),
                     centerTitle: false,
                     title: const ScreenTitle(title: "Settings"),
                     background: Container(

@@ -1,9 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/screens/destination/art.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/utility/fullscreen_image.dart';
@@ -212,55 +214,68 @@ class _DestinationScreenState extends State<DestinationScreen> {
                       String imgUrl = snap.data.toString();
                       return !snap.hasData
                           ? Container()
-                          : Card(
-                              margin: EdgeInsets.all(0),
-                              elevation: 1,
-                              color: i % 2 != 0 ? Theme.of(context).cardTheme.color : (preferences.darkMode ? Theme.of(context).backgroundColor : Colors.white),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 120,
-                                    height: 95,
-                                    child: FittedBox(
-                                      clipBehavior: Clip.antiAlias,
-                                      fit: BoxFit.cover,
-                                      child: CachedNetworkImage(
-                                        imageUrl: imgUrl,
-                                        placeholder: (context, _) {
-                                          return SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child: FittedBox(
-                                              clipBehavior: Clip.antiAlias,
-                                              fit: BoxFit.contain,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(50),
-                                                child: CircularProgressIndicator(
-                                                  color: Theme.of(context).colorScheme.secondary,
+                          : GestureDetector(
+                              onTap: () {
+                                navigatorKey.currentState?.push(MaterialPageRoute(builder: (context) {
+                                  return ArtScreen(art: widget.destination.art[i]);
+                                }));
+                              },
+                              child: Card(
+                                margin: EdgeInsets.all(0),
+                                elevation: 1,
+                                color: i % 2 != 0 ? Theme.of(context).cardTheme.color : (preferences.darkMode ? Theme.of(context).backgroundColor : Colors.white),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: 120,
+                                      height: 95,
+                                      child: FittedBox(
+                                        clipBehavior: Clip.antiAlias,
+                                        fit: BoxFit.cover,
+                                        child: CachedNetworkImage(
+                                          imageUrl: imgUrl,
+                                          placeholder: (context, _) {
+                                            return SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: FittedBox(
+                                                clipBehavior: Clip.antiAlias,
+                                                fit: BoxFit.contain,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(50),
+                                                  child: CircularProgressIndicator(
+                                                    color: Theme.of(context).colorScheme.secondary,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        },
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 25),
-                                          child: Text(
-                                            widget.destination.art[i].title.toUpperCase(),
-                                            style: Theme.of(context).textTheme.bodyText1,
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: MediaQuery.of(context).size.width - 120 - 25, // Image width + text padding
+                                            child: Padding(
+                                              padding: EdgeInsets.only(left: 25),
+                                              child: AutoSizeText(
+                                                widget.destination.art[i].title.toUpperCase(),
+                                                maxFontSize: Theme.of(context).textTheme.bodyText1!.fontSize ?? 14,
+                                                minFontSize: 10,
+                                                maxLines: 2,
+                                                style: Theme.of(context).textTheme.bodyText1,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             );
                     },
@@ -291,7 +306,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                               height: 100,
                               child: ClipRRect(
                                 child: ImageFullScreenWrapperWidget(
-                                  dark: false,
+                                  dark: true,
                                   child: CachedNetworkImage(
                                     imageUrl: imgUrl,
                                     fit: BoxFit.cover,
