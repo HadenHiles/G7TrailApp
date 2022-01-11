@@ -165,7 +165,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                         width: 15,
                                       ),
                                       Text(
-                                        "(" + _beacon.beaconTitle.toUpperCase() + ")",
+                                        "(" + _beacon.destinationName.toUpperCase() + ")",
                                         style: Theme.of(context).textTheme.headline6,
                                       ),
                                     ],
