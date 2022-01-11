@@ -13,11 +13,16 @@ class Destination {
   String destinationSummary;
   String difficulty;
   bool entryPoint;
+  List<DocumentReference> nearbyDestinations;
+  String beaconTitle;
+  String beaconId;
+  double latitude;
+  double longitude;
   int order;
   String? imgURL;
   DocumentReference? reference;
 
-  Destination(this.flMeta, this.images, this.art, this.audio, this.destinationName, this.destinationSummary, this.difficulty, this.entryPoint, this.order);
+  Destination(this.flMeta, this.images, this.art, this.audio, this.destinationName, this.destinationSummary, this.difficulty, this.entryPoint, this.nearbyDestinations, this.beaconTitle, this.beaconId, this.latitude, this.longitude, this.order);
 
   Destination.fromMap(Map<String, dynamic> map, {this.reference})
       : id = map['id'],
@@ -41,6 +46,15 @@ class Destination {
         destinationSummary = map['content']['destinationSummary'],
         difficulty = map['content']['difficulty'],
         entryPoint = map['entryPoint'],
+        nearbyDestinations = map['nearbyDestinations'].isEmpty
+            ? []
+            : map['nearbyDestinations'].map<DocumentReference>((map) {
+                return map as DocumentReference;
+              }).toList(),
+        beaconTitle = map['beaconInfo']['beaconTitle'] ?? "",
+        beaconId = map['beaconInfo']['beaconId'] ?? "",
+        latitude = map['beaconInfo']['latitude'] == "" ? 0.0 : map['beaconInfo']['latitude'],
+        longitude = map['beaconInfo']['longitude'] == "" ? 0.0 : map['beaconInfo']['longitude'],
         order = map['order'];
 
   Map<String, dynamic> toMap() {
@@ -54,7 +68,7 @@ class Destination {
     for (var m in art) {
       mappedArt.add(m.toMap());
     }
-    for (var m in art) {
+    for (var m in audio) {
       mappedAudio.add(m.toMap());
     }
 
@@ -69,6 +83,13 @@ class Destination {
         'audio': mappedAudio,
         'destinationSummary': destinationSummary,
         'difficulty': difficulty,
+      },
+      'nearbyDestinations': nearbyDestinations,
+      'beaconInfo': {
+        'beaconTitle': beaconTitle,
+        'beaconId': beaconId,
+        'latitude': latitude,
+        'longitude': longitude,
       },
       'order': order,
     };

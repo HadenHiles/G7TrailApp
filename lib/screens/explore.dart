@@ -18,18 +18,22 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  // Static variables
-  final bool _nearEntryPoint = false; // TODO: make stateful when beacon functionality is introduced
-
   // State variables
   List<Destination> _easyDestinations = [];
   List<Destination> _moderateDestinations = [];
   List<Destination> _difficultDestinations = [];
+  List<Destination> _nearbyDestinations = [];
+  final String _beaconId = "abcd1234efgh5678"; // TODO: Eventually get this from flutter_beacon functionality
+  Destination _beacon = Destination(<String, dynamic>{}, [], [], [], "", "", "", true, [], "", "", 0, 0, 0);
 
   @override
   void initState() {
     super.initState();
     _loadDestinations();
+
+    if (_beaconId.isNotEmpty) {
+      _loadNearbyDestinations(_beaconId);
+    }
   }
 
   Future<void> _loadDestinations() async {
@@ -60,6 +64,35 @@ class _ExploreScreenState extends State<ExploreScreen> {
             _easyDestinations = easy;
             _moderateDestinations = moderate;
             _difficultDestinations = difficult;
+          });
+        }
+      }
+    });
+  }
+
+  Future<void> _loadNearbyDestinations(String beaconId) async {
+    await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").where('beaconInfo.beaconId', isEqualTo: beaconId).limit(1).get().then((snapshot) async {
+      if (snapshot.docs.isNotEmpty) {
+        List<Destination> nearby = [];
+        for (var doc in snapshot.docs) {
+          Destination d = Destination.fromSnapshot(doc);
+          if (d.entryPoint) {
+            if (d.beaconId == _beaconId) {
+              for (DocumentReference ref in d.nearbyDestinations) {
+                ref.get().then((snap) async {
+                  if (snap.exists) {
+                    Destination n = Destination.fromSnapshot(snap);
+                    await loadFirestoreImage(n.images[0].image, 1).then((url) => n.imgURL = url);
+                    nearby.add(n);
+                  }
+                });
+              }
+            }
+          }
+
+          setState(() {
+            _beacon = d;
+            _nearbyDestinations = nearby;
           });
         }
       }
@@ -114,7 +147,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      !_nearEntryPoint
+                      _nearbyDestinations.isEmpty
                           ? Container()
                           : Column(
                               children: [
@@ -132,7 +165,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                         width: 15,
                                       ),
                                       Text(
-                                        "(Entry Point B)".toUpperCase(),
+                                        "(" + _beacon.beaconTitle.toUpperCase() + ")",
                                         style: Theme.of(context).textTheme.headline6,
                                       ),
                                     ],
@@ -140,69 +173,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 ),
                                 SizedBox(
                                   height: 310,
-                                  child: ListView(
+                                  child: ListView.builder(
                                     padding: EdgeInsets.only(left: 10),
                                     scrollDirection: Axis.horizontal,
-                                    children: [
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.8,
-                                        child: GestureDetector(
-                                          onTap: () {},
-                                          child: Card(
-                                            child: Column(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                  child: SizedBox(
-                                                    width: MediaQuery.of(context).size.width * 0.8,
-                                                    height: (MediaQuery.of(context).size.width * 0.8) * .73,
-                                                    child: FittedBox(
-                                                      clipBehavior: Clip.antiAlias,
-                                                      fit: BoxFit.cover,
-                                                      child: Image(
-                                                        image: AssetImage("assets/images/destinations/peninsula-harbour-example.jpeg"),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                ListTile(
-                                                  title: AutoSizeText(
-                                                    "Peninsula Harbour".toUpperCase(),
-                                                    maxLines: 1,
-                                                    maxFontSize: 22,
-                                                    style: Theme.of(context).textTheme.headline5,
-                                                  ),
-                                                  trailing: Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      Text("Easy", style: Theme.of(context).textTheme.bodyText1),
-                                                      SizedBox(
-                                                        width: 5,
-                                                      ),
-                                                      Padding(
-                                                        padding: EdgeInsets.only(
-                                                          top: 3,
-                                                        ),
-                                                        child: Text(
-                                                          "4.5km",
-                                                          style: Theme.of(context).textTheme.bodyText2,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            color: Theme.of(context).colorScheme.background,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0),
-                                            ),
-                                            elevation: 0,
-                                            margin: EdgeInsets.only(top: 10, right: 10),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    itemCount: _nearbyDestinations.length,
+                                    itemBuilder: (context, i) {
+                                      return _buildDestination(_nearbyDestinations[i]);
+                                    },
                                   ),
                                 ),
                                 Container(
@@ -340,7 +317,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     String title = destination.destinationName;
     String? imgURL = destination.imgURL;
     Widget trailing = Text(destination.difficulty.capitalize(), style: Theme.of(context).textTheme.bodyText1);
-    Image img = imgURL != null ? Image(image: CachedNetworkImageProvider(imgURL)) : Image(image: AssetImage("/assets/images/avatar.png"));
+    Image img = imgURL != null ? Image(image: CachedNetworkImageProvider(imgURL)) : Image(image: AssetImage("assets/images/avatar.png"));
 
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
