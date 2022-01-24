@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:g7trailapp/theme/map_style.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapScreen extends StatefulWidget {
@@ -17,17 +18,53 @@ class _MapScreenState extends State<MapScreen> {
     zoom: 12,
   );
 
+  MapType _mapType = MapType.normal;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: GoogleMap(
-        mapType: MapType.terrain,
-        compassEnabled: true,
-        myLocationEnabled: true,
-        initialCameraPosition: _kTrail,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+      child: Stack(
+        children: [
+          _mapType == MapType.normal
+              ? GoogleMap(
+                  mapType: MapType.normal,
+                  compassEnabled: true,
+                  myLocationEnabled: true,
+                  initialCameraPosition: _kTrail,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+
+                    controller.setMapStyle(mapStyle);
+                  },
+                )
+              : GoogleMap(
+                  mapType: MapType.terrain,
+                  compassEnabled: true,
+                  myLocationEnabled: true,
+                  initialCameraPosition: _kTrail,
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                ),
+          Positioned(
+            bottom: 0,
+            left: 5,
+            child: TextButton(
+              onPressed: () {
+                setState(() {
+                  _mapType = _mapType == MapType.terrain ? MapType.normal : MapType.terrain;
+                });
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
+              ),
+              child: Icon(
+                _mapType == MapType.normal ? Icons.terrain : Icons.map_rounded,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
