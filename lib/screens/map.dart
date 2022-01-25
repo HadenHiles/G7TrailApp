@@ -46,7 +46,7 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void _loadMarkers() {
+  void _loadMarkers() async {
     Set<Marker> markers = {};
     int i = 0;
     for (var d in _destinations) {
@@ -54,10 +54,14 @@ class _MapScreenState extends State<MapScreen> {
         LatLng latLng = LatLng(d.latitude, d.longitude);
         markers.add(
           Marker(
-              markerId: MarkerId("beacon-" + (i++).toString()),
-              position: latLng,
-              // infoWindow: InfoWindow(title: address, snippet: "go here"),
-              icon: BitmapDescriptor.defaultMarker),
+            markerId: MarkerId("beacon-" + (i++).toString()),
+            position: latLng,
+            // infoWindow: InfoWindow(title: address, snippet: "go here"),
+            icon: await BitmapDescriptor.fromAssetImage(
+              ImageConfiguration(devicePixelRatio: 1.75),
+              "assets/images/map-marker.png",
+            ),
+          ),
         );
       }
     }
