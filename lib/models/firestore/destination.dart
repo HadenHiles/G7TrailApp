@@ -53,8 +53,8 @@ class Destination {
               }).toList(),
         beaconTitle = map['beaconInfo']['beaconTitle'] ?? "",
         beaconId = map['beaconInfo']['beaconId'] ?? "",
-        latitude = map['beaconInfo']['latitude'] == "" ? 0.0 : map['beaconInfo']['latitude'],
-        longitude = map['beaconInfo']['longitude'] == "" ? 0.0 : map['beaconInfo']['longitude'],
+        latitude = (map['beaconInfo']['latitude'] == "" || map['beaconInfo']['latitude'] == null) ? 0.0 : map['beaconInfo']['latitude'],
+        longitude = (map['beaconInfo']['longitude'] == "" || map['beaconInfo']['longitude'] == null) ? 0.0 : map['beaconInfo']['longitude'],
         order = map['order'];
 
   Map<String, dynamic> toMap() {
