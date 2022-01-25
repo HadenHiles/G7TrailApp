@@ -79,7 +79,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   double getBoundsZoomLevel(LatLngBounds bounds, Size mapDimensions) {
-    var worldDimension = Size(1024, 1024);
+    var worldDimension = Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
 
     double latRad(lat) {
       var sinValue = sin(lat * pi / 180);
@@ -266,10 +266,10 @@ class _MapScreenState extends State<MapScreen> {
                 _createBounds(_markers.map((m) => m.position).toList()),
                 Size(
                   MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.height / 5,
+                  MediaQuery.of(context).size.height,
                 ),
               ) +
-              1;
+              0.75;
 
           setState(() {
             controller.animateCamera(
