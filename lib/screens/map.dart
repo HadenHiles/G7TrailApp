@@ -33,10 +33,11 @@ class _MapScreenState extends State<MapScreen> {
         List<Destination> destinations = [];
         for (var doc in snapshot.docs) {
           Destination d = Destination.fromSnapshot(doc);
-          if (!d.entryPoint && d.images.isNotEmpty) {
+          if (d.images.isNotEmpty) {
             await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
-            destinations.add(d);
           }
+
+          destinations.add(d);
         }
 
         setState(() {
@@ -59,7 +60,7 @@ class _MapScreenState extends State<MapScreen> {
             // infoWindow: InfoWindow(title: address, snippet: "go here"),
             icon: await BitmapDescriptor.fromAssetImage(
               ImageConfiguration(devicePixelRatio: 1.75),
-              "assets/images/map-marker.png",
+              d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
             ),
           ),
         );
