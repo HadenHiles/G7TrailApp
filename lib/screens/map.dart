@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/theme/map_style.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,11 +18,135 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final Completer<GoogleMapController> _controller = Completer();
 
+  static final LatLng _defaultPosition = LatLng(48.6856434610084, -86.40889064111326);
   static final CameraPosition _kTrail = CameraPosition(
-    target: LatLng(48.6856434610084, -86.40889064111326),
+    target: _defaultPosition,
     zoom: 12,
   );
 
+  List<Destination> _destinations = [];
+  Set<Marker> _markers = {};
+
+  Future<void> _loadDestinations() async {
+    await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").get().then((snapshot) async {
+      if (snapshot.docs.isNotEmpty) {
+        List<Destination> destinations = [];
+        for (var doc in snapshot.docs) {
+          Destination d = Destination.fromSnapshot(doc);
+          if (!d.entryPoint && d.images.isNotEmpty) {
+            await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
+            destinations.add(d);
+          }
+        }
+
+        setState(() {
+          _destinations = destinations;
+        });
+      }
+    });
+  }
+
+  void _loadMarkers() {
+    Set<Marker> markers = {};
+    int i = 0;
+    for (var d in _destinations) {
+      if (d.latitude != 0 || d.longitude != 0) {
+        LatLng latLng = LatLng(d.latitude, d.longitude);
+        markers.add(
+          Marker(
+              markerId: MarkerId("beacon-" + (i++).toString()),
+              position: latLng,
+              // infoWindow: InfoWindow(title: address, snippet: "go here"),
+              icon: BitmapDescriptor.defaultMarker),
+        );
+      }
+    }
+
+    setState(() {
+      _markers = markers;
+    });
+  }
+
+  LatLngBounds _createBounds(List<LatLng> positions) {
+    final southwestLat = positions.map((p) => p.latitude).reduce((value, element) => value < element ? value : element); // smallest
+    final southwestLon = positions.map((p) => p.longitude).reduce((value, element) => value < element ? value : element);
+    final northeastLat = positions.map((p) => p.latitude).reduce((value, element) => value > element ? value : element); // biggest
+    final northeastLon = positions.map((p) => p.longitude).reduce((value, element) => value > element ? value : element);
+    return LatLngBounds(
+      southwest: LatLng(southwestLat, southwestLon),
+      northeast: LatLng(northeastLat, northeastLon),
+    );
+  }
+
+  double getBoundsZoomLevel(LatLngBounds bounds, Size mapDimensions) {
+    var worldDimension = Size(1024, 1024);
+
+    double latRad(lat) {
+      var sinValue = sin(lat * pi / 180);
+      var radX2 = log((1 + sinValue) / (1 - sinValue)) / 2;
+      return max(min(radX2, pi), -pi) / 2;
+    }
+
+    double zoom(mapPx, worldPx, fraction) {
+      return (log(mapPx / worldPx / fraction) / ln2).floorToDouble();
+    }
+
+    var ne = bounds.northeast;
+    var sw = bounds.southwest;
+
+    var latFraction = (latRad(ne.latitude) - latRad(sw.latitude)) / pi;
+
+    var lngDiff = ne.longitude - sw.longitude;
+    var lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
+
+    var latZoom = zoom(mapDimensions.height, worldDimension.height, latFraction);
+    var lngZoom = zoom(mapDimensions.width, worldDimension.width, lngFraction);
+
+    if (latZoom < 0) return lngZoom;
+    if (lngZoom < 0) return latZoom;
+
+    return min(latZoom, lngZoom);
+  }
+
+  LatLng getCentralLatlng(List<LatLng> geoCoordinates) {
+    if (geoCoordinates.length == 1) {
+      return geoCoordinates.first;
+    }
+
+    double x = 0;
+    double y = 0;
+    double z = 0;
+
+    for (var geoCoordinate in geoCoordinates) {
+      var latitude = geoCoordinate.latitude * pi / 180;
+      var longitude = geoCoordinate.longitude * pi / 180;
+
+      x += cos(latitude) * cos(longitude);
+      y += cos(latitude) * sin(longitude);
+      z += sin(latitude);
+    }
+
+    var total = geoCoordinates.length;
+
+    x = x / total;
+    y = y / total;
+    z = z / total;
+
+    var centralLongitude = atan2(y, x);
+    var centralSquareRoot = sqrt(x * x + y * y);
+    var centralLatitude = atan2(z, centralSquareRoot);
+
+    return LatLng(centralLatitude * 180 / pi, centralLongitude * 180 / pi);
+  }
+
+  @override
+  void initState() {
+    _loadDestinations().then((value) {
+      _loadMarkers();
+    });
+
+    super.initState();
+  }
   MapType _mapType = MapType.normal;
   //TODO: Replace with actual trail points - make editable in flamelink
   final Set<Polyline> _polylines = {
@@ -78,51 +206,52 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Stack(
-        children: [
-          _mapType == MapType.normal
-              ? GoogleMap(
-                  polylines: _polylines,
-                  mapType: MapType.normal,
-                  compassEnabled: true,
-                  myLocationEnabled: true,
-                  initialCameraPosition: _kTrail,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-
-                    controller.setMapStyle(mapStyle);
-                  },
-                )
-              : GoogleMap(
-                  polylines: _polylines,
-                  mapType: MapType.terrain,
-                  compassEnabled: true,
-                  myLocationEnabled: true,
-                  initialCameraPosition: _kTrail,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
+      child: _markers.isEmpty
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
-          Positioned(
-            bottom: 0,
-            left: 5,
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  _mapType = _mapType == MapType.terrain ? MapType.normal : MapType.terrain;
+              ],
+            )
+          : GoogleMap(
+              mapType: MapType.terrain,
+              compassEnabled: true,
+              myLocationEnabled: true,
+              initialCameraPosition: _kTrail,
+              markers: _markers,
+              onMapCreated: (GoogleMapController controller) async {
+                _controller.complete(controller);
+
+                await Future.delayed(Duration(milliseconds: 50)).then((value) {
+                  var zoomLevel = getBoundsZoomLevel(
+                        _createBounds(_markers.map((m) => m.position).toList()),
+                        Size(
+                          MediaQuery.of(context).size.width,
+                          MediaQuery.of(context).size.height / 5,
+                        ),
+                      ) +
+                      1;
+
+                  setState(() {
+                    controller.animateCamera(
+                      CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                          target: getCentralLatlng(_destinations.map((d) => LatLng(d.latitude, d.longitude)).toList()),
+                          zoom: zoomLevel,
+                        ),
+                      ),
+                    );
+                  });
                 });
               },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
-              ),
-              child: Icon(
-                _mapType == MapType.normal ? Icons.terrain : Icons.map_rounded,
-                color: Theme.of(context).colorScheme.onSecondary,
-              ),
+              onTap: (latLng) {
+                print("LatLng: ${latLng.toString()}");
+              },
             ),
-          ),
-        ],
-      ),
     );
   }
 }
