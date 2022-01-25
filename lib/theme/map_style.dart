@@ -1,6 +1,18 @@
 String mapStyle = '''
           [
   {
+    "featureType": "poi.business",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "poi.attraction",
+    "stylers": [
+      { "visibility": "off" }
+    ]
+  },
+  {
     "elementType": "geometry",
     "stylers": [
       {

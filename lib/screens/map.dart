@@ -147,6 +147,7 @@ class _MapScreenState extends State<MapScreen> {
 
     super.initState();
   }
+
   MapType _mapType = MapType.normal;
   //TODO: Replace with actual trail points - make editable in flamelink
   final Set<Polyline> _polylines = {
@@ -206,52 +207,85 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: _markers.isEmpty
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ],
-            )
-          : GoogleMap(
-              mapType: MapType.terrain,
-              compassEnabled: true,
-              myLocationEnabled: true,
-              initialCameraPosition: _kTrail,
-              markers: _markers,
-              onMapCreated: (GoogleMapController controller) async {
-                _controller.complete(controller);
-
-                await Future.delayed(Duration(milliseconds: 50)).then((value) {
-                  var zoomLevel = getBoundsZoomLevel(
-                        _createBounds(_markers.map((m) => m.position).toList()),
-                        Size(
-                          MediaQuery.of(context).size.width,
-                          MediaQuery.of(context).size.height / 5,
-                        ),
-                      ) +
-                      1;
-
-                  setState(() {
-                    controller.animateCamera(
-                      CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                          target: getCentralLatlng(_destinations.map((d) => LatLng(d.latitude, d.longitude)).toList()),
-                          zoom: zoomLevel,
-                        ),
+      bottom: false,
+      child: Stack(
+        children: [
+          _markers.isEmpty
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
                       ),
-                    );
-                  });
+                    ),
+                  ],
+                )
+              : _mapType == MapType.terrain
+                  ? googleMap(MapType.terrain)
+                  : googleMap(MapType.normal),
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom,
+            left: 5,
+            child: TextButton(
+              onPressed: () {
+                setState(() {
+                  _mapType = _mapType == MapType.terrain ? MapType.normal : MapType.terrain;
                 });
               },
-              onTap: (latLng) {
-                print("LatLng: ${latLng.toString()}");
-              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
+              ),
+              child: Icon(
+                _mapType == MapType.normal ? Icons.terrain : Icons.map_rounded,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  GoogleMap googleMap(MapType mapType) {
+    return GoogleMap(
+      mapType: mapType,
+      compassEnabled: true,
+      myLocationEnabled: true,
+      zoomControlsEnabled: false,
+      initialCameraPosition: _kTrail,
+      polylines: _polylines,
+      markers: _markers,
+      onMapCreated: (GoogleMapController controller) async {
+        _controller.complete(controller);
+
+        controller.setMapStyle(mapStyle);
+
+        await Future.delayed(Duration(milliseconds: 50)).then((value) {
+          var zoomLevel = getBoundsZoomLevel(
+                _createBounds(_markers.map((m) => m.position).toList()),
+                Size(
+                  MediaQuery.of(context).size.width,
+                  MediaQuery.of(context).size.height / 5,
+                ),
+              ) +
+              1;
+
+          setState(() {
+            controller.animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(
+                  target: getCentralLatlng(_markers.map((m) => LatLng(m.position.latitude, m.position.longitude)).toList()),
+                  zoom: zoomLevel,
+                ),
+              ),
+            );
+          });
+        });
+      },
+      onTap: (latLng) {
+        print("LatLng: ${latLng.toString()}");
+      },
     );
   }
 }
