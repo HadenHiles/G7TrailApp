@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/theme/map_style.dart';
 import 'package:g7trailapp/theme/theme.dart';
@@ -55,14 +57,18 @@ class _MapScreenState extends State<MapScreen> {
         LatLng latLng = LatLng(d.latitude, d.longitude);
         markers.add(
           Marker(
-            markerId: MarkerId("beacon-" + (i++).toString()),
-            position: latLng,
-            // infoWindow: InfoWindow(title: address, snippet: "go here"),
-            icon: await BitmapDescriptor.fromAssetImage(
-              ImageConfiguration(devicePixelRatio: 1.75),
-              d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
-            ),
-          ),
+              markerId: MarkerId("beacon-" + (i++).toString()),
+              position: latLng,
+              infoWindow: InfoWindow(title: d.destinationName, snippet: d.difficulty.toUpperCase()),
+              icon: await BitmapDescriptor.fromAssetImage(
+                ImageConfiguration(devicePixelRatio: 1.75),
+                d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
+              ),
+              onTap: () {
+                navigatorKey.currentState?.push(MaterialPageRoute(builder: (context) {
+                  return DestinationScreen(destination: d);
+                }));
+              }),
         );
       }
     }
