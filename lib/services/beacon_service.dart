@@ -71,6 +71,7 @@ class BeaconService extends ChangeNotifier {
   void dispose() {
     stop();
     _streamMonitoring = null;
+    _streamRanging = null;
     super.dispose();
   }
 }
