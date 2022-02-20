@@ -52,17 +52,15 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
       builder: (context, service, child) {
         nearbyBeacon = service.nearbyBeacon;
 
-        return nearbyBeacon != null
-            ? Text("Beacon: " + service.nearbyBeacon!.beaconTitle + " - " + service.nearbyBeacon!.beaconId)
-            : Scaffold(
-                backgroundColor: Theme.of(context).colorScheme.background,
-                extendBody: true,
-                body: _child,
-                bottomNavigationBar: FluidNavBar(
-                  onChange: _handleNavigationChange,
-                  selectedIndex: widget.defaultTab,
-                ),
-              );
+        return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.background,
+          extendBody: true,
+          body: nearbyBeacon != null ? Text("Beacon: " + service.nearbyBeacon!.beaconTitle + " - " + service.nearbyBeacon!.beaconId) : _child,
+          bottomNavigationBar: FluidNavBar(
+            onChange: _handleNavigationChange,
+            selectedIndex: widget.defaultTab,
+          ),
+        );
       },
     );
   }
