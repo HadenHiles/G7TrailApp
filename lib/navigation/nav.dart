@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/screens/profile.dart';
+import 'package:g7trailapp/services/beacon_service.dart';
+import 'package:provider/provider.dart';
 import '../screens/explore.dart';
 import '../screens/map.dart';
 import './fluid_nav_bar.dart';
+
+late Destination? nearbyBeacon;
 
 class FluidNavigationBar extends StatefulWidget {
   const FluidNavigationBar({Key? key, this.defaultTab}) : super(key: key);
@@ -43,15 +48,29 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
   @override
   Widget build(BuildContext context) {
     // Build a simple container that switches content based of off the selected navigation item
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      extendBody: true,
-      body: _child,
-      bottomNavigationBar: FluidNavBar(
-        onChange: _handleNavigationChange,
-        selectedIndex: widget.defaultTab,
-      ),
+    return Consumer<BeaconService>(
+      builder: (context, service, child) {
+        nearbyBeacon = service.nearbyBeacon;
+
+        return nearbyBeacon != null
+            ? Text("Beacon: " + service.nearbyBeacon!.beaconTitle + " - " + service.nearbyBeacon!.beaconId)
+            : Scaffold(
+                backgroundColor: Theme.of(context).colorScheme.background,
+                extendBody: true,
+                body: _child,
+                bottomNavigationBar: FluidNavBar(
+                  onChange: _handleNavigationChange,
+                  selectedIndex: widget.defaultTab,
+                ),
+              );
+      },
     );
+  }
+
+  @override
+  void dispose() {
+    nearbyBeacon = null;
+    super.dispose();
   }
 
   void _handleNavigationChange(int index) {

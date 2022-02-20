@@ -109,7 +109,6 @@ class HomeTheme {
 
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    primaryColorBrightness: Brightness.dark,
     backgroundColor: Color(0xffF2F2F2),
     primaryColor: Color(0xff0053B1),
     scaffoldBackgroundColor: Color(0xffE5E5E5),
@@ -124,7 +123,7 @@ class HomeTheme {
       brightness: Brightness.light,
       primary: Color(0xffF2F2F2),
       onPrimary: Colors.black54,
-      primaryVariant: Color(0xffF4F4F4),
+      primaryContainer: Color(0xffF4F4F4),
       secondary: Color(0xffA9B7A7),
       onSecondary: Colors.white,
       onBackground: Colors.black,
@@ -176,7 +175,6 @@ class HomeTheme {
 
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    primaryColorBrightness: Brightness.dark,
     backgroundColor: Color(0xff222222),
     primaryColor: Color(0xff0053B1),
     scaffoldBackgroundColor: Color(0xff1A1A1A),
@@ -191,7 +189,7 @@ class HomeTheme {
       brightness: Brightness.dark,
       primary: Color(0xff1A1A1A),
       onPrimary: Color.fromRGBO(255, 255, 255, 0.75),
-      primaryVariant: Color(0xff1D1D1D),
+      primaryContainer: Color(0xff1D1D1D),
       secondary: Color(0xffA9B7A7),
       onSecondary: Colors.white,
       onBackground: Colors.white,

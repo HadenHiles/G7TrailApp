@@ -7,6 +7,7 @@ import 'package:g7trailapp/intro_screen.dart';
 import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/navigation/nav.dart';
 import 'package:g7trailapp/services/authentication/auth.dart';
+import 'package:g7trailapp/services/beacon_service.dart';
 import 'package:g7trailapp/services/session.dart';
 import 'package:g7trailapp/theme/preferences_state_notifier.dart';
 import 'package:g7trailapp/theme/theme.dart';
@@ -82,7 +83,10 @@ void main() async {
       value: appleSignInAvailable,
       child: ChangeNotifierProvider<PreferencesStateNotifier>(
         create: (_) => PreferencesStateNotifier(),
-        child: const Home(),
+        child: ChangeNotifierProvider<BeaconService>(
+          create: (_) => BeaconService(),
+          child: const Home(),
+        ),
       ),
     ),
   );
@@ -103,7 +107,7 @@ Future<void> _messageClickHandler(RemoteMessage message) async {
 Future<void> initializeBeaconPermissions() async {
   try {
     // if you want to manage manual checking about the required permissions
-    await flutterBeacon.initializeScanning;
+    // await flutterBeacon.initializeScanning;
 
     // or if you want to include automatic checking permission
     await flutterBeacon.initializeAndCheckScanning;

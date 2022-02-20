@@ -241,7 +241,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         //second parameter is top to down
                       ),
                     ],
-                    color: Theme.of(context).colorScheme.primaryVariant,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                   ),
                   width: MediaQuery.of(context).size.width,
                   child: Column(

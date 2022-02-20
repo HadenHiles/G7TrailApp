@@ -274,6 +274,7 @@ class _LoginState extends State<Login> {
                                                   } else if (!validEmail(value)) {
                                                     return 'Invalid email address';
                                                   }
+                                                  return null;
                                                 },
                                               ),
                                             ),
