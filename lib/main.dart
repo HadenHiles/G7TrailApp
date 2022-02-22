@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -8,6 +7,7 @@ import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/navigation/nav.dart';
 import 'package:g7trailapp/services/authentication/auth.dart';
 import 'package:g7trailapp/services/beacon_service.dart';
+import 'package:g7trailapp/services/notification_service.dart';
 import 'package:g7trailapp/services/session.dart';
 import 'package:g7trailapp/theme/preferences_state_notifier.dart';
 import 'package:g7trailapp/theme/theme.dart';
@@ -30,6 +30,7 @@ bool introShown = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
 
   // Initialize the connection to our firebase project
   await Firebase.initializeApp();

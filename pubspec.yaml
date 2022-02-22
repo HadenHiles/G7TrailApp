@@ -39,9 +39,11 @@ dependencies:
   firebase_remote_config: ^0.11.0+2
   package_info: ^2.0.2
   introduction_screen: ^2.1.0
+  flutter_local_notifications: ^9.3.2
   ci_connectivity: ^1.1.0
   flutter_beacon: ^0.5.1
   http: ^0.13.4
+  timezone: ^0.8.0
   flutter_cache_manager: ^3.3.0
   cached_network_image: ^3.2.0
   provider: ^6.0.1
@@ -59,7 +61,6 @@ dependencies:
   flutter_barcode_scanner: ^2.0.0
   vibration: ^1.7.4-nullsafety.0 
   fluttertoast: ^8.0.8
-  flutter_local_notifications: ^9.1.4
   font_awesome_flutter: ^9.2.0
   simple_animations: ^4.0.1
   google_maps_flutter: ^2.1.1

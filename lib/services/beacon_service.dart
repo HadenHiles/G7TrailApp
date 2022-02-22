@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/services/notification_service.dart';
 
 class BeaconService extends ChangeNotifier {
   dynamic _streamMonitoring;
@@ -47,17 +48,39 @@ class BeaconService extends ChangeNotifier {
         log("Beacons in range: " + nearbyBeacons.toString());
         // Find the closest beacon and notify the beacon service listeners there's a new beacon
         nearbyBeacons.sort((a, b) => a.accuracy.compareTo(b.accuracy));
-        nearbyBeacon = beacons.where((b) => int.parse(b.beaconId) == nearbyBeacons[0].major).toList()[0];
-        notifyListeners();
+        if (nearbyBeacons.isNotEmpty) {
+          nearbyBeacon = beacons.where((b) => int.parse(b.beaconId) == nearbyBeacons[0].major).toList()[0];
+          notifyListeners();
+        }
       });
+    });
+  }
 
-      // to start monitoring beacons
-      // _streamMonitoring = flutterBeacon.monitoring(regions).listen((MonitoringResult result) {
-      //   // result contains a region, event type and event state
-      //   log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
-      //   nearbyBeacon = beacons.where((b) => int.parse(b.beaconId) == result.region.major).toList()[0];
-      //   notifyListeners();
-      // });
+  void monitor() {
+    final regions = <Region>[];
+    List<Destination> beacons = [];
+
+    // Get the destination (beacons)
+    FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").where('beaconInfo.beaconId', isNotEqualTo: "").where('beaconInfo.beaconId', isNotEqualTo: null).get().then((snapshot) {
+      for (var b in snapshot.docs) {
+        Destination beacon = Destination.fromSnapshot(b);
+        beacons.add(beacon);
+
+        regions.add(
+          Region(
+            identifier: beacon.beaconTitle,
+            proximityUUID: 'f7826da6-4fa2-4e98-8024-bc5b71e0893e',
+            major: int.parse(beacon.beaconId),
+          ),
+        );
+      }
+
+      _streamMonitoring = flutterBeacon.monitoring(regions).listen((MonitoringResult result) {
+        // result contains a region, event type and event state
+        log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
+        Destination d = beacons.where((b) => int.parse(b.beaconId) == result.region.major).toList()[0];
+        NotificationService().notify(result.region.major!, "Trail Beacon Found", "You discovered \"${d.destinationName}\"!");
+      });
     });
   }
 
