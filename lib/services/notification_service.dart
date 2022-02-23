@@ -8,8 +8,8 @@ class NotificationService {
 
   // Android configurations
   final AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
-    "1", // Channel ID Required for Android 8.0 or after
-    "G7", // Channel title Required for Android 8.0 or after
+    "G7", // Channel ID Required for Android 8.0 or after
+    "Group of Seven Lake Superior Trail", // Channel title Required for Android 8.0 or after
     channelDescription: "Group of seven", // Required for Android 8.0 or after
     importance: Importance.defaultImportance,
     priority: Priority.defaultPriority,
@@ -57,12 +57,12 @@ class NotificationService {
     );
   }
 
-  Future<void> schedule(int id, String? title, String? body, tz.TZDateTime? date) async {
+  Future<void> schedule(int id, String? title, String? body, DateTime? date) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       title ?? "Lake Superior Group of Seven Trail",
       body ?? "A scheduled notification from G7 Trail",
-      date ?? tz.TZDateTime.now(tz.local).add(Duration(seconds: 20)),
+      tz.TZDateTime.from(date ?? DateTime.now().add(Duration(minutes: 5)), tz.local),
       Platform.isAndroid ? NotificationDetails(android: androidPlatformChannelSpecifics) : NotificationDetails(iOS: iOSPlatformChannelSpecifics),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,

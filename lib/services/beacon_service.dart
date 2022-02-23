@@ -1,3 +1,4 @@
+// ignore: unused_import
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class BeaconService extends ChangeNotifier {
           }
         }
 
-        log("Beacons in range: " + nearbyBeacons.toString());
+        // log("Beacons in range: " + nearbyBeacons.toString());
         // Find the closest beacon and notify the beacon service listeners there's a new beacon
         nearbyBeacons.sort((a, b) => a.accuracy.compareTo(b.accuracy));
         if (nearbyBeacons.isNotEmpty) {
@@ -77,7 +78,7 @@ class BeaconService extends ChangeNotifier {
 
       _streamMonitoring = flutterBeacon.monitoring(regions).listen((MonitoringResult result) {
         // result contains a region, event type and event state
-        log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
+        // log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
         Destination d = beacons.where((b) => int.parse(b.beaconId) == result.region.major).toList()[0];
         NotificationService().notify(result.region.major!, "Trail Beacon Found", "You discovered \"${d.destinationName}\"!");
       });

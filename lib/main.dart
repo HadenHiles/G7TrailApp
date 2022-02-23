@@ -79,6 +79,9 @@ void main() async {
   // Listen for message clicks
   FirebaseMessaging.onMessageOpenedApp.listen(_messageClickHandler);
 
+  // BeaconService().monitor();
+  NotificationService().schedule(1234, null, null, DateTime.now().add(Duration(minutes: 1)));
+
   runApp(
     Provider<AppleSignInAvailable>.value(
       value: appleSignInAvailable,
