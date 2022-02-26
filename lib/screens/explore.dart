@@ -108,11 +108,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
             setState(() {
               _nearestBeacon = service.nearbyBeacon!;
             });
-          });
 
-          if (_nearestBeacon!.entryPoint) {
-            _loadNearbyDestinations(_nearestBeacon!);
-          }
+            if (_nearestBeacon!.entryPoint) {
+              _loadNearbyDestinations(_nearestBeacon!);
+            }
+          });
         }
         return NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {

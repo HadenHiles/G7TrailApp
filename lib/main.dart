@@ -48,36 +48,43 @@ void main() async {
   introShown = prefs.getBool('intro_shown') == null ? false : true;
 
   /**
-   * Firebase messaging setup
+   * Sign in anonymously if there is no current firebase user
+   * Setup firebase messaging if they are signed in
    */
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  if (auth.currentUser == null) {
+    await auth.signInAnonymously();
+  } else {
+    // Firebase messaging setup
+    // FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
-  // Only relevant for IOS
-  // ignore: unused_local_variable
-  NotificationSettings settings = await firebaseMessaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-  // print('User granted permission: ${settings.authorizationStatus}');
+    // // Only relevant for IOS
+    // // ignore: unused_local_variable
+    // NotificationSettings settings = await firebaseMessaging.requestPermission(
+    //   alert: true,
+    //   announcement: false,
+    //   badge: true,
+    //   carPlay: false,
+    //   criticalAlert: false,
+    //   provisional: false,
+    //   sound: true,
+    // );
+    // print('User granted permission: ${settings.authorizationStatus}');
 
-  // Get the user's FCM token
-  firebaseMessaging.getToken().then((token) {
-    if (preferences.fcmToken != token) {
-      prefs.setString('fcm_token', token!); // Svae the fcm token to local storage (will save to firestore after user authenticates)
-    }
+    // Get the user's FCM token
+    // firebaseMessaging.getToken().then((token) {
+    //   if (preferences.fcmToken != token) {
+    //     prefs.setString('fcm_token', token!); // Svae the fcm token to local storage (will save to firestore after user authenticates)
+    //   }
 
-    // print("FCM token: $token"); // Print the Token in Console
-  });
+    //   print("FCM token: $token"); // Print the Token in Console
+    // });
 
-  // Listen for firebase messages
-  FirebaseMessaging.onBackgroundMessage(_messageHandler);
-  // Listen for message clicks
-  FirebaseMessaging.onMessageOpenedApp.listen(_messageClickHandler);
+    // // Listen for firebase messages
+    // FirebaseMessaging.onBackgroundMessage(_messageHandler);
+    // // Listen for message clicks
+    // FirebaseMessaging.onMessageOpenedApp.listen(_messageClickHandler);
+  }
 
   // BeaconService().monitor();
   // NotificationService().schedule(1234, null, null, DateTime.now().add(Duration(minutes: 1)));
