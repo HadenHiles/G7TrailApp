@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'dart:developer';
-import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
@@ -32,32 +31,27 @@ class BeaconService extends ChangeNotifier {
         );
       }
 
-      // Start beacon ranging every x seconds to avoid unnecessary change notifier bottleneck
-      Timer.periodic(Duration(seconds: 5), (_) {
-        // to start ranging beacons
-        _streamRanging = flutterBeacon.ranging(regions).listen((RangingResult result) {
-          // result contains a region and list of beacons found
-          // list can be empty if no matching beacons were found in range
-          if (result.beacons.isNotEmpty) {
-            result.beacons.sort((a, b) => a.accuracy.compareTo(b.accuracy)); //TODO: this likely isn't necessary since we currently only ever have one beacon per region
+      _streamRanging = flutterBeacon.ranging(regions).listen((RangingResult result) {
+        // result contains a region and list of beacons found
+        // list can be empty if no matching beacons were found in range
+        if (result.beacons.isNotEmpty) {
+          result.beacons.sort((a, b) => a.accuracy.compareTo(b.accuracy)); //TODO: this likely isn't necessary since we currently only ever have one beacon per region
 
-            if (!nearbyBeacons.contains(result.beacons[0])) {
-              nearbyBeacons.add(result.beacons[0]);
-            } else {
-              int i = nearbyBeacons.indexWhere((b) => b == result.beacons[0]);
-              nearbyBeacons[i] = result.beacons[0];
-            }
+          if (!nearbyBeacons.contains(result.beacons[0])) {
+            nearbyBeacons.add(result.beacons[0]);
+          } else {
+            int i = nearbyBeacons.indexWhere((b) => b == result.beacons[0]);
+            nearbyBeacons[i] = result.beacons[0];
           }
+        }
 
-          // log("Beacons in range: " + nearbyBeacons.toString());
-          // Find the closest beacon and notify the beacon service listeners there's a new beacon
-          nearbyBeacons.sort((a, b) => a.accuracy.compareTo(b.accuracy));
-          if (nearbyBeacons.isNotEmpty) {
-            nearbyBeacon = beacons.where((b) => int.parse(b.beaconId) == nearbyBeacons[0].major).toList()[0];
-            notifyListeners();
-            Future.delayed(Duration(seconds: 8)).then((value) => _streamRanging.cancel());
-          }
-        });
+        // log("Beacons in range: " + nearbyBeacons.toString());
+        // Find the closest beacon and notify the beacon service listeners there's a new beacon
+        nearbyBeacons.sort((a, b) => a.accuracy.compareTo(b.accuracy));
+        if (nearbyBeacons.isNotEmpty) {
+          nearbyBeacon = beacons.where((b) => int.parse(b.beaconId) == nearbyBeacons[0].major).toList()[0];
+          notifyListeners();
+        }
       });
     });
   }
@@ -83,7 +77,7 @@ class BeaconService extends ChangeNotifier {
 
       _streamMonitoring = flutterBeacon.monitoring(regions).listen((MonitoringResult result) {
         // result contains a region, event type and event state
-        // log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
+        log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
         Destination d = beacons.where((b) => int.parse(b.beaconId) == result.region.major).toList()[0];
         NotificationService().notify(result.region.major!, "Trail Beacon Found", "You discovered \"${d.destinationName}\"!");
       });
