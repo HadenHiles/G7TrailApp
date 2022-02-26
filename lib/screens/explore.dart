@@ -92,6 +92,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   _nearbyDestinations = nearby;
                 });
               }
+            } else {
+              setState(() {
+                _nearbyDestinations = [];
+              });
             }
           }
         }
