@@ -78,7 +78,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             if (d.entryPoint) {
               if (d.beaconId == beacon.beaconId) {
                 for (DocumentReference ref in d.nearbyDestinations) {
-                  ref.get().then((snap) async {
+                  await ref.get().then((snap) async {
                     if (snap.exists) {
                       Destination n = Destination.fromSnapshot(snap);
                       await loadFirestoreImage(n.images[0].image, 1).then((url) => n.imgURL = url);
@@ -86,13 +86,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     }
                   });
                 }
+
+                setState(() {
+                  _nearestBeacon = d;
+                  _nearbyDestinations = nearby;
+                });
               }
             }
-
-            setState(() {
-              _nearestBeacon = d;
-              _nearbyDestinations = nearby;
-            });
           }
         }
       });
