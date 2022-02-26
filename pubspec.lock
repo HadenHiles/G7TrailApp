@@ -331,9 +331,9 @@ packages:
   flutter_beacon:
     dependency: "direct main"
     description:
-      name: flutter_beacon
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "flutter_beacon-0.5.1-g7"
+      relative: true
+    source: path
     version: "0.5.1"
   flutter_blurhash:
     dependency: transitive

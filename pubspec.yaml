@@ -41,7 +41,8 @@ dependencies:
   introduction_screen: ^2.1.0
   flutter_local_notifications: ^9.3.2
   ci_connectivity: ^1.1.0
-  flutter_beacon: ^0.5.1
+  flutter_beacon: 
+    path: ./flutter_beacon-0.5.1-g7/
   http: ^0.13.4
   timezone: ^0.8.0
   flutter_cache_manager: ^3.3.0
