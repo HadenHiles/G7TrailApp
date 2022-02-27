@@ -164,7 +164,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _nearbyDestinations.isEmpty
+                          _nearbyDestinations.isEmpty || !_nearestBeacon!.entryPoint
                               ? Container()
                               : Column(
                                   children: [

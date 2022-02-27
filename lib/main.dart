@@ -56,34 +56,34 @@ void main() async {
     await auth.signInAnonymously();
   } else {
     // Firebase messaging setup
-    // FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
-    // // Only relevant for IOS
-    // // ignore: unused_local_variable
-    // NotificationSettings settings = await firebaseMessaging.requestPermission(
-    //   alert: true,
-    //   announcement: false,
-    //   badge: true,
-    //   carPlay: false,
-    //   criticalAlert: false,
-    //   provisional: false,
-    //   sound: true,
-    // );
-    // print('User granted permission: ${settings.authorizationStatus}');
+    // Only relevant for IOS
+    // ignore: unused_local_variable
+    NotificationSettings settings = await firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    print('User granted permission: ${settings.authorizationStatus}');
 
     // Get the user's FCM token
-    // firebaseMessaging.getToken().then((token) {
-    //   if (preferences.fcmToken != token) {
-    //     prefs.setString('fcm_token', token!); // Svae the fcm token to local storage (will save to firestore after user authenticates)
-    //   }
+    firebaseMessaging.getToken().then((token) {
+      if (preferences.fcmToken != token) {
+        prefs.setString('fcm_token', token!); // Svae the fcm token to local storage (will save to firestore after user authenticates)
+      }
 
-    //   print("FCM token: $token"); // Print the Token in Console
-    // });
+      print("FCM token: $token"); // Print the Token in Console
+    });
 
-    // // Listen for firebase messages
-    // FirebaseMessaging.onBackgroundMessage(_messageHandler);
-    // // Listen for message clicks
-    // FirebaseMessaging.onMessageOpenedApp.listen(_messageClickHandler);
+    // Listen for firebase messages
+    FirebaseMessaging.onBackgroundMessage(_messageHandler);
+    // Listen for message clicks
+    FirebaseMessaging.onMessageOpenedApp.listen(_messageClickHandler);
   }
 
   // BeaconService().monitor();

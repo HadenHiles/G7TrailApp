@@ -1,4 +1,5 @@
 // ignore: unused_import
+import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,28 +17,17 @@ class BeaconService extends ChangeNotifier {
 
   BeaconService() {
     loadBeacons().then((value) {
-      _streamRanging = flutterBeacon.ranging(regions).listen((RangingResult result) {
-        // result contains a region and list of beacons found
-        // list can be empty if no matching beacons were found in range
-        if (result.beacons.isNotEmpty) {
-          result.beacons.sort((a, b) => a.accuracy.compareTo(b.accuracy)); //TODO: this likely isn't necessary since we currently only ever have one beacon per region
+      startRanging();
 
-          if (!nearbyBeacons.contains(result.beacons[0])) {
-            nearbyBeacons.add(result.beacons[0]);
-          } else {
-            int i = nearbyBeacons.indexWhere((b) => b == result.beacons[0]);
-            nearbyBeacons[i] = result.beacons[0];
-          }
-        }
+      Duration notifyDelayTime = Duration(seconds: 3);
+      Timer.periodic(notifyDelayTime, (_) {
+        _streamRanging.cancel();
+        _streamRanging = null;
 
-        // log("Beacons in range: " + nearbyBeacons.toString());
-
-        // Find the closest beacon and notify the beacon service listeners there's a new beacon
-        nearbyBeacons.sort((a, b) => a.accuracy.compareTo(b.accuracy));
-        if (nearbyBeacons.isNotEmpty) {
-          nearbyBeacon = beacons.where((b) => int.parse(b.beaconId) == nearbyBeacons[0].major).toList()[0];
+        Future.delayed(notifyDelayTime).then((_) {
           notifyListeners();
-        }
+          startRanging();
+        });
       });
     });
   }
@@ -60,6 +50,29 @@ class BeaconService extends ChangeNotifier {
     });
   }
 
+  void startRanging() {
+    _streamRanging = flutterBeacon.ranging(regions).listen((RangingResult result) {
+      // result contains a region and list of beacons found
+      // list can be empty if no matching beacons were found in range
+      if (result.beacons.isNotEmpty) {
+        if (!nearbyBeacons.contains(result.beacons[0])) {
+          nearbyBeacons.add(result.beacons[0]);
+        } else {
+          int i = nearbyBeacons.indexWhere((b) => b.major == result.beacons[0].major);
+          nearbyBeacons[i] = result.beacons[0];
+        }
+      }
+
+      // log("Beacons in range: " + nearbyBeacons.toString());
+
+      // Find the closest beacon and notify the beacon service listeners there's a new beacon
+      nearbyBeacons.sort((a, b) => a.accuracy.compareTo(b.accuracy));
+      if (nearbyBeacons.isNotEmpty) {
+        nearbyBeacon = beacons.where((b) => int.parse(b.beaconId) == nearbyBeacons[0].major).toList()[0];
+      }
+    });
+  }
+
   void monitor() {
     final regions = <Region>[];
     List<Destination> beacons = [];
@@ -72,7 +85,7 @@ class BeaconService extends ChangeNotifier {
     });
   }
 
-  stop() {
+  void stop() {
     // to stop monitoring beacons
     _streamMonitoring.cancel();
     _streamRanging.cancel();
