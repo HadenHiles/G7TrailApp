@@ -17,17 +17,17 @@ class BeaconService extends ChangeNotifier {
 
   BeaconService() {
     loadBeacons().then((value) {
+      // Find the closest beacon
       startRanging();
 
       Duration notifyDelayTime = Duration(seconds: 3);
-      Timer.periodic(notifyDelayTime, (_) {
+      Future.delayed(notifyDelayTime).then((_) {
         _streamRanging.cancel();
+        notifyListeners();
         _streamRanging = null;
-
-        Future.delayed(notifyDelayTime).then((_) {
-          notifyListeners();
-          startRanging();
-        });
+        nearbyBeacon = null;
+        nearbyBeacons = [];
+        startRanging();
       });
     });
   }
@@ -74,9 +74,6 @@ class BeaconService extends ChangeNotifier {
   }
 
   void monitor() {
-    final regions = <Region>[];
-    List<Destination> beacons = [];
-
     _streamMonitoring = flutterBeacon.monitoring(regions).listen((MonitoringResult result) {
       // result contains a region, event type and event state
       log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
