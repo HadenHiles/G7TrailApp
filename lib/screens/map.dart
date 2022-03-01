@@ -63,7 +63,7 @@ class _MapScreenState extends State<MapScreen> {
               markerId: MarkerId("beacon-" + (i++).toString()),
               position: latLng,
               infoWindow: InfoWindow(title: d.destinationName),
-              icon: d == widget.highlightedDestination
+              icon: d.id == widget.highlightedDestination?.id
                   ? BitmapDescriptor.defaultMarker
                   : await BitmapDescriptor.fromAssetImage(
                       ImageConfiguration(devicePixelRatio: 1.75),
