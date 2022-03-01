@@ -23,6 +23,7 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen> {
   // State variables
   Destination? _nearestBeacon;
+  bool _nearEntryPoint = false;
   List<Destination> _easyDestinations = [];
   List<Destination> _moderateDestinations = [];
   List<Destination> _difficultDestinations = [];
@@ -68,39 +69,37 @@ class _ExploreScreenState extends State<ExploreScreen> {
     });
   }
 
-  Future<void> _loadNearbyDestinations(Destination? beacon) async {
-    if (beacon != null) {
-      await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").where('beaconInfo.beaconId', isEqualTo: beacon.beaconId).limit(1).get().then((snapshot) async {
-        if (snapshot.docs.isNotEmpty) {
-          List<Destination> nearby = [];
-          for (var doc in snapshot.docs) {
-            Destination d = Destination.fromSnapshot(doc);
-            if (d.entryPoint) {
-              if (d.beaconId == beacon.beaconId) {
-                for (DocumentReference ref in d.nearbyDestinations) {
-                  await ref.get().then((snap) async {
-                    if (snap.exists) {
-                      Destination n = Destination.fromSnapshot(snap);
-                      await loadFirestoreImage(n.images[0].image, 1).then((url) => n.imgURL = url);
-                      nearby.add(n);
-                    }
-                  });
-                }
-
-                setState(() {
-                  _nearestBeacon = d;
-                  _nearbyDestinations = nearby;
+  Future<void> _loadNearbyDestinations(Destination beacon) async {
+    await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").where('beaconInfo.beaconId', isEqualTo: beacon.beaconId).limit(1).get().then((snapshot) async {
+      if (snapshot.docs.isNotEmpty) {
+        List<Destination> nearby = [];
+        for (var doc in snapshot.docs) {
+          Destination d = Destination.fromSnapshot(doc);
+          if (d.entryPoint) {
+            if (d.beaconId == beacon.beaconId) {
+              for (DocumentReference ref in d.nearbyDestinations) {
+                await ref.get().then((snap) async {
+                  if (snap.exists) {
+                    Destination n = Destination.fromSnapshot(snap);
+                    await loadFirestoreImage(n.images[0].image, 1).then((url) => n.imgURL = url);
+                    nearby.add(n);
+                  }
                 });
               }
-            } else {
+
               setState(() {
-                _nearbyDestinations = [];
+                _nearestBeacon = d;
+                _nearbyDestinations = nearby;
               });
             }
+          } else {
+            setState(() {
+              _nearbyDestinations = [];
+            });
           }
         }
-      });
-    }
+      }
+    });
   }
 
   @override
@@ -120,8 +119,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
               _nearestBeacon = service.nearbyBeacon!;
             });
 
-            if (_nearestBeacon!.entryPoint) {
+            if (_nearestBeacon != null && _nearestBeacon!.entryPoint) {
+              setState(() {
+                _nearEntryPoint = true;
+              });
+
               _loadNearbyDestinations(_nearestBeacon!);
+            } else {
+              setState(() {
+                _nearEntryPoint = false;
+              });
             }
           });
         }
@@ -171,7 +178,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _nearestBeacon == null || !_nearestBeacon!.entryPoint || _nearbyDestinations.isEmpty
+                          !_nearEntryPoint || _nearbyDestinations.isEmpty
                               ? Container()
                               : Column(
                                   children: [

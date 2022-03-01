@@ -17,17 +17,10 @@ class BeaconService extends ChangeNotifier {
 
   BeaconService() {
     loadBeacons().then((value) {
-      // Find the closest beacon
       startRanging();
-
-      Duration notifyDelayTime = Duration(seconds: 3);
-      Future.delayed(notifyDelayTime).then((_) {
-        _streamRanging.cancel();
+      Duration notifyDelayTime = Duration(seconds: 1);
+      Timer.periodic(notifyDelayTime, (_) async {
         notifyListeners();
-        _streamRanging = null;
-        nearbyBeacon = null;
-        nearbyBeacons = [];
-        startRanging();
       });
     });
   }
