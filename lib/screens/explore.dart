@@ -104,6 +104,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(context) {
     return Consumer<BeaconService>(
       builder: (context, service, child) {
