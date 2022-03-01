@@ -164,7 +164,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _nearbyDestinations.isEmpty || !_nearestBeacon!.entryPoint
+                          _nearestBeacon == null || !_nearestBeacon!.entryPoint || _nearbyDestinations.isEmpty
                               ? Container()
                               : Column(
                                   children: [
@@ -330,6 +330,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _nearestBeacon = null;
+    _easyDestinations = [];
+    _moderateDestinations = [];
+    _difficultDestinations = [];
+    _nearbyDestinations = [];
+    super.dispose();
   }
 
   Widget _buildDestination(Destination destination) {
