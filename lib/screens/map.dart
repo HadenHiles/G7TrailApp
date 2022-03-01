@@ -60,15 +60,17 @@ class _MapScreenState extends State<MapScreen> {
           Marker(
               markerId: MarkerId("beacon-" + (i++).toString()),
               position: latLng,
-              infoWindow: InfoWindow(title: d.destinationName, snippet: d.difficulty.toUpperCase()),
+              infoWindow: InfoWindow(title: d.destinationName),
               icon: await BitmapDescriptor.fromAssetImage(
                 ImageConfiguration(devicePixelRatio: 1.75),
                 d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
               ),
               onTap: () {
-                navigatorKey.currentState?.push(MaterialPageRoute(builder: (context) {
-                  return DestinationScreen(destination: d);
-                }));
+                if (!d.entryPoint) {
+                  navigatorKey.currentState?.push(MaterialPageRoute(builder: (context) {
+                    return DestinationScreen(destination: d);
+                  }));
+                }
               }),
         );
       }
