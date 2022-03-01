@@ -11,7 +11,9 @@ import 'package:g7trailapp/theme/map_style.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+  const MapScreen({Key? key, this.highlightedDestination}) : super(key: key);
+
+  final Destination? highlightedDestination;
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -61,10 +63,12 @@ class _MapScreenState extends State<MapScreen> {
               markerId: MarkerId("beacon-" + (i++).toString()),
               position: latLng,
               infoWindow: InfoWindow(title: d.destinationName),
-              icon: await BitmapDescriptor.fromAssetImage(
-                ImageConfiguration(devicePixelRatio: 1.75),
-                d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
-              ),
+              icon: d == widget.highlightedDestination
+                  ? BitmapDescriptor.defaultMarker
+                  : await BitmapDescriptor.fromAssetImage(
+                      ImageConfiguration(devicePixelRatio: 1.75),
+                      d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
+                    ),
               onTap: () {
                 if (!d.entryPoint) {
                   navigatorKey.currentState?.push(MaterialPageRoute(builder: (context) {

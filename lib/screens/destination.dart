@@ -7,7 +7,9 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/navigation/nav.dart';
 import 'package:g7trailapp/screens/destination/art.dart';
+import 'package:g7trailapp/screens/map.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/utility/fullscreen_image.dart';
@@ -182,8 +184,12 @@ class _DestinationScreenState extends State<DestinationScreen> {
             ),
             actions: [
               IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.photo_camera_rounded),
+                onPressed: () {
+                  navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+                    return FluidNavigationBar(defaultTab: 1, highlightedDestination: widget.destination);
+                  }));
+                },
+                icon: Icon(Icons.location_on),
               ),
               CustomAnimation<double>(
                 control: CustomAnimationControl.mirror,

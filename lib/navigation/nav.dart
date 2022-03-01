@@ -8,8 +8,9 @@ import './fluid_nav_bar.dart';
 late Destination? nearbyBeacon;
 
 class FluidNavigationBar extends StatefulWidget {
-  const FluidNavigationBar({Key? key, this.defaultTab}) : super(key: key);
+  const FluidNavigationBar({Key? key, this.defaultTab, this.highlightedDestination}) : super(key: key);
 
+  final Destination? highlightedDestination;
   final int? defaultTab;
 
   @override
@@ -28,10 +29,10 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
         _child = ExploreScreen();
         break;
       case 1:
-        _child = const MapScreen();
+        _child = MapScreen(highlightedDestination: widget.highlightedDestination);
         break;
       case 2:
-        _child = const ProfileScreen();
+        _child = ProfileScreen();
         break;
     }
     _child = AnimatedSwitcher(
