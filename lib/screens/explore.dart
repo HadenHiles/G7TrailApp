@@ -108,8 +108,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
     }
   }
 
-  Destination? _previousBeacon = null;
-
   @override
   Widget build(context) {
     return Consumer<BeaconService>(
@@ -117,7 +115,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
         if (service.nearbyBeacon != null) {
           SchedulerBinding.instance!.addPostFrameCallback((_) {
             setState(() {
-              _previousBeacon = _nearestBeacon;
               _nearestBeacon = service.nearbyBeacon!;
             });
 
@@ -131,42 +128,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
               setState(() {
                 _nearEntryPoint = false;
               });
-
-              if (_previousBeacon != service.nearbyBeacon || _previousBeacon == null) {
-                setState(() {
-                  _previousBeacon = _nearestBeacon;
-                });
-
-                showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: Text("\"${service.nearbyBeacon!.destinationName}\" Found"),
-                    content: const Text('Tap continue to learn more!'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context, 'Cancel');
-                        },
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-                            return DestinationScreen(destination: service.nearbyBeacon!);
-                          }));
-                        },
-                        child: Text(
-                          'Continue',
-                          style: TextStyle(color: Theme.of(context).primaryColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
             }
           });
         }

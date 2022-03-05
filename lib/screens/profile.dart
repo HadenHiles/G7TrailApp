@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ];
       },
-      body: user == null
+      body: user == null || user!.isAnonymous
           ? Login(scaffoldKey: _scaffoldKey)
           : Container(
               padding: const EdgeInsets.only(top: 15),

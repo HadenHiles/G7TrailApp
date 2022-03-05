@@ -25,8 +25,7 @@ class ProfileSettings extends StatefulWidget {
 class _ProfileSettingsState extends State<ProfileSettings> {
   // State settings values
   bool _darkMode = false;
-  bool _beaconFoundSound = true;
-  bool _beaconFoundVibrate = true;
+  bool _beaconFoundAlert = true;
 
   @override
   void initState() {
@@ -41,8 +40,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
 
     setState(() {
       _darkMode = (prefs.getBool('dark_mode') ?? false);
-      _beaconFoundSound = (prefs.getBool('beacon_found_sound') ?? false);
-      _beaconFoundVibrate = (prefs.getBool('beacon_found_vibrate') ?? false);
+      _beaconFoundAlert = (prefs.getBool('beacon_found_alert') ?? false);
     });
   }
 
@@ -121,8 +119,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             Provider.of<PreferencesStateNotifier>(context, listen: false).updateSettings(
                               Preferences(
                                 value,
-                                _beaconFoundSound,
-                                _beaconFoundVibrate,
+                                _beaconFoundAlert,
                                 prefs.getString('fcm_token'),
                               ),
                             );
@@ -130,48 +127,22 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         ),
                         SettingsTile.switchTile(
                           titleTextStyle: Theme.of(context).textTheme.bodyText1,
-                          title: 'Play sound when near beacon',
-                          leading: Icon(
-                            Icons.volume_up_rounded,
-                            color: Theme.of(context).textTheme.bodyText1!.color,
-                          ),
-                          switchValue: _beaconFoundSound,
-                          onToggle: (bool value) async {
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            setState(() {
-                              _beaconFoundSound = !_beaconFoundSound;
-                              prefs.setBool('beacon_found_sound', _beaconFoundSound);
-                            });
-
-                            Provider.of<PreferencesStateNotifier>(context, listen: false).updateSettings(
-                              Preferences(
-                                _darkMode,
-                                value,
-                                _beaconFoundVibrate,
-                                prefs.getString('fcm_token'),
-                              ),
-                            );
-                          },
-                        ),
-                        SettingsTile.switchTile(
-                          titleTextStyle: Theme.of(context).textTheme.bodyText1,
-                          title: 'Vibrate when near beacon',
+                          title: 'Alert when near beacon',
                           leading: Icon(
                             Icons.vibration_rounded,
                             color: Theme.of(context).textTheme.bodyText1!.color,
                           ),
-                          switchValue: _beaconFoundVibrate,
+                          switchValue: _beaconFoundAlert,
                           onToggle: (bool value) async {
                             SharedPreferences prefs = await SharedPreferences.getInstance();
                             setState(() {
-                              _beaconFoundVibrate = !_beaconFoundVibrate;
-                              prefs.setBool('beacon_found_vibrate', _beaconFoundVibrate);
+                              _beaconFoundAlert = !_beaconFoundAlert;
+                              prefs.setBool('beacon_found_alert', _beaconFoundAlert);
                             });
 
                             Provider.of<PreferencesStateNotifier>(context, listen: false).updateSettings(
                               Preferences(
                                 _darkMode,
-                                _beaconFoundSound,
                                 value,
                                 prefs.getString('fcm_token'),
                               ),

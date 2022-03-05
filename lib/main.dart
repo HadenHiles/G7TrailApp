@@ -24,7 +24,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 // Global variables
 final user = FirebaseAuth.instance.currentUser;
-Preferences preferences = Preferences(false, true, true, null);
+Preferences preferences = Preferences(false, true, null);
 final sessionService = SessionService();
 bool introShown = false;
 
@@ -40,8 +40,7 @@ void main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   preferences = Preferences(
     prefs.getBool('dark_mode') ?? ThemeMode.system == ThemeMode.dark,
-    prefs.getBool('beacon_found_sound') ?? true,
-    prefs.getBool('beacon_found_vibrate') ?? true,
+    prefs.getBool('beacon_found_alert') ?? true,
     prefs.getString('fcm_token'),
   );
 
