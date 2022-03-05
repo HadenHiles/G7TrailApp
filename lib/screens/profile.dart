@@ -26,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    if (user != null) {
+    if (user != null && !user!.isAnonymous) {
       FirebaseFirestore.instance.collection('users').doc(user!.uid).get().then((uDoc) {
         setState(() {
           userProfile = UserProfile.fromSnapshot(uDoc);
