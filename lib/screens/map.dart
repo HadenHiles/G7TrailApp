@@ -29,6 +29,7 @@ class _MapScreenState extends State<MapScreen> {
 
   List<Destination> _destinations = [];
   Set<Marker> _markers = {};
+  Marker? highlightedMarker;
   MapType _mapType = MapType.normal;
   Set<Polyline> _polylines = {};
 
@@ -55,7 +56,11 @@ class _MapScreenState extends State<MapScreen> {
   void _loadMarkers() async {
     Set<Marker> markers = {};
     int i = 0;
+    int? highlightedMarkerIdx;
     for (var d in _destinations) {
+      if (d.id == widget.highlightedDestination?.id) {
+        highlightedMarkerIdx = i;
+      }
       if (d.latitude != 0 || d.longitude != 0) {
         LatLng latLng = LatLng(d.latitude, d.longitude);
         markers.add(
@@ -63,12 +68,10 @@ class _MapScreenState extends State<MapScreen> {
               markerId: MarkerId("beacon-" + (i++).toString()),
               position: latLng,
               infoWindow: InfoWindow(title: d.destinationName),
-              icon: d.id == widget.highlightedDestination?.id
-                  ? BitmapDescriptor.defaultMarker
-                  : await BitmapDescriptor.fromAssetImage(
-                      ImageConfiguration(devicePixelRatio: 1.75),
-                      d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
-                    ),
+              icon: await BitmapDescriptor.fromAssetImage(
+                ImageConfiguration(devicePixelRatio: 1.75),
+                d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
+              ),
               onTap: () {
                 if (!d.entryPoint) {
                   navigatorKey.currentState?.push(MaterialPageRoute(builder: (context) {
@@ -82,6 +85,10 @@ class _MapScreenState extends State<MapScreen> {
 
     setState(() {
       _markers = markers;
+
+      if (highlightedMarkerIdx != null) {
+        highlightedMarker = _markers.elementAt(highlightedMarkerIdx);
+      }
     });
   }
 
@@ -252,21 +259,30 @@ class _MapScreenState extends State<MapScreen> {
 
         controller.setMapStyle(mapStyle);
 
-        await Future.delayed(Duration(milliseconds: 50)).then((value) {
-          var zoomLevel = getBoundsZoomLevel(
-                _createBounds(_markers.map((m) => m.position).toList()),
+        double zoomLevel = 12;
+        Duration delayZoom = Duration(milliseconds: 50);
+        Set<Marker> markers = {};
+        if (highlightedMarker != null) {
+          markers.add(highlightedMarker!);
+          zoomLevel = 14;
+        } else {
+          markers = _markers;
+          zoomLevel = getBoundsZoomLevel(
+                _createBounds(markers.map((m) => m.position).toList()),
                 Size(
                   MediaQuery.of(context).size.width,
                   MediaQuery.of(context).size.height,
                 ),
               ) +
               0.75;
+        }
 
+        await Future.delayed(delayZoom).then((value) {
           setState(() {
             controller.animateCamera(
               CameraUpdate.newCameraPosition(
                 CameraPosition(
-                  target: getCentralLatlng(_markers.map((m) => LatLng(m.position.latitude, m.position.longitude)).toList()),
+                  target: getCentralLatlng(markers.map((m) => LatLng(m.position.latitude, m.position.longitude)).toList()),
                   zoom: zoomLevel,
                 ),
               ),
