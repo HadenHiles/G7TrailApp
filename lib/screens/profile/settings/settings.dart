@@ -26,6 +26,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   // State settings values
   bool _darkMode = false;
   bool _beaconFoundAlert = true;
+  bool _autoPlayAudio = true;
 
   @override
   void initState() {
@@ -120,6 +121,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                               Preferences(
                                 value,
                                 _beaconFoundAlert,
+                                _autoPlayAudio,
                                 prefs.getString('fcm_token'),
                               ),
                             );
@@ -127,7 +129,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         ),
                         SettingsTile.switchTile(
                           titleTextStyle: Theme.of(context).textTheme.bodyText1,
-                          title: 'Alert when near beacon',
+                          title: 'Notify me when near a beacon',
                           leading: Icon(
                             Icons.vibration_rounded,
                             color: Theme.of(context).textTheme.bodyText1!.color,
@@ -143,6 +145,33 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             Provider.of<PreferencesStateNotifier>(context, listen: false).updateSettings(
                               Preferences(
                                 _darkMode,
+                                value,
+                                _autoPlayAudio,
+                                prefs.getString('fcm_token'),
+                              ),
+                            );
+                          },
+                        ),
+                        SettingsTile.switchTile(
+                          titleTextStyle: Theme.of(context).textTheme.bodyText1,
+                          title: 'Auto Play Audio',
+                          subtitle: 'Play destination audio automatically',
+                          leading: Icon(
+                            Icons.audiotrack,
+                            color: Theme.of(context).textTheme.bodyText1!.color,
+                          ),
+                          switchValue: _autoPlayAudio,
+                          onToggle: (bool value) async {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            setState(() {
+                              _autoPlayAudio = value;
+                              prefs.setBool('auto_play_audio', value);
+                            });
+
+                            Provider.of<PreferencesStateNotifier>(context, listen: false).updateSettings(
+                              Preferences(
+                                _darkMode,
+                                _beaconFoundAlert,
                                 value,
                                 prefs.getString('fcm_token'),
                               ),

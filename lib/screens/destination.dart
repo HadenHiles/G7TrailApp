@@ -7,11 +7,15 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/navigation/nav.dart';
 import 'package:g7trailapp/screens/destination/art.dart';
+import 'package:g7trailapp/theme/preferences_state_notifier.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/utility/fullscreen_image.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_animations/stateless_animation/custom_animation.dart';
 
 class DestinationScreen extends StatefulWidget {
@@ -29,7 +33,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   late FlutterTts flutterTts;
-  bool _autoplay = true;
+  bool _autoPlayAudio = preferences.autoPlayAudio;
   String? language;
   String? engine;
   double volume = 1.0;
@@ -284,11 +288,22 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                             ),
                                           ),
                                           Switch(
-                                            value: _autoplay,
-                                            onChanged: (value) {
+                                            value: _autoPlayAudio,
+                                            onChanged: (value) async {
+                                              SharedPreferences prefs = await SharedPreferences.getInstance();
                                               setState(() {
-                                                _autoplay = value;
+                                                _autoPlayAudio = value;
+                                                prefs.setBool('auto_play_audio', value);
                                               });
+
+                                              Provider.of<PreferencesStateNotifier>(context, listen: false).updateSettings(
+                                                Preferences(
+                                                  preferences.darkMode,
+                                                  preferences.beaconFoundAlert,
+                                                  value,
+                                                  preferences.fcmToken,
+                                                ),
+                                              );
                                             },
                                           ),
                                         ],

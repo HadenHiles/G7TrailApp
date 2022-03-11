@@ -60,7 +60,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
       extendBody: true,
       body: Consumer<BeaconService>(
         builder: (context, service, child) {
-          if (service.nearbyBeacon != null) {
+          if (service.nearbyBeacon != null && preferences.beaconFoundAlert) {
             SchedulerBinding.instance!.addPostFrameCallback((_) {
               setState(() {
                 _previousBeacon = _nearestBeacon;
