@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/navigation/nav.dart';
 import 'package:g7trailapp/screens/destination/art.dart';
+import 'package:g7trailapp/screens/destination/audio_player_manager.dart';
 import 'package:g7trailapp/theme/preferences_state_notifier.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
@@ -32,31 +34,33 @@ enum TtsState { playing, stopped, paused, continued }
 class _DestinationScreenState extends State<DestinationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  late FlutterTts flutterTts;
   bool _autoPlayAudio = preferences.autoPlayAudio;
+  late final AudioPlayerManager _audioPlayerManager;
+
+  // TEXT TO SPEECH VARIABLES
+  late FlutterTts flutterTts;
   String? language;
   String? engine;
   double volume = 1.0;
   double pitch = 1.0;
   double rate = 0.5;
   bool isCurrentLanguageInstalled = false;
-
   TtsState ttsState = TtsState.stopped;
-
   get isPlaying => ttsState == TtsState.playing;
   get isStopped => ttsState == TtsState.stopped;
   get isPaused => ttsState == TtsState.paused;
   get isContinued => ttsState == TtsState.continued;
-
   bool get isIOS => Platform.isIOS;
   bool get isAndroid => Platform.isAndroid;
 
   @override
   initState() {
-    super.initState();
+    _audioPlayerManager = AudioPlayerManager();
     initTts();
+    super.initState();
   }
 
+  // START TTS FUNCTIONS
   initTts() {
     flutterTts = FlutterTts();
 
@@ -153,15 +157,16 @@ class _DestinationScreenState extends State<DestinationScreen> {
     await flutterTts.getMaxSpeechInputLength;
   }
 
-  Future _stop() async {
+  Future _stopTTS() async {
     var result = await flutterTts.stop();
     if (result == 1) setState(() => ttsState = TtsState.stopped);
   }
 
-  Future _pause() async {
+  Future _pauseTTS() async {
     var result = await flutterTts.pause();
     if (result == 1) setState(() => ttsState = TtsState.paused);
   }
+  // END TTS FUNCTIONS
 
   @override
   void dispose() {
@@ -246,78 +251,95 @@ class _DestinationScreenState extends State<DestinationScreen> {
             ),
           ),
           endDrawer: Drawer(
-            child: SizedBox(
-              height: double.infinity,
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: widget.destination.audio.length,
-                itemBuilder: (context, i) {
-                  return i == 0
-                      ? Column(
-                          children: [
-                            DrawerHeader(
-                              decoration: BoxDecoration(
-                                color: Color(0xff7FADF9),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 140,
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: widget.destination.audio.length,
+                    itemBuilder: (context, i) {
+                      return i == 0
+                          ? Column(
+                              children: [
+                                DrawerHeader(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff7FADF9),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                                        child: Text(
-                                          "Listen".toUpperCase(),
-                                          style: TextStyle(
-                                            color: Theme.of(context).backgroundColor,
-                                            fontSize: 20,
-                                            fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
-                                          ),
-                                        ),
-                                      ),
                                       Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            "Autoplay".toUpperCase(),
-                                            style: TextStyle(
-                                              color: Theme.of(context).backgroundColor,
-                                              fontFamily: Theme.of(context).textTheme.bodyText2!.fontFamily,
-                                              fontSize: 12,
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                                            child: Text(
+                                              "Listen".toUpperCase(),
+                                              style: TextStyle(
+                                                color: Theme.of(context).backgroundColor,
+                                                fontSize: 20,
+                                                fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
+                                              ),
                                             ),
                                           ),
-                                          Switch(
-                                            value: _autoPlayAudio,
-                                            onChanged: (value) async {
-                                              SharedPreferences prefs = await SharedPreferences.getInstance();
-                                              setState(() {
-                                                _autoPlayAudio = value;
-                                                prefs.setBool('auto_play_audio', value);
-                                              });
-
-                                              Provider.of<PreferencesStateNotifier>(context, listen: false).updateSettings(
-                                                Preferences(
-                                                  preferences.darkMode,
-                                                  preferences.beaconFoundAlert,
-                                                  value,
-                                                  preferences.fcmToken,
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "Autoplay".toUpperCase(),
+                                                style: TextStyle(
+                                                  color: Theme.of(context).backgroundColor,
+                                                  fontFamily: Theme.of(context).textTheme.bodyText2!.fontFamily,
+                                                  fontSize: 12,
                                                 ),
-                                              );
-                                            },
-                                          ),
+                                              ),
+                                              Switch(
+                                                value: _autoPlayAudio,
+                                                onChanged: (value) async {
+                                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                  setState(() {
+                                                    _autoPlayAudio = value;
+                                                    prefs.setBool('auto_play_audio', value);
+                                                  });
+
+                                                  Provider.of<PreferencesStateNotifier>(context, listen: false).updateSettings(
+                                                    Preferences(
+                                                      preferences.darkMode,
+                                                      preferences.beaconFoundAlert,
+                                                      value,
+                                                      preferences.fcmToken,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          )
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            ListTile(
-                              leading: Icon(
-                                Icons.play_arrow_rounded,
-                                color: Theme.of(context).primaryColor,
-                              ),
+                                ),
+                                ListTile(
+                                  title: Text(widget.destination.audio[i].title.toUpperCase()),
+                                  onTap: () {
+                                    if (widget.destination.audio[i].file != null) {
+                                      // Play audio file
+                                    } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
+                                      // Speak text - play/pause toggle
+                                      if (ttsState != TtsState.playing) {
+                                        _speak(widget.destination.audio[i].textToSpeech);
+                                      } else {
+                                        _stopTTS();
+                                      }
+                                    }
+                                  },
+                                ),
+                              ],
+                            )
+                          : ListTile(
                               title: Text(widget.destination.audio[i].title.toUpperCase()),
                               onTap: () {
                                 if (widget.destination.audio[i].file != null) {
@@ -327,34 +349,65 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                   if (ttsState != TtsState.playing) {
                                     _speak(widget.destination.audio[i].textToSpeech);
                                   } else {
-                                    _stop();
+                                    _stopTTS();
                                   }
                                 }
                               },
-                            ),
-                          ],
-                        )
-                      : ListTile(
-                          leading: Icon(
-                            Icons.play_arrow_rounded,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          title: Text(widget.destination.audio[i].title.toUpperCase()),
-                          onTap: () {
-                            if (widget.destination.audio[i].file != null) {
-                              // Play audio file
-                            } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
-                              // Speak text - play/pause toggle
-                              if (ttsState != TtsState.playing) {
-                                _speak(widget.destination.audio[i].textToSpeech);
-                              } else {
-                                _stop();
-                              }
-                            }
-                          },
-                        );
-                },
-              ),
+                            );
+                    },
+                  ),
+                ),
+                Container(
+                  height: 140,
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ValueListenableBuilder<ProgressBarState>(
+                        valueListenable: _audioPlayerManager.progressNotifier,
+                        builder: (_, value, __) {
+                          return ProgressBar(
+                            progressBarColor: Theme.of(context).primaryColor,
+                            baseBarColor: darken(Theme.of(context).colorScheme.background, 0.2),
+                            thumbColor: Theme.of(context).colorScheme.secondary,
+                            thumbGlowColor: lighten(Theme.of(context).colorScheme.secondary, 0.225),
+                            progress: value.current,
+                            buffered: value.buffered,
+                            total: value.total,
+                          );
+                        },
+                      ),
+                      ValueListenableBuilder<ButtonState>(
+                        valueListenable: _audioPlayerManager.buttonNotifier,
+                        builder: (_, value, __) {
+                          switch (value) {
+                            case ButtonState.loading:
+                              return Container(
+                                margin: const EdgeInsets.all(8.0),
+                                width: 32.0,
+                                height: 32.0,
+                                child: const CircularProgressIndicator(),
+                              );
+                            case ButtonState.paused:
+                              return IconButton(
+                                icon: const Icon(Icons.play_arrow),
+                                iconSize: 32.0,
+                                onPressed: () {},
+                              );
+                            case ButtonState.playing:
+                              return IconButton(
+                                icon: const Icon(Icons.pause),
+                                iconSize: 32.0,
+                                onPressed: () {},
+                              );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
           body: TabBarView(
