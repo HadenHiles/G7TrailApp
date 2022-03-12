@@ -30,7 +30,7 @@ Future<String?> loadFirestoreFile(DocumentReference? file) async {
           File i = File.fromSnapshot(doc);
           String url = path + i.file;
 
-          return fileDownloadURL(url).then((fileURL) {
+          return await fileDownloadURL(url).then((fileURL) {
             return fileURL;
           });
         });
