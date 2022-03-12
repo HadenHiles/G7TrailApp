@@ -38,7 +38,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
   late final AudioPlayerManager _audioPlayerManager;
 
   // TEXT TO SPEECH VARIABLES
-  late FlutterTts flutterTts;
+  late FlutterTts _flutterTTS;
   String? language;
   String? engine;
   double volume = 1.0;
@@ -55,14 +55,21 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   @override
   initState() {
-    _audioPlayerManager = AudioPlayerManager();
-    initTts();
+    _audioPlayerManager = AudioPlayerManager("");
+
+    if (widget.destination.audio.length > 0) {
+      loadFirestoreFile(widget.destination.audio[0].file).then((url) {
+        _audioPlayerManager = AudioPlayerManager(url ?? "");
+      });
+    }
+
+    initTTS();
     super.initState();
   }
 
   // START TTS FUNCTIONS
-  initTts() {
-    flutterTts = FlutterTts();
+  initTTS() {
+    _flutterTTS = FlutterTts();
 
     _setAwaitOptions();
 
@@ -70,21 +77,21 @@ class _DestinationScreenState extends State<DestinationScreen> {
       _getDefaultEngine();
     }
 
-    flutterTts.setStartHandler(() {
+    _flutterTTS.setStartHandler(() {
       setState(() {
         print("Playing");
         ttsState = TtsState.playing;
       });
     });
 
-    flutterTts.setCompletionHandler(() {
+    _flutterTTS.setCompletionHandler(() {
       setState(() {
         print("Complete");
         ttsState = TtsState.stopped;
       });
     });
 
-    flutterTts.setCancelHandler(() {
+    _flutterTTS.setCancelHandler(() {
       setState(() {
         print("Cancel");
         ttsState = TtsState.stopped;
@@ -92,14 +99,14 @@ class _DestinationScreenState extends State<DestinationScreen> {
     });
 
     if (isIOS) {
-      flutterTts.setPauseHandler(() {
+      _flutterTTS.setPauseHandler(() {
         setState(() {
           print("Paused");
           ttsState = TtsState.paused;
         });
       });
 
-      flutterTts.setContinueHandler(() {
+      _flutterTTS.setContinueHandler(() {
         setState(() {
           print("Continued");
           ttsState = TtsState.continued;
@@ -107,7 +114,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
       });
     }
 
-    flutterTts.setErrorHandler((msg) {
+    _flutterTTS.setErrorHandler((msg) {
       setState(() {
         print("error: $msg");
         ttsState = TtsState.stopped;
@@ -116,7 +123,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
   }
 
   Future _getDefaultEngine() async {
-    var engine = await flutterTts.getDefaultEngine;
+    var engine = await _flutterTTS.getDefaultEngine;
     if (engine != null) {
       print(engine);
     }
@@ -124,54 +131,55 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   Future _speak(String text) async {
     if (text.isNotEmpty) {
-      await flutterTts.speak(text);
+      await _flutterTTS.speak(text);
     }
   }
 
   Future _setAwaitOptions() async {
-    await flutterTts.awaitSpeakCompletion(false);
+    await _flutterTTS.awaitSpeakCompletion(false);
 
-    await flutterTts.setLanguage("en-US");
+    await _flutterTTS.setLanguage("en-US");
 
-    await flutterTts.setSpeechRate(rate);
+    await _flutterTTS.setSpeechRate(rate);
 
-    await flutterTts.setVolume(volume);
+    await _flutterTTS.setVolume(volume);
 
-    await flutterTts.setPitch(pitch);
+    await _flutterTTS.setPitch(pitch);
 
-    await flutterTts.isLanguageAvailable("en-US");
+    await _flutterTTS.isLanguageAvailable("en-US");
 
     // iOS only
-    await flutterTts.setSharedInstance(true);
+    await _flutterTTS.setSharedInstance(true);
     // Android only
-    await flutterTts.setSilence(2);
+    await _flutterTTS.setSilence(2);
 
-    await flutterTts.setVoice({"name": "Karen", "locale": "en-AU"});
+    await _flutterTTS.setVoice({"name": "Karen", "locale": "en-AU"});
 
-    await flutterTts.isLanguageInstalled("en-AU");
+    await _flutterTTS.isLanguageInstalled("en-AU");
 
-    await flutterTts.areLanguagesInstalled(["en-AU", "en-US"]);
+    await _flutterTTS.areLanguagesInstalled(["en-AU", "en-US"]);
 
-    await flutterTts.setQueueMode(1);
+    await _flutterTTS.setQueueMode(1);
 
-    await flutterTts.getMaxSpeechInputLength;
+    await _flutterTTS.getMaxSpeechInputLength;
   }
 
   Future _stopTTS() async {
-    var result = await flutterTts.stop();
+    var result = await _flutterTTS.stop();
     if (result == 1) setState(() => ttsState = TtsState.stopped);
   }
 
   Future _pauseTTS() async {
-    var result = await flutterTts.pause();
+    var result = await _flutterTTS.pause();
     if (result == 1) setState(() => ttsState = TtsState.paused);
   }
   // END TTS FUNCTIONS
 
   @override
   void dispose() {
+    _audioPlayerManager.dispose();
+    _flutterTTS.stop();
     super.dispose();
-    flutterTts.stop();
   }
 
   @override
@@ -393,13 +401,13 @@ class _DestinationScreenState extends State<DestinationScreen> {
                               return IconButton(
                                 icon: const Icon(Icons.play_arrow),
                                 iconSize: 32.0,
-                                onPressed: () {},
+                                onPressed: _audioPlayerManager.play,
                               );
                             case ButtonState.playing:
                               return IconButton(
                                 icon: const Icon(Icons.pause),
                                 iconSize: 32.0,
-                                onPressed: () {},
+                                onPressed: _audioPlayerManager.pause,
                               );
                           }
                         },
