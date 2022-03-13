@@ -16,7 +16,7 @@ Future<String?> loadFirestoreImage(DocumentReference? image, int? sizeIndex) asy
           File i = File.fromSnapshot(doc);
           String url = raw ? path + i.file : path + "${i.sizes[sizeIdx]['path']}/" + i.file;
 
-          return fileDownloadURL(url).then((imgURL) {
+          return await fileDownloadURL(url).then((imgURL) {
             return imgURL;
           });
         });
