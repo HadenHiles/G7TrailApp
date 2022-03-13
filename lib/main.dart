@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:g7trailapp/intro_screen.dart';
 import 'package:g7trailapp/models/preferences.dart';
@@ -140,7 +139,7 @@ class Home extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    FirebaseAnalytics analytics = FirebaseAnalytics();
+    FirebaseAnalytics analytics = FirebaseAnalytics.instanceFor(app: Firebase.apps.first);
 
     return Consumer<PreferencesStateNotifier>(
       builder: (context, settingsState, child) {
