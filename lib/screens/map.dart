@@ -24,7 +24,7 @@ class _MapScreenState extends State<MapScreen> {
   static final LatLng _defaultPosition = LatLng(48.6856434610084, -86.40889064111326);
   static final CameraPosition _kTrail = CameraPosition(
     target: _defaultPosition,
-    zoom: 12,
+    zoom: 10,
   );
 
   List<Destination> _destinations = [];
@@ -89,6 +89,8 @@ class _MapScreenState extends State<MapScreen> {
       if (highlightedMarkerIdx != null) {
         highlightedMarker = _markers.elementAt(highlightedMarkerIdx);
       }
+
+      _mapReady = true;
     });
   }
 
@@ -208,10 +210,17 @@ class _MapScreenState extends State<MapScreen> {
       bottom: false,
       child: Stack(
         children: [
-          _markers.isEmpty
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          _markers.length <= 0
+              ? Stack(
                   children: [
+                    SizedBox(
+                      height: double.infinity,
+                      width: double.infinity,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: Image(image: AssetImage('assets/images/temp-map.jpg')),
+                      ),
+                    ),
                     Center(
                       child: CircularProgressIndicator(
                         color: Theme.of(context).primaryColor,
