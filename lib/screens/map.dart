@@ -89,8 +89,6 @@ class _MapScreenState extends State<MapScreen> {
       if (highlightedMarkerIdx != null) {
         highlightedMarker = _markers.elementAt(highlightedMarkerIdx);
       }
-
-      _mapReady = true;
     });
   }
 
