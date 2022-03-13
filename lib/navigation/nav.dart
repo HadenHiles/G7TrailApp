@@ -4,7 +4,7 @@ import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/screens/profile.dart';
-import 'package:g7trailapp/services/beacon_service.dart';
+import 'package:g7trailapp/services/beacon_ranging_service.dart';
 import 'package:provider/provider.dart';
 import '../screens/explore.dart';
 import '../screens/map.dart';
@@ -58,7 +58,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       extendBody: true,
-      body: Consumer<BeaconService>(
+      body: Consumer<BeaconRangingService>(
         builder: (context, service, child) {
           if (service.nearbyBeacon != null && preferences.beaconFoundAlert) {
             SchedulerBinding.instance!.addPostFrameCallback((_) {

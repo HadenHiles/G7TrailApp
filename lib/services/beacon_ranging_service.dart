@@ -1,21 +1,18 @@
 // ignore: unused_import
 import 'dart:async';
-import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
-import 'package:g7trailapp/services/notification_service.dart';
 
-class BeaconService extends ChangeNotifier {
-  dynamic _streamMonitoring;
+class BeaconRangingService extends ChangeNotifier {
   dynamic _streamRanging;
   Destination? nearbyBeacon;
   List<Beacon> nearbyBeacons = [];
   final regions = <Region>[];
   List<Destination> beacons = [];
 
-  BeaconService() {
+  BeaconRangingService() {
     loadBeacons().then((value) {
       startRanging();
       Duration notifyDelayTime = Duration(seconds: 1);
@@ -66,25 +63,14 @@ class BeaconService extends ChangeNotifier {
     });
   }
 
-  void monitor() {
-    _streamMonitoring = flutterBeacon.monitoring(regions).listen((MonitoringResult result) {
-      // result contains a region, event type and event state
-      log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
-      Destination d = beacons.where((b) => int.parse(b.beaconId) == result.region.major).toList()[0];
-      NotificationService().notify(result.region.major!, "Trail Beacon Found", "You discovered \"${d.destinationName}\"!");
-    });
-  }
-
   void stop() {
-    // to stop monitoring beacons
-    _streamMonitoring.cancel();
+    // to stop ranging beacons
     _streamRanging.cancel();
   }
 
   @override
   void dispose() {
     stop();
-    _streamMonitoring = null;
     _streamRanging = null;
     super.dispose();
   }
