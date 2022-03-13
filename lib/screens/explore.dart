@@ -6,7 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/screens/destination.dart';
-import 'package:g7trailapp/services/beacon_service.dart';
+import 'package:g7trailapp/services/beacon_ranging_service.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/utility/string_extension.dart';
@@ -110,7 +110,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   @override
   Widget build(context) {
-    return Consumer<BeaconService>(
+    return Consumer<BeaconRangingService>(
       builder: (context, service, child) {
         if (service.nearbyBeacon != null) {
           SchedulerBinding.instance!.addPostFrameCallback((_) {
