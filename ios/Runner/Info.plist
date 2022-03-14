@@ -55,5 +55,10 @@
 	<!-- for iOS 13 + -->
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Your location is required to detect when you are near trail beacons</string>
+	<!--Background permission-->
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>dev.flutter.background.refresh</string>
+	</array>
 </dict>
 </plist>
