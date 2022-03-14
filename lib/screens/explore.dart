@@ -9,7 +9,7 @@ import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/services/beacon_ranging_service.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
-import 'package:g7trailapp/utility/string_extension.dart';
+import 'package:g7trailapp/utility/string_formatting.dart';
 import 'package:g7trailapp/widgets/screen_title.dart';
 import 'package:provider/provider.dart';
 

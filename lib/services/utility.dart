@@ -8,7 +8,7 @@ String printDuration(Duration duration, bool showSeconds) {
   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
   String durationString = "";
   if (duration.inHours != 0) {
-    durationString += "${twoDigits(duration.inHours)}h ";
+    durationString += "${duration.inHours}h ";
   }
 
   if (duration.inMinutes != 0) {
@@ -25,11 +25,11 @@ String printDuration(Duration duration, bool showSeconds) {
 }
 
 String printDate(DateTime date) {
-  return DateFormat("EEEE MMMM d hh:mm a").format(date);
+  return DateFormat("MMM d, yyyy").format(date);
 }
 
 String printTime(DateTime date) {
-  return DateFormat("hh:mm a").format(date);
+  return DateFormat("h:mm a").format(date);
 }
 
 String printWeekday(DateTime date) {
