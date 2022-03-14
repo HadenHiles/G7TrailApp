@@ -33,10 +33,6 @@ bool introShown = false;
 // Setup dependency injection using get_it package
 final getIt = GetIt.instance;
 
-void setupDependencyInjection() {
-  getIt.registerSingleton<FlutterBeacon>(flutterBeacon);
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService().init();
@@ -45,7 +41,7 @@ void main() async {
   await Firebase.initializeApp();
   final appleSignInAvailable = await AppleSignInAvailable.check();
 
-  setupDependencyInjection();
+  getIt.registerSingleton<FlutterBeacon>(flutterBeacon);
 
   // Load user preferences
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -143,6 +139,9 @@ const failedTaskKey = "failedBeaconTask";
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     try {
+      final getIt = GetIt.instance;
+      getIt.registerSingleton<FlutterBeacon>(flutterBeacon);
+
       // Start monitoring for beacons
       dynamic _streamMonitoring;
       _streamMonitoring = getIt<FlutterBeacon>().monitoring(<Region>[
@@ -157,6 +156,8 @@ void callbackDispatcher() {
       });
 
       Future.delayed(Duration(seconds: 10)).then((value) => _streamMonitoring.cancel());
+
+      log("\n\n Workmanager called \n\n");
     } catch (e) {
       log("Workmanager exception: \n\n" + e.toString());
     }
@@ -190,7 +191,7 @@ class Home extends StatelessWidget {
 
     Workmanager().initialize(
       callbackDispatcher,
-      isInDebugMode: true,
+      isInDebugMode: false,
     );
 
     Workmanager().registerOneOffTask(
