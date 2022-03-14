@@ -189,10 +189,11 @@ class Home extends StatelessWidget {
 
     FirebaseAnalytics analytics = FirebaseAnalytics.instanceFor(app: Firebase.apps.first);
 
-    Workmanager().initialize(
-      callbackDispatcher,
-      isInDebugMode: false,
-    );
+    // TODO: Uncomment this and figure out how to properly inject flutterBeacon as a dependency
+    // Workmanager().initialize(
+    //   callbackDispatcher,
+    //   isInDebugMode: false,
+    // );
 
     Workmanager().registerOneOffTask(
       "1-beaconMonitorScan",

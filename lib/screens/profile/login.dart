@@ -76,7 +76,7 @@ class _LoginState extends State<Login> {
                     Container(
                       margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * .02),
                       child: Text(
-                        "Sign in to save your hikes, share them with friends, and more.",
+                        "Sign in to save your hikes & share them with friends.",
                         style: TextStyle(
                           fontFamily: "LGCafe",
                           fontSize: 22,

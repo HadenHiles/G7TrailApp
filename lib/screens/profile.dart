@@ -7,7 +7,8 @@ import 'package:g7trailapp/models/firestore/user_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:g7trailapp/screens/profile/settings/settings.dart';
-import 'package:g7trailapp/widgets/screen_title.dart';
+import 'package:g7trailapp/services/utility.dart';
+import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/widgets/user_avatar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -58,7 +59,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 collapseMode: CollapseMode.parallax,
                 titlePadding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                 centerTitle: false,
-                title: ScreenTitle(icon: Icons.location_history, title: "My Hikes"),
+                title: Padding(
+                  padding: EdgeInsets.only(bottom: 2),
+                  child: Row(
+                    children: [
+                      user == null || user!.isAnonymous
+                          ? Icon(
+                              Icons.location_history_rounded,
+                              size: 22,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            )
+                          : Container(
+                              width: 30,
+                              height: 30,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: UserAvatar(
+                                  user: UserProfile(user!.displayName, user!.email, userProfile.photoUrl, true, preferences.fcmToken),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              ),
+                            ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      SizedBox(
+                        width: 140,
+                        child: AutoSizeText(
+                          "Your Hikes".toUpperCase(),
+                          maxFontSize: Theme.of(context).textTheme.headline5!.fontSize ?? 22,
+                          minFontSize: 10,
+                          maxLines: 2,
+                          style: TextStyle(
+                            fontSize: Theme.of(context).textTheme.headline5!.fontSize,
+                            fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                          textAlign: TextAlign.start,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 background: Container(
                   color: Theme.of(context).scaffoldBackgroundColor,
                 ),
@@ -91,95 +138,179 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: user == null || user!.isAnonymous
           ? Login(scaffoldKey: _scaffoldKey)
           : Container(
-              padding: const EdgeInsets.only(top: 15),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              child: ListView(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 60,
-                                  height: 60,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(60),
-                                  ),
-                                  child: SizedBox(
-                                    height: 60,
-                                    width: 60,
-                                    child: UserAvatar(
-                                      user: UserProfile(user!.displayName, user!.email, userProfile.photoUrl, true, preferences.fcmToken),
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: (MediaQuery.of(context).size.width - 100) * 0.6,
-                                child: StreamBuilder<DocumentSnapshot>(
-                                  stream: FirebaseFirestore.instance.collection('users').doc(user!.uid).snapshots(),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: const [
-                                          Center(
-                                            child: SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    } else {
-                                      UserProfile userProfile = UserProfile.fromSnapshot(snapshot.data);
+                      Container(
+                        height: 40,
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 15,
+                        ),
+                        child: Text(
+                          "Past Hikes".toUpperCase(),
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                      ),
+                    ],
+                  ),
+                  _buildPastHike(),
+                  _buildPastHike(),
+                  _buildPastHike(),
+                  SizedBox(height: 15),
+                ],
+              ),
+            ),
+    );
+  }
 
-                                      return SizedBox(
-                                        width: (MediaQuery.of(context).size.width - 100) * 0.5,
-                                        child: AutoSizeText(
-                                          userProfile.displayName!,
-                                          maxLines: 1,
-                                          maxFontSize: 22,
-                                          style: TextStyle(
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold,
-                                            color: Theme.of(context).textTheme.bodyText1!.color,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
+  // TODO: Add params for hike data
+  Widget _buildPastHike() {
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0),
+      ),
+      color: darken(Theme.of(context).colorScheme.primary, 0.001),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 15),
+        child: Column(
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                ListTile(
+                  leading: SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Image(
+                        image: AssetImage("assets/images/avatar.png"),
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    "Saturday Hike".toUpperCase(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(
+                      Icons.more_vert_rounded,
+                    ),
+                    onPressed: () {},
+                  ),
+                ),
+                ListTile(
+                  title: Text(
+                    printDate(DateTime(2022, 03, 12)),
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ),
+                ListTile(
+                  title: Text(
+                    "Duration",
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                  trailing: Text(
+                    printDuration(
+                      Duration(minutes: 78),
+                      false,
+                    ),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.send_rounded),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Share Hike",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ),
                           ),
                         ],
                       ),
-                    ],
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size.fromHeight(50),
+                        primary: lighten(Theme.of(context).backgroundColor, 0.03),
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        elevation: 2,
+                        textStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.replay_rounded,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "Repeat Hike",
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size.fromHeight(50),
+                        primary: Theme.of(context).primaryColor,
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        elevation: 2,
+                        textStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSecondary,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
