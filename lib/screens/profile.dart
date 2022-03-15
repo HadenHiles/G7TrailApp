@@ -279,14 +279,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.replay_rounded,
+                            Icons.location_on_outlined,
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
                           SizedBox(
                             width: 10,
                           ),
                           Text(
-                            "Repeat Hike",
+                            "View Summary",
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
