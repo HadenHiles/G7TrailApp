@@ -30,8 +30,8 @@ Preferences preferences = Preferences(false, true, true, null);
 final sessionService = SessionService();
 bool introShown = false;
 
-// Setup dependency injection using get_it package
-final getIt = GetIt.instance;
+// Setup global dependency injection reference for background use
+final di = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,8 +40,6 @@ void main() async {
   // Initialize the connection to our firebase project
   await Firebase.initializeApp();
   final appleSignInAvailable = await AppleSignInAvailable.check();
-
-  getIt.registerSingleton<FlutterBeacon>(flutterBeacon);
 
   // Load user preferences
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -93,6 +91,8 @@ void main() async {
     FirebaseMessaging.onMessageOpenedApp.listen(_messageClickHandler);
   }
 
+  di.registerSingleton<FlutterBeacon>(FlutterBeacon());
+
   runApp(
     Provider<AppleSignInAvailable>.value(
       value: appleSignInAvailable,
@@ -137,14 +137,15 @@ const rescheduledTaskKey = "trailBeaconTask";
 const failedTaskKey = "failedBeaconTask";
 
 void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
-    try {
-      final getIt = GetIt.instance;
-      getIt.registerSingleton<FlutterBeacon>(flutterBeacon);
+  // DartPluginRegistrant.ensureInitialized(); // TODO: try upgrading to flutter:master so this is supported? Not sure if it will even help with dependency injection
+  WidgetsFlutterBinding.ensureInitialized();
 
+  Workmanager().executeTask((task, inputData) async {
+    FlutterBeacon fb = di.get<FlutterBeacon>();
+    try {
       // Start monitoring for beacons
       dynamic _streamMonitoring;
-      _streamMonitoring = getIt<FlutterBeacon>().monitoring(<Region>[
+      _streamMonitoring = await fb.monitoring(<Region>[
         Region(
           identifier: "Group of Seven Lake Superior Trail",
           proximityUUID: 'f7826da6-4fa2-4e98-8024-bc5b71e0893e',
@@ -166,11 +167,11 @@ void callbackDispatcher() {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('unique-$key')) {
       print('has been running before, task is successful');
-      return true;
+      return Future.value(true);
     } else {
       await prefs.setBool('unique-$key', true);
       print('reschedule task');
-      return false;
+      return Future.value(false);
     }
   });
 }
@@ -189,26 +190,23 @@ class Home extends StatelessWidget {
 
     FirebaseAnalytics analytics = FirebaseAnalytics.instanceFor(app: Firebase.apps.first);
 
-    // TODO: Uncomment this and figure out how to properly inject flutterBeacon as a dependency
-    // Workmanager().initialize(
-    //   callbackDispatcher,
-    //   isInDebugMode: false,
-    // );
-
-    Workmanager().registerOneOffTask(
-      "1-beaconMonitorScan",
-      rescheduledTaskKey,
-      // constraints: Constraints(
-      //   networkType: NetworkType.not_required,
-      //   requiresBatteryNotLow: false,
-      //   requiresCharging: false,
-      //   requiresDeviceIdle: false, // TODO: set this to true?
-      //   requiresStorageNotLow: false,
-      // ),
-      inputData: <String, dynamic>{
-        'key': math.Random().nextInt(64000),
-      },
-    );
+    // TODO: Figure out how to properly inject flutterBeacon as a dependency
+    Workmanager().initialize(callbackDispatcher, isInDebugMode: false).then((_) {
+      Workmanager().registerOneOffTask(
+        "1-beaconMonitorScan",
+        rescheduledTaskKey,
+        // constraints: Constraints(
+        //   networkType: NetworkType.not_required,
+        //   requiresBatteryNotLow: false,
+        //   requiresCharging: false,
+        //   requiresDeviceIdle: false, // TODO: set this to true?
+        //   requiresStorageNotLow: false,
+        // ),
+        inputData: <String, dynamic>{
+          'key': math.Random().nextInt(64000),
+        },
+      );
+    });
 
     return Consumer<PreferencesStateNotifier>(
       builder: (context, settingsState, child) {
