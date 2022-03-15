@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:g7trailapp/main.dart';
@@ -5,6 +7,7 @@ import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/screens/profile.dart';
 import 'package:g7trailapp/services/beacon_ranging_service.dart';
+import 'package:g7trailapp/services/notification_service.dart';
 import 'package:provider/provider.dart';
 import '../screens/explore.dart';
 import '../screens/map.dart';
@@ -96,6 +99,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
 
   void _handleBeaconFound(Destination d) {
     if (d.entryPoint) {
+      NotificationService().notify(Random.secure().nextInt(9999), "Group of Seven Trail Entrance Found", "Tap to get started!");
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -124,6 +128,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
         ),
       );
     } else {
+      NotificationService().notify(Random.secure().nextInt(9999), "Group of Seven Trail Beacon Found", "Tap to learn more!");
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(

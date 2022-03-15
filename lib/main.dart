@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:math' as math;
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:g7trailapp/intro_screen.dart';
@@ -15,11 +14,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
-import 'package:workmanager/workmanager.dart';
 
 // Setup a navigation key so that we can navigate without context
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -29,9 +26,6 @@ final user = FirebaseAuth.instance.currentUser;
 Preferences preferences = Preferences(false, true, true, null);
 final sessionService = SessionService();
 bool introShown = false;
-
-// Setup global dependency injection reference for background use
-final di = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -91,8 +85,6 @@ void main() async {
     FirebaseMessaging.onMessageOpenedApp.listen(_messageClickHandler);
   }
 
-  di.registerSingleton<FlutterBeacon>(FlutterBeacon());
-
   runApp(
     Provider<AppleSignInAvailable>.value(
       value: appleSignInAvailable,
@@ -132,50 +124,6 @@ Future<void> initializeBeaconPermissions() async {
   }
 }
 
-// Beacon Monitoring background dispatcher
-const rescheduledTaskKey = "trailBeaconTask";
-const failedTaskKey = "failedBeaconTask";
-
-void callbackDispatcher() {
-  // DartPluginRegistrant.ensureInitialized(); // TODO: try upgrading to flutter:master so this is supported? Not sure if it will even help with dependency injection
-  WidgetsFlutterBinding.ensureInitialized();
-
-  Workmanager().executeTask((task, inputData) async {
-    FlutterBeacon fb = di.get<FlutterBeacon>();
-    try {
-      // Start monitoring for beacons
-      dynamic _streamMonitoring;
-      _streamMonitoring = await fb.monitoring(<Region>[
-        Region(
-          identifier: "Group of Seven Lake Superior Trail",
-          proximityUUID: 'f7826da6-4fa2-4e98-8024-bc5b71e0893e',
-        )
-      ]).listen((MonitoringResult result) {
-        // result contains a region, event type and event state
-        log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
-        NotificationService().notify(result.region.major!, "Trail Beacon Found", "Tap to learn more!");
-      });
-
-      Future.delayed(Duration(seconds: 10)).then((value) => _streamMonitoring.cancel());
-
-      log("\n\n Workmanager called \n\n");
-    } catch (e) {
-      log("Workmanager exception: \n\n" + e.toString());
-    }
-
-    final key = inputData!['key']!;
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('unique-$key')) {
-      print('has been running before, task is successful');
-      return Future.value(true);
-    } else {
-      await prefs.setBool('unique-$key', true);
-      print('reschedule task');
-      return Future.value(false);
-    }
-  });
-}
-
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -189,24 +137,6 @@ class Home extends StatelessWidget {
     ]);
 
     FirebaseAnalytics analytics = FirebaseAnalytics.instanceFor(app: Firebase.apps.first);
-
-    // TODO: Figure out how to properly inject flutterBeacon as a dependency
-    Workmanager().initialize(callbackDispatcher, isInDebugMode: false).then((_) {
-      Workmanager().registerOneOffTask(
-        "1-beaconMonitorScan",
-        rescheduledTaskKey,
-        // constraints: Constraints(
-        //   networkType: NetworkType.not_required,
-        //   requiresBatteryNotLow: false,
-        //   requiresCharging: false,
-        //   requiresDeviceIdle: false, // TODO: set this to true?
-        //   requiresStorageNotLow: false,
-        // ),
-        inputData: <String, dynamic>{
-          'key': math.Random().nextInt(64000),
-        },
-      );
-    });
 
     return Consumer<PreferencesStateNotifier>(
       builder: (context, settingsState, child) {
