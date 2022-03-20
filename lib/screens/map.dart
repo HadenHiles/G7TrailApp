@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/models/firestore/legend.dart';
 import 'package:g7trailapp/models/firestore/path.dart';
 import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
@@ -28,6 +29,7 @@ class _MapScreenState extends State<MapScreen> {
   );
 
   List<Destination> _destinations = [];
+  Legend? _legend;
   Set<Marker> _markers = {};
   Marker? highlightedMarker;
   MapType _mapType = MapType.normal;
@@ -119,6 +121,23 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  Future<void> _loadLegend() async {
+    await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "mapLegend").limit(1).get().then((snapshot) async {
+      if (snapshot.docs.isNotEmpty) {
+        Legend legend = Legend.fromSnapshot(snapshot.docs[0]);
+        if (legend.items.isNotEmpty) {
+          for (var i in legend.items) {
+            await loadFirestoreImage(i.image, 1).then((url) => i.imageURL = url);
+          }
+        }
+
+        setState(() {
+          _legend = legend;
+        });
+      }
+    });
+  }
+
   LatLngBounds _createBounds(List<LatLng> positions) {
     final southwestLat = positions.map((p) => p.latitude).reduce((value, element) => value < element ? value : element); // smallest
     final southwestLon = positions.map((p) => p.longitude).reduce((value, element) => value < element ? value : element);
@@ -199,6 +218,8 @@ class _MapScreenState extends State<MapScreen> {
       });
     });
 
+    _loadLegend();
+
     super.initState();
   }
 
@@ -243,6 +264,63 @@ class _MapScreenState extends State<MapScreen> {
               ),
               child: Icon(
                 _mapType == MapType.normal ? Icons.terrain : Icons.map_rounded,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: MediaQuery.of(context).padding.bottom,
+            right: 5,
+            child: TextButton(
+              onPressed: () {
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: Text("Legend"),
+                    content: Container(
+                      width: 180,
+                      height: 300,
+                      child: ListView.builder(
+                        itemCount: _legend!.items.length,
+                        itemBuilder: (BuildContext context, int i) {
+                          return ListTile(
+                            leading: (_legend!.items[i].imageURL != "" && _legend!.items[i].imageURL != null)
+                                ? Image(
+                                    image: NetworkImage(_legend!.items[i].imageURL!),
+                                    width: 40,
+                                  )
+                                : Container(
+                                    color: _legend!.items[i].color,
+                                    height: 4,
+                                    width: 20,
+                                  ),
+                            title: Text(
+                              _legend!.items[i].title,
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, 'Close');
+                        },
+                        child: Text(
+                          'Close',
+                          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
+              ),
+              child: Icon(
+                Icons.info_rounded,
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
             ),
