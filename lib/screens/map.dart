@@ -291,6 +291,7 @@ class _MapScreenState extends State<MapScreen> {
                                   )
                                 : Container(
                                     color: _legend!.items[i].color,
+                                    margin: EdgeInsets.only(top: 10),
                                     height: 4,
                                     width: 20,
                                   ),
