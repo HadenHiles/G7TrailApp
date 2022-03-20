@@ -99,7 +99,6 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
 
   void _handleBeaconFound(Destination d) {
     if (d.entryPoint) {
-      NotificationService().notify(Random.secure().nextInt(9999), "Group of Seven Trail Entrance Found", "Tap to get started!");
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -128,7 +127,6 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
         ),
       );
     } else {
-      NotificationService().notify(Random.secure().nextInt(9999), "Group of Seven Trail Beacon Found", "Tap to learn more!");
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
