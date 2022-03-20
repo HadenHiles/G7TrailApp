@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:g7trailapp/main.dart';
@@ -7,7 +5,6 @@ import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/screens/profile.dart';
 import 'package:g7trailapp/services/beacon_ranging_service.dart';
-import 'package:g7trailapp/services/notification_service.dart';
 import 'package:provider/provider.dart';
 import '../screens/explore.dart';
 import '../screens/map.dart';
