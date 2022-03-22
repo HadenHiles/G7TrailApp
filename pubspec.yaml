@@ -68,7 +68,7 @@ dependencies:
   simple_animations: ^4.0.1
   google_maps_flutter: ^2.1.1
   flutter_html: ^2.2.1
-  just_audio: ^0.9.20
+  assets_audio_player: ^3.0.4+1
   audio_video_progress_bar: ^0.10.0
   flutter_tts: ^3.3.3
 

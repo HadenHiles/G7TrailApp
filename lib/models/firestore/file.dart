@@ -18,7 +18,7 @@ class File {
         contentType = map['contentType'],
         file = map['file'],
         folderId = map['folderId'],
-        sizes = map['sizes'],
+        sizes = map['sizes'] != null ? map['sizes'] : [],
         type = map['type'];
 
   Map<String, dynamic> toMap() {
