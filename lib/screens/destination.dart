@@ -34,8 +34,9 @@ enum TtsState { playing, stopped, paused, continued }
 class _DestinationScreenState extends State<DestinationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
+  late AudioPlayerManager _audioPlayerManager;
+  bool _audioPlayerInitialized = false;
   bool _autoPlayAudio = preferences.autoPlayAudio;
-  late final AudioPlayerManager _audioPlayerManager;
 
   // TEXT TO SPEECH VARIABLES
   late FlutterTts _flutterTTS;
@@ -55,11 +56,13 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   @override
   initState() {
-    _audioPlayerManager = AudioPlayerManager("");
-
     if (widget.destination.audio.length > 0) {
       loadFirestoreFile(widget.destination.audio[0].file).then((url) {
-        _audioPlayerManager = AudioPlayerManager(url ?? "");
+        _audioPlayerManager = AudioPlayerManager(url!, preferences.autoPlayAudio);
+
+        setState(() {
+          _audioPlayerInitialized = true;
+        });
       });
     }
 
@@ -332,9 +335,15 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                 ),
                                 ListTile(
                                   title: Text(widget.destination.audio[i].title.toUpperCase()),
-                                  onTap: () {
+                                  onTap: () async {
                                     if (widget.destination.audio[i].file != null) {
                                       // Play audio file
+                                      await loadFirestoreFile(widget.destination.audio[i].file).then((url) {
+                                        if (url!.isNotEmpty) {
+                                          _audioPlayerManager.dispose();
+                                          _audioPlayerManager = AudioPlayerManager(url, true);
+                                        }
+                                      });
                                     } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
                                       // Speak text - play/pause toggle
                                       if (ttsState != TtsState.playing) {
@@ -349,9 +358,15 @@ class _DestinationScreenState extends State<DestinationScreen> {
                             )
                           : ListTile(
                               title: Text(widget.destination.audio[i].title.toUpperCase()),
-                              onTap: () {
+                              onTap: () async {
                                 if (widget.destination.audio[i].file != null) {
                                   // Play audio file
+                                  await loadFirestoreFile(widget.destination.audio[i].file).then((url) {
+                                    if (url!.isNotEmpty) {
+                                      _audioPlayerManager.dispose();
+                                      _audioPlayerManager = AudioPlayerManager(url, true);
+                                    }
+                                  });
                                 } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
                                   // Speak text - play/pause toggle
                                   if (ttsState != TtsState.playing) {
@@ -365,56 +380,58 @@ class _DestinationScreenState extends State<DestinationScreen> {
                     },
                   ),
                 ),
-                Container(
-                  height: 140,
-                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ValueListenableBuilder<ProgressBarState>(
-                        valueListenable: _audioPlayerManager.progressNotifier,
-                        builder: (_, value, __) {
-                          return ProgressBar(
-                            progressBarColor: Theme.of(context).primaryColor,
-                            baseBarColor: darken(Theme.of(context).colorScheme.background, 0.2),
-                            thumbColor: Theme.of(context).colorScheme.secondary,
-                            thumbGlowColor: lighten(Theme.of(context).colorScheme.secondary, 0.225),
-                            progress: value.current,
-                            buffered: value.buffered,
-                            total: value.total,
-                          );
-                        },
+                !_audioPlayerInitialized
+                    ? Container()
+                    : Container(
+                        height: 140,
+                        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            StreamBuilder(
+                                stream: _audioPlayerManager.position(),
+                                builder: (context, AsyncSnapshot<Duration> asyncSnapshot) {
+                                  final Duration pos = asyncSnapshot.data!;
+                                  return ProgressBar(
+                                    progressBarColor: Theme.of(context).primaryColor,
+                                    baseBarColor: darken(Theme.of(context).colorScheme.background, 0.2),
+                                    thumbColor: Theme.of(context).colorScheme.secondary,
+                                    thumbGlowColor: lighten(Theme.of(context).colorScheme.secondary, 0.225),
+                                    progress: pos,
+                                    total: _audioPlayerManager.currentDuration(),
+                                    onSeek: _audioPlayerManager.seek,
+                                  );
+                                }),
+                            ValueListenableBuilder<ButtonState>(
+                              valueListenable: _audioPlayerManager.buttonNotifier,
+                              builder: (_, value, __) {
+                                switch (value) {
+                                  case ButtonState.loading:
+                                    return Container(
+                                      margin: const EdgeInsets.all(8.0),
+                                      width: 32.0,
+                                      height: 32.0,
+                                      child: const CircularProgressIndicator(),
+                                    );
+                                  case ButtonState.paused:
+                                    return IconButton(
+                                      icon: const Icon(Icons.play_arrow),
+                                      iconSize: 32.0,
+                                      onPressed: _audioPlayerManager.play,
+                                    );
+                                  case ButtonState.playing:
+                                    return IconButton(
+                                      icon: const Icon(Icons.pause),
+                                      iconSize: 32.0,
+                                      onPressed: _audioPlayerManager.pause,
+                                    );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                      ValueListenableBuilder<ButtonState>(
-                        valueListenable: _audioPlayerManager.buttonNotifier,
-                        builder: (_, value, __) {
-                          switch (value) {
-                            case ButtonState.loading:
-                              return Container(
-                                margin: const EdgeInsets.all(8.0),
-                                width: 32.0,
-                                height: 32.0,
-                                child: const CircularProgressIndicator(),
-                              );
-                            case ButtonState.paused:
-                              return IconButton(
-                                icon: const Icon(Icons.play_arrow),
-                                iconSize: 32.0,
-                                onPressed: _audioPlayerManager.play,
-                              );
-                            case ButtonState.playing:
-                              return IconButton(
-                                icon: const Icon(Icons.pause),
-                                iconSize: 32.0,
-                                onPressed: _audioPlayerManager.pause,
-                              );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
