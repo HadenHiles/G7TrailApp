@@ -110,7 +110,7 @@ class _IntroScreenState extends State<IntroScreen> {
       titlePadding: EdgeInsets.only(top: 40, bottom: 15),
       bodyAlignment: Alignment.topCenter,
       bodyTextStyle: bodyStyle,
-      descriptionPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+      bodyPadding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
       pageColor: Colors.transparent,
       imagePadding: EdgeInsets.only(top: 100),
       imageAlignment: Alignment.center,
@@ -158,7 +158,7 @@ class _IntroScreenState extends State<IntroScreen> {
                       color: _titleColor,
                     ),
                     bodyTextStyle: bodyStyle,
-                    descriptionPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                    bodyPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                     pageColor: Colors.transparent,
                     imagePadding: EdgeInsets.zero,
                     imageAlignment: Alignment.topCenter,
@@ -314,7 +314,7 @@ class _IntroScreenState extends State<IntroScreen> {
               onDone: () => _onIntroEnd(context),
               //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
               showSkipButton: true,
-              skipFlex: 0,
+              skipOrBackFlex: 0,
               nextFlex: 0,
               //rtl: true, // Display as right-to-left
               skip: Text(

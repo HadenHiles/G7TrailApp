@@ -39,7 +39,7 @@ dependencies:
   firebase_remote_config: ^2.0.2
   package_info: ^2.0.2
   get_it: ^7.2.0 
-  introduction_screen: ^2.1.0
+  introduction_screen: ^3.0.0
   workmanager: ^0.4.1
   flutter_local_notifications: ^9.3.2
   ci_connectivity: ^1.1.0
