@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+// import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -8,16 +8,16 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
-import 'package:g7trailapp/models/preferences.dart';
+// import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/navigation/nav.dart';
 import 'package:g7trailapp/screens/destination/art.dart';
-import 'package:g7trailapp/screens/destination/audio_player_manager.dart';
-import 'package:g7trailapp/theme/preferences_state_notifier.dart';
+// import 'package:g7trailapp/screens/destination/audio_player_manager.dart';
+// import 'package:g7trailapp/theme/preferences_state_notifier.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/utility/fullscreen_image.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:provider/provider.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_animations/stateless_animation/custom_animation.dart';
 
 class DestinationScreen extends StatefulWidget {
@@ -34,9 +34,10 @@ enum TtsState { playing, stopped, paused, continued }
 class _DestinationScreenState extends State<DestinationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  late AudioPlayerManager _audioPlayerManager;
-  bool _audioPlayerInitialized = false;
-  bool _autoPlayAudio = preferences.autoPlayAudio;
+  // TODO: uncomment this when assets_audio_player duplicate class bug is resolved
+  // late AudioPlayerManager _audioPlayerManager;
+  // bool _audioPlayerInitialized = false;
+  // bool _autoPlayAudio = preferences.autoPlayAudio;
 
   // TEXT TO SPEECH VARIABLES
   late FlutterTts _flutterTTS;
@@ -56,15 +57,16 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   @override
   initState() {
-    if (widget.destination.audio.length > 0) {
-      loadFirestoreFile(widget.destination.audio[0].file).then((url) {
-        _audioPlayerManager = AudioPlayerManager(url!, preferences.autoPlayAudio);
+    // TODO: uncomment this when assets_audio_player duplicate class bug is resolved
+    // if (widget.destination.audio.length > 0) {
+    //   loadFirestoreFile(widget.destination.audio[0].file).then((url) {
+    //     _audioPlayerManager = AudioPlayerManager(url!, preferences.autoPlayAudio);
 
-        setState(() {
-          _audioPlayerInitialized = true;
-        });
-      });
-    }
+    //     setState(() {
+    //       _audioPlayerInitialized = true;
+    //     });
+    //   });
+    // }
 
     initTTS();
     super.initState();
@@ -132,11 +134,14 @@ class _DestinationScreenState extends State<DestinationScreen> {
     }
   }
 
+  // TODO: uncomment this when assets_audio_player duplicate class bug is resolved
+  /*
   Future _speak(String text) async {
     if (text.isNotEmpty) {
       await _flutterTTS.speak(text);
     }
   }
+  */
 
   Future _setAwaitOptions() async {
     await _flutterTTS.awaitSpeakCompletion(false);
@@ -167,6 +172,8 @@ class _DestinationScreenState extends State<DestinationScreen> {
     await _flutterTTS.getMaxSpeechInputLength;
   }
 
+  // TODO: uncomment this when assets_audio_player duplicate class bug is resolved
+  /*
   Future _stopTTS() async {
     var result = await _flutterTTS.stop();
     if (result == 1) setState(() => ttsState = TtsState.stopped);
@@ -177,10 +184,11 @@ class _DestinationScreenState extends State<DestinationScreen> {
     if (result == 1) setState(() => ttsState = TtsState.paused);
   }
   // END TTS FUNCTIONS
+  */
 
   @override
   void dispose() {
-    _audioPlayerManager.dispose();
+    // _audioPlayerManager.dispose(); // TODO: uncomment this when assets_audio_player duplicate class bug is resolved
     _flutterTTS.stop();
     super.dispose();
   }
@@ -266,7 +274,9 @@ class _DestinationScreenState extends State<DestinationScreen> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
+                Container(),
+                // TODO: uncomment this when assets_audio_player duplicate class bug is resolved
+                /*SizedBox(
                   height: MediaQuery.of(context).size.height - 140,
                   child: ListView.builder(
                     padding: EdgeInsets.zero,
@@ -431,7 +441,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                             ),
                           ],
                         ),
-                      ),
+                      ),*/
               ],
             ),
           ),
