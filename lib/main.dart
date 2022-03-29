@@ -14,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
@@ -142,16 +143,18 @@ class Home extends StatelessWidget {
       builder: (context, settingsState, child) {
         preferences = settingsState.prefs;
 
-        return MaterialApp(
-          title: 'Group of Seven Lake Superior Trail',
-          navigatorKey: navigatorKey,
-          theme: preferences.darkMode ? HomeTheme.darkTheme : HomeTheme.lightTheme,
-          darkTheme: HomeTheme.darkTheme,
-          themeMode: preferences.darkMode ? ThemeMode.dark : ThemeMode.system,
-          navigatorObservers: [
-            FirebaseAnalyticsObserver(analytics: analytics),
-          ],
-          home: !introShown ? const IntroScreen() : const FluidNavigationBar(),
+        return OverlaySupport(
+          child: MaterialApp(
+            title: 'Group of Seven Lake Superior Trail',
+            navigatorKey: navigatorKey,
+            theme: preferences.darkMode ? HomeTheme.darkTheme : HomeTheme.lightTheme,
+            darkTheme: HomeTheme.darkTheme,
+            themeMode: preferences.darkMode ? ThemeMode.dark : ThemeMode.system,
+            navigatorObservers: [
+              FirebaseAnalyticsObserver(analytics: analytics),
+            ],
+            home: !introShown ? const IntroScreen() : const FluidNavigationBar(),
+          ),
         );
       },
     );

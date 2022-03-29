@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/confirm_dialog.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/models/hike_destination.dart';
 import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/screens/profile.dart';
 import 'package:g7trailapp/services/beacon_ranging_service.dart';
@@ -10,8 +11,11 @@ import 'package:g7trailapp/services/session.dart';
 import 'package:g7trailapp/services/utility.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/custom_dialogs.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:vibration/vibration.dart';
 import '../screens/explore.dart';
 import '../screens/map.dart';
 import './fluid_nav_bar.dart';
@@ -250,94 +254,138 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
     super.dispose();
   }
 
-  void _handleBeaconFound(Destination d) {
-    if (d.entryPoint) {
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: Text("\"${d.destinationName}\" Found"),
-          content: const Text('Would you like to start a hike?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, 'Cancel');
-              },
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, 'Yes');
+  Future<void> _handleBeaconFound(Destination d) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<HikeDestination> beacons;
+    HikeDestination hikeD = HikeDestination(id: d.reference!.id, entryPoint: d.entryPoint, destinationName: d.destinationName, beaconTitle: d.beaconTitle, beaconId: d.beaconId);
 
-                if (!sessionService.isRunning) {
-                  Feedback.forTap(context);
-                  sessionService.start();
-                  sessionPanelController.open();
-                } else {
-                  dialog(
-                    context,
-                    ConfirmDialog(
-                      "Override current hike?",
-                      Text(
-                        "Starting a new hike will override your existing one.\n\nWould you like to continue?",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground,
-                        ),
-                      ),
-                      "Cancel",
-                      () {
-                        Navigator.of(context).pop();
-                      },
-                      "Continue",
-                      () {
-                        Feedback.forTap(context);
-                        sessionService.reset();
-                        Navigator.of(context).pop();
-                        sessionService.start();
-                        sessionPanelController.show();
-                      },
+    if (sessionService.isRunning) {
+      if (prefs.get('hike_data') == null) {
+        beacons = [hikeD];
+        prefs.setString("hike_data", HikeDestination.encode(beacons));
+      } else {
+        beacons = HikeDestination.decode(prefs.getString('hike_data')!);
+        beacons.add(hikeD);
+        prefs.setString("hike_data", HikeDestination.encode(beacons));
+      }
+    } else {
+      beacons = [];
+      prefs.setString("hike_data", HikeDestination.encode(beacons));
+    }
+
+    if (await Vibration.hasVibrator() ?? false) {
+      Vibration.vibrate();
+    }
+
+    if (d.entryPoint) {
+      showOverlayNotification(
+        (context) {
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            child: SafeArea(
+              child: ListTile(
+                leading: SizedBox.fromSize(
+                  size: Size(40, 40),
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: Image(
+                      image: AssetImage("assets/images/app-icon.png"),
                     ),
-                  );
-                }
-              },
-              child: Text(
-                'Yes',
-                style: TextStyle(color: Theme.of(context).primaryColor),
+                  ),
+                ),
+                title: !sessionService.isRunning ? Text("\"${d.destinationName}\" Found") : Text("Finished hiking?"),
+                subtitle: !sessionService.isRunning ? Text('Tap to start your hike!') : Text("Tap to finish your hike."),
+                trailing: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    OverlaySupportEntry.of(context)?.dismiss();
+                  },
+                ),
+                onTap: () {
+                  OverlaySupportEntry.of(context)?.dismiss();
+
+                  if (!sessionService.isRunning) {
+                    _startHike();
+                  } else {
+                    sessionService.reset();
+                  }
+                },
               ),
             ),
-          ],
-        ),
+          );
+        },
+        duration: Duration(seconds: 30),
       );
     } else {
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: Text("\"${d.destinationName}\" Found"),
-          content: const Text('Tap continue to learn more!'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, 'Cancel');
-              },
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+      showOverlayNotification(
+        (context) {
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            child: SafeArea(
+              child: ListTile(
+                leading: SizedBox.fromSize(
+                  size: Size(40, 40),
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: Image(
+                      image: AssetImage("assets/images/app-icon.png"),
+                    ),
+                  ),
+                ),
+                title: Text("\"${d.destinationName}\" Found"),
+                subtitle: Text('Tap to learn more!'),
+                trailing: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    OverlaySupportEntry.of(context)?.dismiss();
+                  },
+                ),
+                onTap: () {
+                  OverlaySupportEntry.of(context)?.dismiss();
+
+                  navigatorKey.currentState!.push(
+                    MaterialPageRoute(builder: (context) {
+                      return DestinationScreen(destination: d);
+                    }),
+                  );
+                },
               ),
             ),
-            TextButton(
-              onPressed: () {
-                navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-                  return DestinationScreen(destination: d);
-                }));
-              },
-              child: Text(
-                'Continue',
-                style: TextStyle(color: Theme.of(context).primaryColor),
-              ),
+          );
+        },
+        duration: Duration(seconds: 15),
+      );
+    }
+  }
+
+  void _startHike() {
+    if (!sessionService.isRunning) {
+      Feedback.forTap(context);
+      sessionService.start();
+      sessionPanelController.open();
+    } else {
+      dialog(
+        context,
+        ConfirmDialog(
+          "Override current hike?",
+          Text(
+            "Starting a new hike will override your existing one.\n\nWould you like to continue?",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onBackground,
             ),
-          ],
+          ),
+          "Cancel",
+          () {
+            Navigator.of(context).pop();
+          },
+          "Continue",
+          () {
+            Feedback.forTap(context);
+            sessionService.reset();
+            Navigator.of(context).pop();
+            sessionService.start();
+            sessionPanelController.show();
+          },
         ),
       );
     }
