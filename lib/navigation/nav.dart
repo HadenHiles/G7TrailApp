@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:g7trailapp/main.dart';
@@ -11,6 +12,7 @@ import 'package:g7trailapp/services/session.dart';
 import 'package:g7trailapp/services/utility.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/custom_dialogs.dart';
+import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,6 +40,7 @@ class FluidNavigationBar extends StatefulWidget {
 class _FluidNavigationBarState extends State<FluidNavigationBar> {
   late Widget _child;
 
+  List<Destination> _hikeDestinations = [];
   Destination? _nearestBeacon;
   Destination? _previousBeacon = null;
 
@@ -63,7 +66,41 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
       duration: const Duration(milliseconds: 500),
       child: _child,
     );
+
+    _loadHikeDestinations();
+
     super.initState();
+  }
+
+  Future<void> _loadHikeDestinations() async {
+    setState(() {
+      _hikeDestinations = [];
+    });
+
+    List<HikeDestination> hikeDestinations = HikeDestination.decode(prefs.getString('hike_data')!);
+    for (HikeDestination hd in hikeDestinations) {
+      await FirebaseFirestore.instance.collection('fl_content').doc(hd.id).get().then((snapshot) async {
+        Destination d = Destination.fromSnapshot(snapshot);
+        if (!d.entryPoint && d.images.isNotEmpty) {
+          await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
+
+          _hikeDestinations.add(d);
+        }
+      });
+    }
+  }
+
+  Future<Destination> _loadDestination(HikeDestination hd) async {
+    return await FirebaseFirestore.instance.collection('fl_content').doc(hd.id).get().then((snapshot) async {
+      Destination d = Destination.fromSnapshot(snapshot);
+      if (!d.entryPoint && d.images.isNotEmpty) {
+        await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
+
+        return d;
+      }
+
+      return d;
+    });
   }
 
   @override
@@ -208,7 +245,32 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                     );
                   },
                 ),
-                // panel content here
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _hikeDestinations.length,
+                    itemBuilder: (context, i) {
+                      return Container(
+                        height: 110,
+                        child: ListTile(
+                          leading: SizedBox(
+                            height: 110,
+                            width: 130,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: Image(
+                                image: NetworkImage(_hikeDestinations[i].imgURL!),
+                              ),
+                            ),
+                          ),
+                          title: Text(
+                            _hikeDestinations[i].destinationName,
+                            style: Theme.of(context).textTheme.headline5,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -259,18 +321,33 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
     List<HikeDestination> beacons;
     HikeDestination hikeD = HikeDestination(id: d.reference!.id, entryPoint: d.entryPoint, destinationName: d.destinationName, beaconTitle: d.beaconTitle, beaconId: d.beaconId);
 
-    if (sessionService.isRunning) {
-      if (prefs.get('hike_data') == null) {
-        beacons = [hikeD];
-        prefs.setString("hike_data", HikeDestination.encode(beacons));
+    if (!hikeD.entryPoint) {
+      if (sessionService.isRunning) {
+        if (prefs.get('hike_data') == null) {
+          beacons = [hikeD];
+          prefs.setString("hike_data", HikeDestination.encode(beacons));
+
+          await _loadDestination(hikeD).then((d) {
+            setState(() {
+              _hikeDestinations.add(d);
+            });
+          });
+        } else {
+          beacons = HikeDestination.decode(prefs.getString('hike_data')!);
+          beacons.add(hikeD);
+          prefs.setString("hike_data", HikeDestination.encode(beacons));
+
+          await _loadDestination(hikeD).then((d) {
+            setState(() {
+              _hikeDestinations.add(d);
+            });
+          });
+        }
       } else {
-        beacons = HikeDestination.decode(prefs.getString('hike_data')!);
-        beacons.add(hikeD);
+        beacons = [];
         prefs.setString("hike_data", HikeDestination.encode(beacons));
+        await _loadHikeDestinations();
       }
-    } else {
-      beacons = [];
-      prefs.setString("hike_data", HikeDestination.encode(beacons));
     }
 
     if (await Vibration.hasVibrator() ?? false) {

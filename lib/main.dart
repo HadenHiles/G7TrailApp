@@ -27,6 +27,7 @@ final user = FirebaseAuth.instance.currentUser;
 Preferences preferences = Preferences(false, true, true, null);
 final sessionService = SessionService();
 bool introShown = false;
+late SharedPreferences prefs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +38,7 @@ void main() async {
   final appleSignInAvailable = await AppleSignInAvailable.check();
 
   // Load user preferences
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs = await SharedPreferences.getInstance();
   preferences = Preferences(
     prefs.getBool('dark_mode') ?? ThemeMode.system == ThemeMode.dark,
     prefs.getBool('beacon_found_alert') ?? true,
