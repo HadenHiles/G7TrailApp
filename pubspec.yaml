@@ -59,7 +59,7 @@ dependencies:
   flutter_settings_ui: ^2.0.1
   url_launcher: ^6.0.17
   sliding_up_panel: ^2.0.0+1
-  overlay_support: ^1.2.1
+  overlay_support: ^1.2.1 
   auto_size_text: ^3.0.0
   vibration: ^1.7.4-nullsafety.0 
   fluttertoast: ^8.0.8

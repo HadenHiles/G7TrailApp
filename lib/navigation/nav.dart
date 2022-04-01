@@ -350,88 +350,90 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
       }
     }
 
-    if (await Vibration.hasVibrator() ?? false) {
-      Vibration.vibrate();
-    }
+    if (preferences.beaconFoundAlert) {
+      if (await Vibration.hasVibrator() ?? false) {
+        Vibration.vibrate();
+      }
 
-    if (d.entryPoint) {
-      showOverlayNotification(
-        (context) {
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            child: SafeArea(
-              child: ListTile(
-                leading: SizedBox.fromSize(
-                  size: Size(40, 40),
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: Image(
-                      image: AssetImage("assets/images/app-icon.png"),
+      if (d.entryPoint) {
+        showOverlayNotification(
+          (context) {
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              child: SafeArea(
+                child: ListTile(
+                  leading: SizedBox.fromSize(
+                    size: Size(40, 40),
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: Image(
+                        image: AssetImage("assets/images/app-icon.png"),
+                      ),
                     ),
                   ),
-                ),
-                title: !sessionService.isRunning ? Text("\"${d.destinationName}\" Found") : Text("Finished hiking?"),
-                subtitle: !sessionService.isRunning ? Text('Tap to start your hike!') : Text("Tap to finish your hike."),
-                trailing: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
+                  title: !sessionService.isRunning ? Text("\"${d.destinationName}\" Found") : Text("Finished hiking?"),
+                  subtitle: !sessionService.isRunning ? Text('Tap to start your hike!') : Text("Tap to finish your hike."),
+                  trailing: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      OverlaySupportEntry.of(context)?.dismiss();
+                    },
+                  ),
+                  onTap: () {
                     OverlaySupportEntry.of(context)?.dismiss();
+
+                    if (!sessionService.isRunning) {
+                      _startHike();
+                    } else {
+                      sessionService.reset();
+                    }
                   },
                 ),
-                onTap: () {
-                  OverlaySupportEntry.of(context)?.dismiss();
-
-                  if (!sessionService.isRunning) {
-                    _startHike();
-                  } else {
-                    sessionService.reset();
-                  }
-                },
               ),
-            ),
-          );
-        },
-        duration: Duration(seconds: 30),
-      );
-    } else {
-      showOverlayNotification(
-        (context) {
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            child: SafeArea(
-              child: ListTile(
-                leading: SizedBox.fromSize(
-                  size: Size(40, 40),
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: Image(
-                      image: AssetImage("assets/images/app-icon.png"),
+            );
+          },
+          duration: Duration(seconds: 30),
+        );
+      } else {
+        showOverlayNotification(
+          (context) {
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              child: SafeArea(
+                child: ListTile(
+                  leading: SizedBox.fromSize(
+                    size: Size(40, 40),
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: Image(
+                        image: AssetImage("assets/images/app-icon.png"),
+                      ),
                     ),
                   ),
-                ),
-                title: Text("\"${d.destinationName}\" Found"),
-                subtitle: Text('Tap to learn more!'),
-                trailing: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
+                  title: Text("\"${d.destinationName}\" Found"),
+                  subtitle: Text('Tap to learn more!'),
+                  trailing: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      OverlaySupportEntry.of(context)?.dismiss();
+                    },
+                  ),
+                  onTap: () {
                     OverlaySupportEntry.of(context)?.dismiss();
+
+                    navigatorKey.currentState!.push(
+                      MaterialPageRoute(builder: (context) {
+                        return DestinationScreen(destination: d);
+                      }),
+                    );
                   },
                 ),
-                onTap: () {
-                  OverlaySupportEntry.of(context)?.dismiss();
-
-                  navigatorKey.currentState!.push(
-                    MaterialPageRoute(builder: (context) {
-                      return DestinationScreen(destination: d);
-                    }),
-                  );
-                },
               ),
-            ),
-          );
-        },
-        duration: Duration(seconds: 15),
-      );
+            );
+          },
+          duration: Duration(seconds: 15),
+        );
+      }
     }
   }
 

@@ -4,23 +4,20 @@ class Point {
   String? id;
   double latitude;
   double longitude;
-  String uniqueKey;
   DocumentReference? reference;
 
-  Point(this.latitude, this.longitude, this.uniqueKey);
+  Point(this.latitude, this.longitude);
 
   Point.fromMap(Map<String, dynamic> map, {this.reference})
       : id = map['id'],
         latitude = (map['latitude'] == "" || map['latitude'] == null) ? 0.0 : map['latitude'],
-        longitude = (map['longitude'] == "" || map['longitude'] == null) ? 0.0 : map['longitude'],
-        uniqueKey = map['uniqueKey'];
+        longitude = (map['longitude'] == "" || map['longitude'] == null) ? 0.0 : map['longitude'];
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'latitude': latitude,
       'longitude': longitude,
-      'uniqueKey': uniqueKey,
     };
   }
 
