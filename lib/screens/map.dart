@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:g7trailapp/main.dart';
@@ -34,6 +35,7 @@ class _MapScreenState extends State<MapScreen> {
   Marker? highlightedMarker;
   MapType _mapType = MapType.normal;
   Set<Polyline> _polylines = {};
+  String? _selectedPathTitle;
 
   Future<void> _loadDestinations() async {
     await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").get().then((snapshot) async {
@@ -106,6 +108,13 @@ class _MapScreenState extends State<MapScreen> {
             points: p.points.map<LatLng>((m) {
               return LatLng(m.latitude, m.longitude);
             }).toList(),
+            onTap: () {
+              setState(() {
+                _selectedPathTitle = p.title;
+              });
+              print(p.title);
+            },
+            consumeTapEvents: true,
             color: p.hexColor,
             jointType: JointType.bevel,
             width: 4,
@@ -326,6 +335,30 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
           ),
+          _selectedPathTitle == null
+              ? Container()
+              : Positioned(
+                  bottom: MediaQuery.of(context).padding.bottom + 25,
+                  left: 100,
+                  right: 100,
+                  child: Container(
+                    height: 50,
+                    child: Card(
+                      color: Theme.of(context).cardColor,
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: AutoSizeText(
+                          _selectedPathTitle!,
+                          maxLines: 1,
+                          minFontSize: 12,
+                          overflow: TextOverflow.clip,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
         ],
       ),
     );
@@ -340,6 +373,16 @@ class _MapScreenState extends State<MapScreen> {
       initialCameraPosition: _kTrail,
       polylines: _polylines,
       markers: _markers,
+      onTap: (latLng) {
+        setState(() {
+          _selectedPathTitle = null;
+        });
+      },
+      onCameraMoveStarted: () {
+        setState(() {
+          _selectedPathTitle = null;
+        });
+      },
       onMapCreated: (GoogleMapController controller) async {
         _controller.complete(controller);
 
@@ -375,9 +418,6 @@ class _MapScreenState extends State<MapScreen> {
             );
           });
         });
-      },
-      onTap: (latLng) {
-        print("LatLng: ${latLng.toString()}");
       },
     );
   }
