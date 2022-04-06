@@ -115,12 +115,13 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
           backdropEnabled: false,
           controller: sessionPanelController,
           maxHeight: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
-          minHeight: sessionService.isRunning ? 65 : 0,
+          minHeight: sessionService.isRunning ? 65 : 65,
           margin: EdgeInsets.only(bottom: (AppBar().preferredSize.height) - (AppBar().preferredSize.height * _bottomNavOffsetPercentage)),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           ),
+          isDraggable: sessionService.isRunning,
           onPanelOpened: () {
             setState(() {
               _sessionPanelState = PanelState.OPEN;
@@ -148,85 +149,114 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                     return Container(
                       child: ListTile(
                         tileColor: Theme.of(context).colorScheme.primary,
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              printWeekday(DateTime.now()) + " Hike",
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                fontFamily: "NovecentoSans",
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    Feedback.forLongPress(context);
-
-                                    if (!sessionService.isPaused) {
-                                      sessionService.pause();
-                                    } else {
-                                      sessionService.resume();
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Icon(
-                                      sessionService.isPaused ? Icons.play_arrow : Icons.pause,
-                                      size: 30,
+                        title: sessionService.isRunning
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    printWeekday(DateTime.now()) + " Hike",
+                                    style: TextStyle(
                                       color: Theme.of(context).colorScheme.onPrimary,
+                                      fontFamily: "NovecentoSans",
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  focusColor: darken(Theme.of(context).primaryColor, 0.2),
-                                  enableFeedback: true,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      printDuration(sessionService.currentDuration, true),
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.onPrimary,
-                                        fontFamily: "NovecentoSans",
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        trailing: InkWell(
-                          focusColor: darken(Theme.of(context).primaryColor, 0.6),
-                          enableFeedback: true,
-                          borderRadius: BorderRadius.circular(30),
-                          child: Icon(
-                            _sessionPanelState == PanelState.CLOSED ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                          onTap: () {
-                            Feedback.forLongPress(context);
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Feedback.forLongPress(context);
 
-                            if (sessionPanelController.isPanelClosed) {
-                              sessionPanelController.open();
-                              setState(() {
-                                _sessionPanelState = PanelState.OPEN;
-                              });
-                            } else {
-                              sessionPanelController.close();
-                              setState(() {
-                                _sessionPanelState = PanelState.CLOSED;
-                              });
-                            }
-                          },
-                        ),
+                                          if (!sessionService.isPaused) {
+                                            sessionService.pause();
+                                          } else {
+                                            sessionService.resume();
+                                          }
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Icon(
+                                            sessionService.isPaused ? Icons.play_arrow : Icons.pause,
+                                            size: 30,
+                                            color: Theme.of(context).colorScheme.onPrimary,
+                                          ),
+                                        ),
+                                        focusColor: darken(Theme.of(context).primaryColor, 0.2),
+                                        enableFeedback: true,
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            printDuration(sessionService.currentDuration, true),
+                                            style: TextStyle(
+                                              color: Theme.of(context).colorScheme.onPrimary,
+                                              fontFamily: "NovecentoSans",
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Ready to go?",
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.onPrimary,
+                                      fontFamily: "NovecentoSans",
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                        trailing: sessionService.isRunning
+                            ? InkWell(
+                                focusColor: darken(Theme.of(context).primaryColor, 0.6),
+                                enableFeedback: true,
+                                borderRadius: BorderRadius.circular(30),
+                                child: Icon(
+                                  _sessionPanelState == PanelState.CLOSED ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                ),
+                                onTap: () {
+                                  Feedback.forLongPress(context);
+
+                                  if (sessionPanelController.isPanelClosed) {
+                                    sessionPanelController.open();
+                                    setState(() {
+                                      _sessionPanelState = PanelState.OPEN;
+                                    });
+                                  } else {
+                                    sessionPanelController.close();
+                                    setState(() {
+                                      _sessionPanelState = PanelState.CLOSED;
+                                    });
+                                  }
+                                },
+                              )
+                            : TextButton(
+                                onPressed: _startHike,
+                                child: Text(
+                                  "Start Hike",
+                                  style: TextStyle(
+                                    fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                                    fontFamily: Theme.of(context).textTheme.bodyLarge!.fontFamily,
+                                  ),
+                                ),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
+                                ),
+                              ),
                         contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                         onTap: () {
                           if (sessionPanelController.isPanelClosed) {
