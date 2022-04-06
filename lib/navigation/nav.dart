@@ -338,10 +338,10 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
 
                   if (service.nearbyBeacon != null) {
                     if (_previousBeacon != service.nearbyBeacon || _previousBeacon == null) {
-                      _handleBeaconFound(_nearestBeacon!);
-
-                      setState(() {
-                        _previousBeacon = _nearestBeacon;
+                      _handleBeaconFound(_nearestBeacon!).then((_) {
+                        setState(() {
+                          _previousBeacon = _nearestBeacon;
+                        });
                       });
                     }
                   }
