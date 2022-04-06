@@ -338,11 +338,11 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
 
                   if (service.nearbyBeacon != null) {
                     if (_previousBeacon != service.nearbyBeacon || _previousBeacon == null) {
+                      _handleBeaconFound(_nearestBeacon!);
+
                       setState(() {
                         _previousBeacon = _nearestBeacon;
                       });
-
-                      _handleBeaconFound(_nearestBeacon!);
                     }
                   }
                 });
@@ -529,6 +529,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
 
     setState(() {
       _hikeDestinations.clear();
+      prefs.setString("hike_data", "");
     });
   }
 
