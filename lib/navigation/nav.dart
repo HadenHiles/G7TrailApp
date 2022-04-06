@@ -287,9 +287,11 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                             width: 130,
                             child: FittedBox(
                               fit: BoxFit.cover,
-                              child: Image(
-                                image: NetworkImage(_hikeDestinations[i].imgURL!),
-                              ),
+                              child: _hikeDestinations[i].imgURL != null
+                                  ? Image(
+                                      image: NetworkImage(_hikeDestinations[i].imgURL!),
+                                    )
+                                  : Image(image: AssetImage("assets/images/app-icon.png")),
                             ),
                           ),
                           title: Text(
@@ -301,6 +303,27 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                     },
                   ),
                 ),
+                !sessionService.isRunning
+                    ? Container()
+                    : Container(
+                        margin: EdgeInsets.only(bottom: 25),
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: TextButton(
+                          child: Text(
+                            "Cancel Hike".toUpperCase(),
+                            style: TextStyle(
+                              fontSize: Theme.of(context).textTheme.headline6!.fontSize,
+                              fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                              color: Color(0xffCC3333),
+                            ),
+                          ),
+                          style: ButtonStyle(
+                            padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12, horizontal: 2)),
+                            backgroundColor: MaterialStateProperty.all(darken(Theme.of(context).colorScheme.primary, 0.05)),
+                          ),
+                          onPressed: () => _finishHike(false),
+                        ),
+                      )
               ],
             ),
           ),
@@ -351,7 +374,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
     List<HikeDestination> beacons;
     HikeDestination hikeD = HikeDestination(id: d.reference!.id, entryPoint: d.entryPoint, destinationName: d.destinationName, beaconTitle: d.beaconTitle, beaconId: d.beaconId);
 
-    if (!hikeD.entryPoint) {
+    if (!hikeD.entryPoint && hikeD.id != _previousBeacon!.id) {
       if (sessionService.isRunning) {
         if (prefs.get('hike_data') == null) {
           beacons = [hikeD];
@@ -415,7 +438,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                     if (!sessionService.isRunning) {
                       _startHike();
                     } else {
-                      sessionService.reset();
+                      _finishHike(true);
                     }
                   },
                 ),
@@ -498,6 +521,15 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
         ),
       );
     }
+  }
+
+  void _finishHike(bool? save) {
+    sessionService.reset();
+    sessionPanelController.close();
+
+    setState(() {
+      _hikeDestinations.clear();
+    });
   }
 
   void _handleNavigationChange(int index) {
