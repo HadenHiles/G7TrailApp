@@ -384,7 +384,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
 
     HikeDestination hikeD = HikeDestination(id: d.reference!.id, entryPoint: d.entryPoint, destinationName: d.destinationName, beaconTitle: d.beaconTitle, beaconId: d.beaconId);
 
-    if (!hikeD.entryPoint && (_previousBeacon == null || (destinations.length < 1 || destinations.where((i) => (i == null || i.id == hikeD.id)).length < 1))) {
+    if (!hikeD.entryPoint && (_previousBeacon == null || (destinations.length < 1 || destinations.last!.id != hikeD.id))) {
       if (sessionService.isRunning) {
         if (prefs.get('hike_data') == null) {
           beacons.add(hikeD);
