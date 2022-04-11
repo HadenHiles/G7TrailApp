@@ -77,16 +77,19 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
       _hikeDestinations = [];
     });
 
-    List<HikeDestination> hikeDestinations = HikeDestination.decode(prefs.getString('hike_data')!);
-    for (HikeDestination hd in hikeDestinations) {
-      await FirebaseFirestore.instance.collection('fl_content').doc(hd.id).get().then((snapshot) async {
-        Destination d = Destination.fromSnapshot(snapshot);
-        if (!d.entryPoint && d.images.isNotEmpty) {
-          await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
+    String? data = prefs.getString('hike_data');
+    if (data != null && data.isNotEmpty) {
+      List<HikeDestination> hikeDestinations = HikeDestination.decode(data);
+      for (HikeDestination hd in hikeDestinations) {
+        await FirebaseFirestore.instance.collection('fl_content').doc(hd.id).get().then((snapshot) async {
+          Destination d = Destination.fromSnapshot(snapshot);
+          if (!d.entryPoint && d.images.isNotEmpty) {
+            await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
 
-          _hikeDestinations.add(d);
-        }
-      });
+            _hikeDestinations.add(d);
+          }
+        });
+      }
     }
   }
 
@@ -337,13 +340,11 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                   });
 
                   if (service.nearbyBeacon != null) {
-                    if (_previousBeacon != service.nearbyBeacon || _previousBeacon == null) {
-                      _handleBeaconFound(_nearestBeacon!).then((_) {
-                        setState(() {
-                          _previousBeacon = _nearestBeacon;
-                        });
+                    _handleBeaconFound(_nearestBeacon!).then((_) {
+                      setState(() {
+                        _previousBeacon = _nearestBeacon;
                       });
-                    }
+                    });
                   }
                 });
               }
@@ -375,9 +376,15 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
   Future<void> _handleBeaconFound(Destination d) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<HikeDestination> beacons = [];
+    List<HikeDestination?> destinations = [];
+    String? data = prefs.getString('hike_data');
+    if (data != null && data.isNotEmpty) {
+      destinations = HikeDestination.decode(data);
+    }
+
     HikeDestination hikeD = HikeDestination(id: d.reference!.id, entryPoint: d.entryPoint, destinationName: d.destinationName, beaconTitle: d.beaconTitle, beaconId: d.beaconId);
 
-    if (!hikeD.entryPoint && (_previousBeacon == null || hikeD.id != _previousBeacon!.id)) {
+    if (!hikeD.entryPoint && (_previousBeacon == null || (destinations.length < 1 || destinations.where((i) => (i == null || i.id == hikeD.id)).length < 1))) {
       if (sessionService.isRunning) {
         if (prefs.get('hike_data') == null) {
           beacons.add(hikeD);
@@ -406,7 +413,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
       }
     }
 
-    if (preferences.beaconFoundAlert) {
+    if (preferences.beaconFoundAlert && (_previousBeacon != d || _previousBeacon == null)) {
       if (await Vibration.hasVibrator() ?? false) {
         Vibration.vibrate();
       }
