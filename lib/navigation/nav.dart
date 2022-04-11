@@ -347,7 +347,10 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                   }
                 });
               }
-              return _child;
+              return Padding(
+                padding: EdgeInsets.only(bottom: 65),
+                child: _child,
+              );
             },
           ),
         ),
@@ -371,13 +374,13 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
 
   Future<void> _handleBeaconFound(Destination d) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<HikeDestination> beacons;
+    List<HikeDestination> beacons = [];
     HikeDestination hikeD = HikeDestination(id: d.reference!.id, entryPoint: d.entryPoint, destinationName: d.destinationName, beaconTitle: d.beaconTitle, beaconId: d.beaconId);
 
-    if (!hikeD.entryPoint && hikeD.id != _previousBeacon!.id) {
+    if (!hikeD.entryPoint && (_previousBeacon == null || hikeD.id != _previousBeacon!.id)) {
       if (sessionService.isRunning) {
         if (prefs.get('hike_data') == null) {
-          beacons = [hikeD];
+          beacons.add(hikeD);
           prefs.setString("hike_data", HikeDestination.encode(beacons));
 
           await _loadDestination(hikeD).then((d) {
