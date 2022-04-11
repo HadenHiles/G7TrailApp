@@ -148,6 +148,7 @@ class Home extends StatelessWidget {
           child: MaterialApp(
             title: 'Group of Seven Lake Superior Trail',
             navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
             theme: preferences.darkMode ? HomeTheme.darkTheme : HomeTheme.lightTheme,
             darkTheme: HomeTheme.darkTheme,
             themeMode: preferences.darkMode ? ThemeMode.dark : ThemeMode.system,
