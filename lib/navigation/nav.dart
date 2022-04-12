@@ -324,10 +324,8 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                         ),
                         child: Stack(
                           children: [
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(color: darken(Theme.of(context).colorScheme.secondary, 0.35).withOpacity(0.55)),
-                              ),
+                            Container(
+                              decoration: BoxDecoration(color: darken(Theme.of(context).colorScheme.secondary, 0.35).withOpacity(0.55)),
                             ),
                             Container(
                               child: Column(
@@ -408,7 +406,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
           ),
           body: Consumer<BeaconRangingService>(
             builder: (context, service, child) {
-              if (service.nearbyBeacon != null && preferences.beaconFoundAlert) {
+              if (service.nearbyBeacon != null) {
                 SchedulerBinding.instance!.addPostFrameCallback((_) {
                   setState(() {
                     _previousBeacon = _nearestBeacon;
@@ -462,7 +460,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
 
     if (!hikeD.entryPoint && (_previousBeacon == null || (destinations.length < 1 || destinations.last!.id != hikeD.id))) {
       if (sessionService.isRunning) {
-        if (prefs.get('hike_data') == null) {
+        if (data == null || data.isEmpty) {
           beacons.add(hikeD);
           prefs.setString("hike_data", HikeDestination.encode(beacons));
 
@@ -472,7 +470,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
             });
           });
         } else {
-          beacons = HikeDestination.decode(prefs.getString('hike_data')!);
+          beacons = HikeDestination.decode(data);
           beacons.add(hikeD);
           prefs.setString("hike_data", HikeDestination.encode(beacons));
 
