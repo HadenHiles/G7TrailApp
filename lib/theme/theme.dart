@@ -203,15 +203,19 @@ class HomeTheme {
     textTheme: TextTheme(
       headline1: TextStyle(
         color: Colors.white,
+        fontSize: 42,
       ),
       headline2: TextStyle(
         color: Colors.white,
+        fontSize: 36,
       ),
       headline3: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),
+        fontSize: 30,
       ),
       headline4: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),
+        fontSize: 24,
       ),
       headline5: TextStyle(
         color: Color.fromRGBO(255, 255, 255, 0.8),
@@ -220,16 +224,16 @@ class HomeTheme {
       ),
       headline6: TextStyle(
         color: Color(0xff0053B1),
-        fontSize: 14,
+        fontSize: 18,
         fontWeight: FontWeight.bold,
       ),
       bodyText1: TextStyle(
-        color: Color.fromRGBO(255, 255, 255, 0.9),
-        fontSize: 14,
+        color: Color.fromRGBO(255, 255, 255, 0.8),
+        fontSize: 16,
       ),
       bodyText2: TextStyle(
-        color: Color.fromRGBO(255, 255, 255, 0.7),
-        fontSize: 12,
+        color: Color.fromRGBO(255, 255, 255, 0.8),
+        fontSize: 14,
       ),
     ),
   );
