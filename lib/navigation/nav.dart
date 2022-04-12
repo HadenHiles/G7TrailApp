@@ -21,6 +21,7 @@ import 'package:vibration/vibration.dart';
 import '../screens/explore.dart';
 import '../screens/map.dart';
 import './fluid_nav_bar.dart';
+import 'package:html/parser.dart';
 
 late Destination? nearbyBeacon;
 final PanelController sessionPanelController = PanelController();
@@ -278,29 +279,104 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                     );
                   },
                 ),
+                _hikeDestinations.length < 1
+                    ? Container()
+                    : Container(
+                        padding: EdgeInsets.only(top: 0, right: 15, bottom: 8, left: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Destinations visited".toUpperCase(),
+                              style: TextStyle(
+                                color: Theme.of(context).textTheme.headline5!.color,
+                                fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                                fontSize: 18,
+                                fontWeight: Theme.of(context).textTheme.headline5!.fontWeight,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: _hikeDestinations.length,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
                     itemBuilder: (context, i) {
+                      var doc = parse(_hikeDestinations[i].destinationSummary);
+                      var summaryParagraph = doc.getElementsByTagName('p').first.text;
+                      summaryParagraph = summaryParagraph.isEmpty ? "<p></p>" : summaryParagraph;
+
                       return Container(
-                        height: 110,
-                        child: ListTile(
-                          leading: SizedBox(
-                            height: 110,
-                            width: 130,
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: _hikeDestinations[i].imgURL != null
-                                  ? Image(
-                                      image: NetworkImage(_hikeDestinations[i].imgURL!),
-                                    )
-                                  : Image(image: AssetImage("assets/images/app-icon.png")),
+                        height: 100,
+                        decoration: BoxDecoration(
+                          image: _hikeDestinations[i].imgURL != null
+                              ? DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(_hikeDestinations[i].imgURL!),
+                                )
+                              : DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage("assets/images/app-icon.png"),
+                                ),
+                        ),
+                        child: Stack(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(color: darken(Theme.of(context).colorScheme.secondary, 0.35).withOpacity(0.55)),
+                              ),
                             ),
-                          ),
-                          title: Text(
-                            _hikeDestinations[i].destinationName,
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
+                            Container(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  ListTile(
+                                    dense: true,
+                                    onTap: () {
+                                      navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+                                        return DestinationScreen(destination: _hikeDestinations[i]);
+                                      }));
+                                    },
+                                    title: Text(
+                                      _hikeDestinations[i].destinationName.toUpperCase(),
+                                      style: TextStyle(
+                                        color: HomeTheme.darkTheme.textTheme.headline5!.color,
+                                        fontFamily: HomeTheme.darkTheme.textTheme.headline5!.fontFamily,
+                                        fontSize: 26,
+                                        fontWeight: HomeTheme.darkTheme.textTheme.headline5!.fontWeight,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      summaryParagraph.length >= 40 ? summaryParagraph.substring(0, 39) + ".." : summaryParagraph.substring(0, summaryParagraph.length) + "..",
+                                      style: TextStyle(
+                                        color: HomeTheme.darkTheme.textTheme.bodyText2!.color,
+                                        fontFamily: HomeTheme.darkTheme.textTheme.bodyText2!.fontFamily,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                      maxLines: 1,
+                                    ),
+                                    trailing: InkWell(
+                                      onTap: () {
+                                        navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+                                          return DestinationScreen(destination: _hikeDestinations[i]);
+                                        }));
+                                      },
+                                      child: Icon(
+                                        Icons.arrow_right_alt_rounded,
+                                        size: 36,
+                                        color: HomeTheme.darkTheme.textTheme.headline5!.color,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },
