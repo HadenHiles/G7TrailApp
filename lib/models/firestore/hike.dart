@@ -20,7 +20,6 @@ class Hike {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'data': data,
       'duration': duration.inSeconds,
       'date': date,
