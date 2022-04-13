@@ -144,265 +144,334 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
             });
           },
           panel: Container(
+            height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                opacity: 0.2,
+                image: AssetImage("assets/images/app-icon.png"),
+              ),
             ),
-            child: Column(
+            child: Stack(
               children: [
-                AnimatedBuilder(
-                  animation: sessionService, // listen to ChangeNotifier
-                  builder: (context, child) {
-                    return Container(
-                      child: ListTile(
-                        tileColor: Theme.of(context).colorScheme.primary,
-                        title: sessionService.isRunning
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    printWeekday(DateTime.now()) + " Hike",
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.onPrimary,
-                                      fontFamily: "NovecentoSans",
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                Container(
+                  decoration: BoxDecoration(color: darken(Theme.of(context).colorScheme.secondary, 0.5).withOpacity(0.55)),
+                ),
+                Column(
+                  children: [
+                    AnimatedBuilder(
+                      animation: sessionService, // listen to ChangeNotifier
+                      builder: (context, child) {
+                        return Container(
+                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
+                          child: ListTile(
+                            tileColor: Theme.of(context).colorScheme.primary,
+                            title: sessionService.isRunning
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      InkWell(
-                                        onTap: () {
-                                          Feedback.forLongPress(context);
-
-                                          if (!sessionService.isPaused) {
-                                            sessionService.pause();
-                                          } else {
-                                            sessionService.resume();
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.all(10),
-                                          child: Icon(
-                                            sessionService.isPaused ? Icons.play_arrow : Icons.pause,
-                                            size: 30,
-                                            color: Theme.of(context).colorScheme.onPrimary,
-                                          ),
+                                      Text(
+                                        printWeekday(DateTime.now()) + " Hike",
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onPrimary,
+                                          fontFamily: "NovecentoSans",
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w700,
                                         ),
-                                        focusColor: darken(Theme.of(context).primaryColor, 0.2),
-                                        enableFeedback: true,
-                                        borderRadius: BorderRadius.circular(30),
                                       ),
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            printDuration(sessionService.currentDuration, true),
-                                            style: TextStyle(
-                                              color: Theme.of(context).colorScheme.onPrimary,
-                                              fontFamily: "NovecentoSans",
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              Feedback.forLongPress(context);
+
+                                              if (!sessionService.isPaused) {
+                                                sessionService.pause();
+                                              } else {
+                                                sessionService.resume();
+                                              }
+                                            },
+                                            child: Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Icon(
+                                                sessionService.isPaused ? Icons.play_arrow : Icons.pause,
+                                                size: 30,
+                                                color: Theme.of(context).colorScheme.onPrimary,
+                                              ),
                                             ),
+                                            focusColor: darken(Theme.of(context).primaryColor, 0.2),
+                                            enableFeedback: true,
+                                            borderRadius: BorderRadius.circular(30),
+                                          ),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(
+                                                printDuration(sessionService.currentDuration, true),
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimary,
+                                                  fontFamily: "NovecentoSans",
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
                                     ],
+                                  )
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Start a hike",
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onPrimary,
+                                          fontFamily: "NovecentoSans",
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Ready to go?",
-                                    style: TextStyle(
+                            trailing: sessionService.isRunning
+                                ? InkWell(
+                                    focusColor: darken(Theme.of(context).primaryColor, 0.6),
+                                    enableFeedback: true,
+                                    borderRadius: BorderRadius.circular(30),
+                                    child: Icon(
+                                      _sessionPanelState == PanelState.CLOSED ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                                       color: Theme.of(context).colorScheme.onPrimary,
-                                      fontFamily: "NovecentoSans",
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w700,
                                     ),
-                                  ),
-                                ],
-                              ),
-                        trailing: sessionService.isRunning
-                            ? InkWell(
-                                focusColor: darken(Theme.of(context).primaryColor, 0.6),
-                                enableFeedback: true,
-                                borderRadius: BorderRadius.circular(30),
-                                child: Icon(
-                                  _sessionPanelState == PanelState.CLOSED ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                ),
-                                onTap: () {
-                                  Feedback.forLongPress(context);
-
-                                  if (sessionPanelController.isPanelClosed) {
-                                    sessionPanelController.open();
-                                    setState(() {
-                                      _sessionPanelState = PanelState.OPEN;
-                                    });
-                                  } else {
-                                    sessionPanelController.close();
-                                    setState(() {
-                                      _sessionPanelState = PanelState.CLOSED;
-                                    });
-                                  }
-                                },
-                              )
-                            : TextButton(
-                                onPressed: _startHike,
-                                child: Text(
-                                  "Start Hike",
-                                  style: TextStyle(
-                                    fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
-                                    fontFamily: Theme.of(context).textTheme.bodyLarge!.fontFamily,
-                                  ),
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                                ),
-                              ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                        onTap: () {
-                          if (sessionPanelController.isPanelClosed) {
-                            sessionPanelController.open();
-                            setState(() {
-                              _sessionPanelState = PanelState.OPEN;
-                            });
-                          } else {
-                            sessionPanelController.close();
-                            setState(() {
-                              _sessionPanelState = PanelState.CLOSED;
-                            });
-                          }
-                        },
-                      ),
-                    );
-                  },
-                ),
-                _hikeDestinations.length < 1
-                    ? Container()
-                    : Container(
-                        padding: EdgeInsets.only(top: 0, right: 15, bottom: 8, left: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "Destinations visited".toUpperCase(),
-                              style: TextStyle(
-                                color: Theme.of(context).textTheme.headline5!.color,
-                                fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
-                                fontSize: 18,
-                                fontWeight: Theme.of(context).textTheme.headline5!.fontWeight,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _hikeDestinations.length,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context, i) {
-                      var doc = parse(_hikeDestinations[i].destinationSummary);
-                      var summaryParagraph = doc.getElementsByTagName('p').first.text;
-                      summaryParagraph = summaryParagraph.isEmpty ? "<p></p>" : summaryParagraph;
-
-                      return Container(
-                        height: 100,
-                        decoration: BoxDecoration(
-                          image: _hikeDestinations[i].imgURL != null
-                              ? DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(_hikeDestinations[i].imgURL!),
-                                )
-                              : DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: AssetImage("assets/images/app-icon.png"),
-                                ),
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(color: darken(Theme.of(context).colorScheme.secondary, 0.35).withOpacity(0.55)),
-                            ),
-                            Container(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  ListTile(
-                                    dense: true,
                                     onTap: () {
-                                      navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-                                        return DestinationScreen(destination: _hikeDestinations[i]);
-                                      }));
+                                      Feedback.forLongPress(context);
+
+                                      if (sessionPanelController.isPanelClosed) {
+                                        sessionPanelController.open();
+                                        setState(() {
+                                          _sessionPanelState = PanelState.OPEN;
+                                        });
+                                      } else {
+                                        sessionPanelController.close();
+                                        setState(() {
+                                          _sessionPanelState = PanelState.CLOSED;
+                                        });
+                                      }
                                     },
-                                    title: Text(
-                                      _hikeDestinations[i].destinationName.toUpperCase(),
-                                      style: TextStyle(
-                                        color: HomeTheme.darkTheme.textTheme.headline5!.color,
-                                        fontFamily: HomeTheme.darkTheme.textTheme.headline5!.fontFamily,
-                                        fontSize: 26,
-                                        fontWeight: HomeTheme.darkTheme.textTheme.headline5!.fontWeight,
-                                      ),
+                                  )
+                                : InkWell(
+                                    onTap: _startHike,
+                                    splashColor: darken(Theme.of(context).colorScheme.secondary, 0.2),
+                                    highlightColor: Theme.of(context).colorScheme.secondary,
+                                    child: Icon(
+                                      Icons.arrow_circle_right,
+                                      color: darken(Theme.of(context).colorScheme.secondary, 0.1),
+                                      size: 50,
                                     ),
-                                    subtitle: Text(
-                                      summaryParagraph.length >= 40 ? summaryParagraph.substring(0, 39) + ".." : summaryParagraph.substring(0, summaryParagraph.length) + "..",
-                                      style: TextStyle(
-                                        color: HomeTheme.darkTheme.textTheme.bodyText2!.color,
-                                        fontFamily: HomeTheme.darkTheme.textTheme.bodyText2!.fontFamily,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w300,
-                                      ),
-                                      maxLines: 1,
+                                  ),
+                            contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                            onTap: () {
+                              if (sessionPanelController.isPanelClosed) {
+                                sessionPanelController.open();
+                                setState(() {
+                                  _sessionPanelState = PanelState.OPEN;
+                                });
+                                _startHike();
+                              } else {
+                                sessionPanelController.close();
+                                setState(() {
+                                  _sessionPanelState = PanelState.CLOSED;
+                                });
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    _hikeDestinations.length < 1
+                        ? Container()
+                        : Container(
+                            decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
+                            padding: EdgeInsets.only(top: 0, right: 15, bottom: 8, left: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "Destinations visited".toUpperCase(),
+                                  style: TextStyle(
+                                    color: Theme.of(context).textTheme.headline5!.color,
+                                    fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                                    fontSize: 18,
+                                    fontWeight: Theme.of(context).textTheme.headline5!.fontWeight,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          ListView.builder(
+                            itemCount: _hikeDestinations.length,
+                            shrinkWrap: true,
+                            padding: EdgeInsets.only(bottom: 100),
+                            itemBuilder: (context, i) {
+                              var doc = parse(_hikeDestinations[i].destinationSummary);
+                              var summaryParagraph = doc.getElementsByTagName('p').first.text;
+                              summaryParagraph = summaryParagraph.isEmpty ? "<p></p>" : summaryParagraph;
+
+                              return Column(
+                                children: [
+                                  Container(
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      image: _hikeDestinations[i].imgURL != null
+                                          ? DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(_hikeDestinations[i].imgURL!),
+                                            )
+                                          : DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: AssetImage("assets/images/app-icon.png"),
+                                            ),
                                     ),
-                                    trailing: InkWell(
-                                      onTap: () {
-                                        navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-                                          return DestinationScreen(destination: _hikeDestinations[i]);
-                                        }));
-                                      },
-                                      child: Icon(
-                                        Icons.arrow_right_alt_rounded,
-                                        size: 36,
-                                        color: HomeTheme.darkTheme.textTheme.headline5!.color,
-                                      ),
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(color: darken(Theme.of(context).colorScheme.secondary, 0.4).withOpacity(0.45)),
+                                        ),
+                                        Container(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              ListTile(
+                                                dense: true,
+                                                onTap: () {
+                                                  navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+                                                    return DestinationScreen(destination: _hikeDestinations[i]);
+                                                  }));
+                                                },
+                                                title: Text(
+                                                  _hikeDestinations[i].destinationName.toUpperCase(),
+                                                  style: TextStyle(
+                                                    color: HomeTheme.darkTheme.textTheme.headline5!.color,
+                                                    fontFamily: HomeTheme.darkTheme.textTheme.headline5!.fontFamily,
+                                                    fontSize: 26,
+                                                    fontWeight: HomeTheme.darkTheme.textTheme.headline5!.fontWeight,
+                                                  ),
+                                                ),
+                                                subtitle: Text(
+                                                  summaryParagraph.length >= 40 ? summaryParagraph.substring(0, 39) + ".." : summaryParagraph.substring(0, summaryParagraph.length) + "..",
+                                                  style: TextStyle(
+                                                    color: HomeTheme.darkTheme.textTheme.bodyText2!.color,
+                                                    fontFamily: HomeTheme.darkTheme.textTheme.bodyText2!.fontFamily,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w300,
+                                                  ),
+                                                  maxLines: 1,
+                                                ),
+                                                trailing: InkWell(
+                                                  onTap: () {
+                                                    navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+                                                      return DestinationScreen(destination: _hikeDestinations[i]);
+                                                    }));
+                                                  },
+                                                  child: Icon(
+                                                    Icons.arrow_right_alt_rounded,
+                                                    size: 36,
+                                                    color: HomeTheme.darkTheme.textTheme.headline5!.color,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
+                              );
+                            },
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              height: 85,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    darken(Theme.of(context).colorScheme.secondary, 0.4).withOpacity(0),
+                                    darken(Theme.of(context).colorScheme.secondary, 0.4).withOpacity(0.8),
+                                  ],
+                                ),
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+                          ),
+                          !sessionService.isRunning
+                              ? Container()
+                              : Positioned(
+                                  bottom: 0,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 5),
+                                          width: MediaQuery.of(context).size.width * 0.49,
+                                          child: TextButton(
+                                            child: Text(
+                                              "Cancel".toUpperCase(),
+                                              style: TextStyle(
+                                                fontSize: Theme.of(context).textTheme.headline6!.fontSize,
+                                                fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                                                color: Color(0xffCC3333),
+                                              ),
+                                            ),
+                                            style: ButtonStyle(
+                                              padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12, horizontal: 2)),
+                                              backgroundColor: MaterialStateProperty.all(darken(Theme.of(context).colorScheme.primary, 0.05)),
+                                            ),
+                                            onPressed: () => _finishHike(false),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 5),
+                                          width: MediaQuery.of(context).size.width * 0.49,
+                                          child: TextButton(
+                                            child: Text(
+                                              "Save".toUpperCase(),
+                                              style: TextStyle(
+                                                fontSize: Theme.of(context).textTheme.headline6!.fontSize,
+                                                fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                                                color: Theme.of(context).colorScheme.onSecondary,
+                                              ),
+                                            ),
+                                            style: ButtonStyle(
+                                              padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12, horizontal: 2)),
+                                              backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
+                                            ),
+                                            onPressed: () => _finishHike(true),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                !sessionService.isRunning
-                    ? Container()
-                    : Container(
-                        margin: EdgeInsets.only(bottom: 25),
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: TextButton(
-                          child: Text(
-                            "Cancel Hike".toUpperCase(),
-                            style: TextStyle(
-                              fontSize: Theme.of(context).textTheme.headline6!.fontSize,
-                              fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
-                              color: Color(0xffCC3333),
-                            ),
-                          ),
-                          style: ButtonStyle(
-                            padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12, horizontal: 2)),
-                            backgroundColor: MaterialStateProperty.all(darken(Theme.of(context).colorScheme.primary, 0.05)),
-                          ),
-                          onPressed: () => _finishHike(false),
-                        ),
-                      )
               ],
             ),
           ),
@@ -611,11 +680,17 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
 
   void _finishHike(bool? save) {
     save = save ?? false;
-    sessionService.reset();
-    sessionPanelController.close();
 
-    if (save && user != null && !user!.isAnonymous) {
+    if (save && FirebaseAuth.instance.currentUser != null && !FirebaseAuth.instance.currentUser!.isAnonymous) {
       _saveHike(user!, prefs.getString("hike_data"));
+
+      sessionService.reset();
+      sessionPanelController.close();
+
+      setState(() {
+        _hikeDestinations.clear();
+        prefs.setString("hike_data", "");
+      });
     } else if (save) {
       showDialog(
           context: context,
@@ -641,9 +716,8 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                     onPressed: () {
                       Navigator.pop(context, 'Login');
 
-                      navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
-                        return FluidNavigationBar(defaultTab: 2);
-                      }));
+                      sessionPanelController.close();
+                      _handleNavigationChange(2); // Go to profile tab without re-painting navigation widget (messes up hike session contents)
                     },
                     child: Text(
                       'Login',
@@ -652,12 +726,15 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                   ),
                 ],
               ));
-    }
+    } else {
+      sessionService.reset();
+      sessionPanelController.close();
 
-    setState(() {
-      _hikeDestinations.clear();
-      prefs.setString("hike_data", "");
-    });
+      setState(() {
+        _hikeDestinations.clear();
+        prefs.setString("hike_data", "");
+      });
+    }
   }
 
   Future<void> _saveHike(User user, String? data) async {
