@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:g7trailapp/main.dart';
-import 'package:g7trailapp/models/confirm_dialog.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/models/firestore/hike.dart';
 import 'package:g7trailapp/models/hike_destination.dart';
@@ -13,7 +12,6 @@ import 'package:g7trailapp/services/beacon_ranging_service.dart';
 import 'package:g7trailapp/services/session.dart';
 import 'package:g7trailapp/services/utility.dart';
 import 'package:g7trailapp/theme/theme.dart';
-import 'package:g7trailapp/utility/custom_dialogs.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
@@ -162,130 +160,96 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                     AnimatedBuilder(
                       animation: sessionService, // listen to ChangeNotifier
                       builder: (context, child) {
-                        return Container(
-                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
-                          child: ListTile(
-                            tileColor: Theme.of(context).colorScheme.primary,
-                            title: sessionService.isRunning
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        printWeekday(DateTime.now()) + " Hike",
-                                        style: TextStyle(
-                                          color: Theme.of(context).colorScheme.onPrimary,
-                                          fontFamily: "NovecentoSans",
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              Feedback.forLongPress(context);
-
-                                              if (!sessionService.isPaused) {
-                                                sessionService.pause();
-                                              } else {
-                                                sessionService.resume();
-                                              }
-                                            },
-                                            child: Padding(
-                                              padding: EdgeInsets.all(10),
-                                              child: Icon(
-                                                sessionService.isPaused ? Icons.play_arrow : Icons.pause,
-                                                size: 30,
-                                                color: Theme.of(context).colorScheme.onPrimary,
-                                              ),
-                                            ),
-                                            focusColor: darken(Theme.of(context).primaryColor, 0.2),
-                                            enableFeedback: true,
-                                            borderRadius: BorderRadius.circular(30),
+                        return GestureDetector(
+                          onTap: _startHike,
+                          child: Container(
+                            decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
+                            child: ListTile(
+                              tileColor: Theme.of(context).colorScheme.primary,
+                              title: sessionService.isRunning
+                                  ? Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          printWeekday(DateTime.now()) + " Hike",
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.onPrimary,
+                                            fontFamily: "NovecentoSans",
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w700,
                                           ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Text(
-                                                printDuration(sessionService.currentDuration, true),
-                                                style: TextStyle(
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                Feedback.forLongPress(context);
+
+                                                if (!sessionService.isPaused) {
+                                                  sessionService.pause();
+                                                } else {
+                                                  sessionService.resume();
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding: EdgeInsets.all(10),
+                                                child: Icon(
+                                                  sessionService.isPaused ? Icons.play_arrow : Icons.pause,
+                                                  size: 30,
                                                   color: Theme.of(context).colorScheme.onPrimary,
-                                                  fontFamily: "NovecentoSans",
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                : Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Start a hike",
-                                        style: TextStyle(
-                                          color: Theme.of(context).colorScheme.onPrimary,
-                                          fontFamily: "NovecentoSans",
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w700,
+                                              focusColor: darken(Theme.of(context).primaryColor, 0.2),
+                                              enableFeedback: true,
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Text(
+                                                  printDuration(sessionService.currentDuration, true),
+                                                  style: TextStyle(
+                                                    color: Theme.of(context).colorScheme.onPrimary,
+                                                    fontFamily: "NovecentoSans",
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
+                                      ],
+                                    )
+                                  : Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Start a hike".toUpperCase(),
+                                          style: Theme.of(context).textTheme.headline4,
+                                        ),
+                                      ],
+                                    ),
+                              trailing: sessionService.isRunning
+                                  ? InkWell(
+                                      focusColor: darken(Theme.of(context).primaryColor, 0.6),
+                                      enableFeedback: true,
+                                      borderRadius: BorderRadius.circular(30),
+                                      child: Icon(
+                                        _sessionPanelState == PanelState.CLOSED ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                                        color: Theme.of(context).colorScheme.onPrimary,
                                       ),
-                                    ],
-                                  ),
-                            trailing: sessionService.isRunning
-                                ? InkWell(
-                                    focusColor: darken(Theme.of(context).primaryColor, 0.6),
-                                    enableFeedback: true,
-                                    borderRadius: BorderRadius.circular(30),
-                                    child: Icon(
-                                      _sessionPanelState == PanelState.CLOSED ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                                      color: Theme.of(context).colorScheme.onPrimary,
+                                    )
+                                  : InkWell(
+                                      child: Icon(
+                                        Icons.arrow_circle_right,
+                                        color: darken(Theme.of(context).colorScheme.secondary, 0.1),
+                                        size: 50,
+                                      ),
                                     ),
-                                    onTap: () {
-                                      Feedback.forLongPress(context);
-
-                                      if (sessionPanelController.isPanelClosed) {
-                                        sessionPanelController.open();
-                                        setState(() {
-                                          _sessionPanelState = PanelState.OPEN;
-                                        });
-                                      } else {
-                                        sessionPanelController.close();
-                                        setState(() {
-                                          _sessionPanelState = PanelState.CLOSED;
-                                        });
-                                      }
-                                    },
-                                  )
-                                : InkWell(
-                                    onTap: _startHike,
-                                    splashColor: darken(Theme.of(context).colorScheme.secondary, 0.2),
-                                    highlightColor: Theme.of(context).colorScheme.secondary,
-                                    child: Icon(
-                                      Icons.arrow_circle_right,
-                                      color: darken(Theme.of(context).colorScheme.secondary, 0.1),
-                                      size: 50,
-                                    ),
-                                  ),
-                            contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-                            onTap: () {
-                              if (sessionPanelController.isPanelClosed) {
-                                sessionPanelController.open();
-                                setState(() {
-                                  _sessionPanelState = PanelState.OPEN;
-                                });
-                                _startHike();
-                              } else {
-                                sessionPanelController.close();
-                                setState(() {
-                                  _sessionPanelState = PanelState.CLOSED;
-                                });
-                              }
-                            },
+                              contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                            ),
                           ),
                         );
                       },
@@ -351,9 +315,11 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                               ListTile(
                                                 dense: true,
                                                 onTap: () {
-                                                  navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-                                                    return DestinationScreen(destination: _hikeDestinations[i]);
-                                                  }));
+                                                  Future.delayed(Duration.zero, () {
+                                                    navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+                                                      return FluidNavigationBar(defaultTab: 1, highlightedDestination: _hikeDestinations[i]);
+                                                    }));
+                                                  });
                                                 },
                                                 title: Text(
                                                   _hikeDestinations[i].destinationName.toUpperCase(),
@@ -376,9 +342,11 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                                 ),
                                                 trailing: InkWell(
                                                   onTap: () {
-                                                    navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-                                                      return DestinationScreen(destination: _hikeDestinations[i]);
-                                                    }));
+                                                    Future.delayed(Duration.zero, () {
+                                                      navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+                                                        return FluidNavigationBar(defaultTab: 1, highlightedDestination: _hikeDestinations[i]);
+                                                      }));
+                                                    });
                                                   },
                                                   child: Icon(
                                                     Icons.arrow_right_alt_rounded,
@@ -629,11 +597,13 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                   onTap: () {
                     OverlaySupportEntry.of(context)?.dismiss();
 
-                    navigatorKey.currentState!.push(
-                      MaterialPageRoute(builder: (context) {
-                        return DestinationScreen(destination: d);
-                      }),
-                    );
+                    Future.delayed(Duration.zero, () {
+                      navigatorKey.currentState!.push(
+                        MaterialPageRoute(builder: (context) {
+                          return DestinationScreen(destination: d);
+                        }),
+                      );
+                    });
                   },
                 ),
               ),
@@ -646,35 +616,20 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
   }
 
   void _startHike() {
-    if (!sessionService.isRunning) {
-      Feedback.forTap(context);
-      sessionService.start();
+    if (sessionPanelController.isPanelClosed) {
       sessionPanelController.open();
+      setState(() {
+        _sessionPanelState = PanelState.OPEN;
+      });
     } else {
-      dialog(
-        context,
-        ConfirmDialog(
-          "Override current hike?",
-          Text(
-            "Starting a new hike will override your existing one.\n\nWould you like to continue?",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onBackground,
-            ),
-          ),
-          "Cancel",
-          () {
-            Navigator.of(context).pop();
-          },
-          "Continue",
-          () {
-            Feedback.forTap(context);
-            sessionService.reset();
-            Navigator.of(context).pop();
-            sessionService.start();
-            sessionPanelController.show();
-          },
-        ),
-      );
+      sessionPanelController.close();
+      setState(() {
+        _sessionPanelState = PanelState.CLOSED;
+      });
+    }
+
+    if (!sessionService.isRunning) {
+      sessionService.start();
     }
   }
 

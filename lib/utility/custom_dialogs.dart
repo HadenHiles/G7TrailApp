@@ -38,10 +38,12 @@ void dialog(BuildContext context, ConfirmDialog dialog) {
   );
 
   // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
+  Future.delayed(Duration.zero, () {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  });
 }
