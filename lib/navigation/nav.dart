@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/confirm_dialog.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/models/firestore/hike.dart';
 import 'package:g7trailapp/models/hike_destination.dart';
 import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/screens/profile.dart';
@@ -487,7 +489,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
       }
     }
 
-    if (preferences.beaconFoundAlert && (_previousBeacon != d || _previousBeacon == null)) {
+    if (preferences.beaconFoundAlert && (_previousBeacon != d || _previousBeacon == null) && (destinations.length < 1 || destinations.last!.id != d.id)) {
       if (await Vibration.hasVibrator() ?? false) {
         Vibration.vibrate();
       }
@@ -608,13 +610,61 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
   }
 
   void _finishHike(bool? save) {
+    save = save ?? false;
     sessionService.reset();
     sessionPanelController.close();
+
+    if (save && user != null && !user!.isAnonymous) {
+      _saveHike(user!, prefs.getString("hike_data"));
+    } else if (save) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("Login required"),
+                content: Container(
+                  child: Text(
+                    "Please login to save hikes.",
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, 'Close');
+                    },
+                    child: Text(
+                      'Close',
+                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, 'Login');
+
+                      navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+                        return FluidNavigationBar(defaultTab: 2);
+                      }));
+                    },
+                    child: Text(
+                      'Login',
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ],
+              ));
+    }
 
     setState(() {
       _hikeDestinations.clear();
       prefs.setString("hike_data", "");
     });
+  }
+
+  Future<void> _saveHike(User user, String? data) async {
+    if (data != null && data.isNotEmpty) {
+      Hike hike = Hike(data, sessionService.currentDuration, DateTime.now());
+      FirebaseFirestore.instance.collection('hikes').doc(user.uid).collection('hikes').add(hike.toMap());
+    }
   }
 
   void _handleNavigationChange(int index) {
