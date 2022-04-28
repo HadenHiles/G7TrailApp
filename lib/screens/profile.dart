@@ -261,6 +261,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
+            /*
+            // Hide the share hike button until web interface is implemented
             Padding(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
               child: Row(
@@ -302,6 +304,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
+            */
             Padding(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
               child: Row(
