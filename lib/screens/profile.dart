@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:g7trailapp/models/firestore/hike.dart';
 import 'package:g7trailapp/screens/profile/login.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/user_profile.dart';
@@ -24,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   UserProfile userProfile = UserProfile('', '', '', true, null);
+  List<Hike> _hikes = [];
 
   @override
   void initState() {
@@ -35,7 +37,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
 
+    _loadHikes();
+
     super.initState();
+  }
+
+  Future<void> _loadHikes() async {
+    setState(() {
+      _hikes.clear();
+    });
+
+    FirebaseFirestore.instance.collection('hikes').doc(user!.uid).collection('hikes').get().then((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        List<Hike> hikes = [];
+        for (DocumentSnapshot d in snapshot.docs) {
+          hikes.add(Hike.fromSnapshot(d));
+        }
+
+        setState(() {
+          _hikes = hikes;
+        });
+      }
+    });
   }
 
   @override
@@ -138,39 +161,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: user == null || user!.isAnonymous
           ? Login(scaffoldKey: _scaffoldKey)
           : Container(
-              child: ListView(
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 40,
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.symmetric(
-                          vertical: 5,
-                          horizontal: 15,
+              child: RefreshIndicator(
+                onRefresh: _loadHikes,
+                child: ListView(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 40,
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 15,
+                          ),
+                          child: Text(
+                            "Past Hikes".toUpperCase(),
+                            style: Theme.of(context).textTheme.headline5,
+                          ),
                         ),
-                        child: Text(
-                          "Past Hikes".toUpperCase(),
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  _buildPastHike(),
-                  _buildPastHike(),
-                  _buildPastHike(),
-                  SizedBox(height: 15),
-                ],
+                      ],
+                    ),
+                    _buildHikes(_hikes),
+                    SizedBox(height: 15),
+                  ],
+                ),
               ),
             ),
     );
   }
 
-  // TODO: Add params for hike data
-  Widget _buildPastHike() {
+  Widget _buildHikes(List<Hike> hikes) {
+    List<Widget> hikeCards = [];
+    for (Hike h in hikes) {
+      hikeCards.add(_buildHike(h));
+    }
+
+    return Column(children: hikeCards);
+  }
+
+  Widget _buildHike(Hike hike) {
     return Card(
       elevation: 1,
       shape: RoundedRectangleBorder(
@@ -196,7 +228,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   title: Text(
-                    "Saturday Hike".toUpperCase(),
+                    (printWeekday(hike.date) + " Hike").toUpperCase(),
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   trailing: IconButton(
@@ -208,7 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 ListTile(
                   title: Text(
-                    printDate(DateTime(2022, 03, 12)),
+                    printDate(hike.date),
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
@@ -218,10 +250,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: Theme.of(context).textTheme.headline5,
                   ),
                   trailing: Text(
-                    printDuration(
-                      Duration(minutes: 78),
-                      false,
-                    ),
+                    hike.duration.inMinutes < 1
+                        ? "< 01m"
+                        : printDuration(
+                            hike.duration,
+                            false,
+                          ),
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                 ),
@@ -235,7 +269,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // Share the hike
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -274,7 +310,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // Load a hike summary screen
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
