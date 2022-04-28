@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _hikes.clear();
     });
 
-    FirebaseFirestore.instance.collection('hikes').doc(user!.uid).collection('hikes').get().then((snapshot) {
+    FirebaseFirestore.instance.collection('hikes').doc(user!.uid).collection('hikes').orderBy('date', descending: true).get().then((snapshot) {
       if (snapshot.docs.isNotEmpty) {
         List<Hike> hikes = [];
         for (DocumentSnapshot d in snapshot.docs) {
