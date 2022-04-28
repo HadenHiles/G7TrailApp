@@ -315,7 +315,8 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                               ListTile(
                                                 dense: true,
                                                 onTap: () {
-                                                  Future.delayed(Duration.zero, () {
+                                                  sessionPanelController.close();
+                                                  Future.delayed(Duration(milliseconds: 500), () {
                                                     navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
                                                       return FluidNavigationBar(defaultTab: 1, highlightedDestination: _hikeDestinations[i]);
                                                     }));
