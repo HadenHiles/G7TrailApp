@@ -172,10 +172,10 @@ class _DestinationScreenState extends State<DestinationScreen> {
     if (result == 1) setState(() => ttsState = TtsState.stopped);
   }
 
-  Future _pauseTTS() async {
-    var result = await _flutterTTS.pause();
-    if (result == 1) setState(() => ttsState = TtsState.paused);
-  }
+  // Future _pauseTTS() async {
+  //   var result = await _flutterTTS.pause();
+  //   if (result == 1) setState(() => ttsState = TtsState.paused);
+  // }
   // END TTS FUNCTIONS
 
   @override
