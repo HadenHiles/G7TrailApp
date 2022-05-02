@@ -1,6 +1,9 @@
 // ignore_for_file: avoid_print, file_names
 
+import 'package:flutter_html/flutter_html.dart';
+import 'package:g7trailapp/models/firestore/privacy_policy.dart';
 import 'package:g7trailapp/navigation/nav.dart';
+import 'package:g7trailapp/theme/theme.dart';
 import 'package:the_apple_sign_in/scope.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -49,10 +52,35 @@ class _LoginState extends State<Login> {
 
   // State variables
   bool _hidePassword = true;
+  bool? _termsAccepted = false;
+  String? _policyText = "Your login information will only be used for the purposes of authenticating you within this app.";
+  String _policyLabel = "Terms & Conditions";
 
   @override
   void initState() {
+    initTerms();
     super.initState();
+  }
+
+  Future<void> initTerms() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('terms_accepted') == null) {
+      prefs.setBool('terms_accepted', false);
+    } else {
+      bool? termsAccepted = prefs.getBool('terms_accepted');
+
+      setState(() {
+        _termsAccepted = termsAccepted;
+      });
+    }
+
+    await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "privacyPolicy").limit(1).get().then((snapshot) async {
+      PrivacyPolicy policy = PrivacyPolicy.fromSnapshot(snapshot.docs[0]);
+      setState(() {
+        _policyText = policy.text ?? _policyText;
+        _policyLabel = policy.label ?? _policyLabel;
+      });
+    });
   }
 
   @override
@@ -92,31 +120,35 @@ class _LoginState extends State<Login> {
                       child: SignInButton(
                         Buttons.Google,
                         onPressed: () {
-                          socialSignIn(context, 'google', (error) {
-                            // ignore: deprecated_member_use
-                            // ignore: deprecated_member_use
-                            _scaffoldKey.currentState!.hideCurrentSnackBar();
-                            // ignore: deprecated_member_use
-                            _scaffoldKey.currentState!.showSnackBar(
-                              SnackBar(
-                                backgroundColor: Theme.of(context).cardTheme.color,
-                                content: Text(
-                                  error,
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onPrimary,
+                          if (_termsAccepted ?? false) {
+                            socialSignIn(context, 'google', (error) {
+                              // ignore: deprecated_member_use
+                              // ignore: deprecated_member_use
+                              _scaffoldKey.currentState!.hideCurrentSnackBar();
+                              // ignore: deprecated_member_use
+                              _scaffoldKey.currentState!.showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Theme.of(context).cardTheme.color,
+                                  content: Text(
+                                    error,
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                  duration: const Duration(seconds: 10),
+                                  action: SnackBarAction(
+                                    label: "Dismiss",
+                                    onPressed: () {
+                                      // ignore: deprecated_member_use
+                                      _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                    },
                                   ),
                                 ),
-                                duration: const Duration(seconds: 10),
-                                action: SnackBarAction(
-                                  label: "Dismiss",
-                                  onPressed: () {
-                                    // ignore: deprecated_member_use
-                                    _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                  },
-                                ),
-                              ),
-                            );
-                          });
+                              );
+                            });
+                          } else {
+                            _showPolicyDialog();
+                          }
                         },
                       ),
                     ),
@@ -130,31 +162,35 @@ class _LoginState extends State<Login> {
                               child: SignInButton(
                                 Buttons.AppleDark,
                                 onPressed: () {
-                                  socialSignIn(context, 'apple', (error) {
-                                    // ignore: deprecated_member_use
-                                    // ignore: deprecated_member_use
-                                    _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                    // ignore: deprecated_member_use
-                                    _scaffoldKey.currentState!.showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: Theme.of(context).cardTheme.color,
-                                        content: Text(
-                                          error,
-                                          style: TextStyle(
-                                            color: Theme.of(context).colorScheme.onPrimary,
+                                  if (_termsAccepted ?? false) {
+                                    socialSignIn(context, 'apple', (error) {
+                                      // ignore: deprecated_member_use
+                                      // ignore: deprecated_member_use
+                                      _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                      // ignore: deprecated_member_use
+                                      _scaffoldKey.currentState!.showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Theme.of(context).cardTheme.color,
+                                          content: Text(
+                                            error,
+                                            style: TextStyle(
+                                              color: Theme.of(context).colorScheme.onPrimary,
+                                            ),
+                                          ),
+                                          duration: const Duration(seconds: 10),
+                                          action: SnackBarAction(
+                                            label: "Dismiss",
+                                            onPressed: () {
+                                              // ignore: deprecated_member_use
+                                              _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                            },
                                           ),
                                         ),
-                                        duration: const Duration(seconds: 10),
-                                        action: SnackBarAction(
-                                          label: "Dismiss",
-                                          onPressed: () {
-                                            // ignore: deprecated_member_use
-                                            _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                          },
-                                        ),
-                                      ),
-                                    );
-                                  });
+                                      );
+                                    });
+                                  } else {
+                                    _showPolicyDialog();
+                                  }
                                 },
                               ),
                             ),
@@ -215,265 +251,269 @@ class _LoginState extends State<Login> {
                           ],
                         ),
                         onPressed: () {
-                          setState(() {
-                            _hidePassword = true;
-                          });
+                          if (_termsAccepted ?? false) {
+                            setState(() {
+                              _hidePassword = true;
+                            });
 
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return SimpleDialog(
-                                contentPadding: const EdgeInsets.all(25),
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          SizedBox(
-                                            height: 50,
-                                            child: Image.asset(
-                                              'assets/images/logo-small.png',
-                                              width: 120,
-                                            ),
-                                          ),
-                                          const Text(
-                                            'SIGN IN',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Form(
-                                        key: _signInFormKey,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: TextFormField(
-                                                controller: _signInEmail,
-                                                decoration: InputDecoration(
-                                                  labelText: 'Email',
-                                                  labelStyle: TextStyle(
-                                                    color: Theme.of(context).textTheme.bodyText1!.color,
-                                                  ),
-                                                  hintText: 'Enter your email',
-                                                  hintStyle: TextStyle(
-                                                    color: Theme.of(context).cardTheme.color,
-                                                  ),
-                                                ),
-                                                keyboardType: TextInputType.emailAddress,
-                                                validator: (String? value) {
-                                                  if (value!.isEmpty) {
-                                                    return 'Please enter your email';
-                                                  } else if (!validEmail(value)) {
-                                                    return 'Invalid email address';
-                                                  }
-                                                  return null;
-                                                },
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return SimpleDialog(
+                                  contentPadding: const EdgeInsets.all(25),
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            SizedBox(
+                                              height: 50,
+                                              child: Image.asset(
+                                                'assets/images/logo-small.png',
+                                                width: 120,
                                               ),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: TextFormField(
-                                                controller: _signInPass,
-                                                obscureText: _hidePassword,
-                                                decoration: InputDecoration(
-                                                  labelText: 'Password',
-                                                  labelStyle: TextStyle(
-                                                    color: Theme.of(context).textTheme.bodyText1!.color,
-                                                  ),
-                                                  hintText: 'Enter your password',
-                                                  hintStyle: TextStyle(
-                                                    color: Theme.of(context).cardTheme.color,
-                                                  ),
-                                                ),
-                                                keyboardType: TextInputType.visiblePassword,
-                                                validator: (String? value) {
-                                                  if (value!.isEmpty) {
-                                                    return 'Please enter a password';
-                                                  }
-
-                                                  return null;
-                                                },
+                                            const Text(
+                                              'SIGN IN',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                width: double.infinity,
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    primary: Theme.of(context).primaryColor,
-                                                    onPrimary: Colors.white,
+                                            )
+                                          ],
+                                        ),
+                                        Form(
+                                          key: _signInFormKey,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: TextFormField(
+                                                  controller: _signInEmail,
+                                                  decoration: InputDecoration(
+                                                    labelText: 'Email',
+                                                    labelStyle: TextStyle(
+                                                      color: Theme.of(context).textTheme.bodyText1!.color,
+                                                    ),
+                                                    hintText: 'Enter your email',
+                                                    hintStyle: TextStyle(
+                                                      color: Theme.of(context).cardTheme.color,
+                                                    ),
                                                   ),
-                                                  child: const Text("Sign in"),
-                                                  onPressed: () async {
-                                                    if (_signInFormKey.currentState!.validate()) {
-                                                      _signInFormKey.currentState!.save();
-
-                                                      signIn(
-                                                          context,
-                                                          AuthAttempt(
-                                                            _signInEmail.text,
-                                                            _signInPass.text,
-                                                          ), (error) async {
-                                                        // ignore: deprecated_member_use
-                                                        // ignore: deprecated_member_use
-                                                        _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                        // ignore: deprecated_member_use
-                                                        _scaffoldKey.currentState!.showSnackBar(
-                                                          SnackBar(
-                                                            backgroundColor: Theme.of(context).cardTheme.color,
-                                                            content: Text(
-                                                              error,
-                                                              style: TextStyle(
-                                                                color: Theme.of(context).colorScheme.onPrimary,
-                                                              ),
-                                                            ),
-                                                            duration: const Duration(seconds: 10),
-                                                            action: SnackBarAction(
-                                                              label: "Dismiss",
-                                                              onPressed: () {
-                                                                // ignore: deprecated_member_use
-                                                                _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                              },
-                                                            ),
-                                                          ),
-                                                        );
-                                                      });
+                                                  keyboardType: TextInputType.emailAddress,
+                                                  validator: (String? value) {
+                                                    if (value!.isEmpty) {
+                                                      return 'Please enter your email';
+                                                    } else if (!validEmail(value)) {
+                                                      return 'Invalid email address';
                                                     }
+                                                    return null;
                                                   },
                                                 ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                child: const Text("Forgot password?"),
-                                                onPressed: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return SimpleDialog(
-                                                        contentPadding: const EdgeInsets.all(25),
-                                                        children: [
-                                                          Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                mainAxisSize: MainAxisSize.max,
-                                                                children: [
-                                                                  SizedBox(
-                                                                    height: 50,
-                                                                    child: Image.asset(
-                                                                      'assets/images/logo-small.png',
-                                                                      width: 120,
-                                                                    ),
-                                                                  ),
-                                                                  const Text(
-                                                                    'Forgot Password',
-                                                                    style: TextStyle(
-                                                                      fontSize: 16,
-                                                                      fontWeight: FontWeight.bold,
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              Form(
-                                                                key: _forgotPasswordFormKey,
-                                                                child: Column(
-                                                                  mainAxisSize: MainAxisSize.min,
-                                                                  children: <Widget>[
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.all(8.0),
-                                                                      child: TextFormField(
-                                                                        controller: _forgotPasswordEmail,
-                                                                        decoration: InputDecoration(
-                                                                          labelText: 'Email',
-                                                                          labelStyle: TextStyle(
-                                                                            color: Theme.of(context).textTheme.bodyText1!.color,
-                                                                          ),
-                                                                          hintText: 'Confirm your password',
-                                                                          hintStyle: TextStyle(
-                                                                            color: Theme.of(context).cardTheme.color,
-                                                                          ),
-                                                                        ),
-                                                                        keyboardType: TextInputType.emailAddress,
-                                                                        validator: (String? value) {
-                                                                          if (value!.isEmpty) {
-                                                                            return 'Please enter your email';
-                                                                          } else if (!validEmail(value)) {
-                                                                            return 'Invalid email address';
-                                                                          }
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: TextFormField(
+                                                  controller: _signInPass,
+                                                  obscureText: _hidePassword,
+                                                  decoration: InputDecoration(
+                                                    labelText: 'Password',
+                                                    labelStyle: TextStyle(
+                                                      color: Theme.of(context).textTheme.bodyText1!.color,
+                                                    ),
+                                                    hintText: 'Enter your password',
+                                                    hintStyle: TextStyle(
+                                                      color: Theme.of(context).cardTheme.color,
+                                                    ),
+                                                  ),
+                                                  keyboardType: TextInputType.visiblePassword,
+                                                  validator: (String? value) {
+                                                    if (value!.isEmpty) {
+                                                      return 'Please enter a password';
+                                                    }
 
-                                                                          return null;
-                                                                        },
-                                                                      ),
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets.all(8.0),
-                                                                      child: ElevatedButton(
-                                                                        child: const Text("Send reset email"),
-                                                                        onPressed: () {
-                                                                          if (_forgotPasswordFormKey.currentState!.validate()) {
-                                                                            FirebaseAuth.instance.sendPasswordResetEmail(email: _forgotPasswordEmail.text.toString()).then((value) {
-                                                                              _forgotPasswordEmail.text = "";
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      primary: Theme.of(context).primaryColor,
+                                                      onPrimary: Colors.white,
+                                                    ),
+                                                    child: const Text("Sign in"),
+                                                    onPressed: () async {
+                                                      if (_signInFormKey.currentState!.validate()) {
+                                                        _signInFormKey.currentState!.save();
 
-                                                                              navigatorKey.currentState!.pop();
-                                                                              navigatorKey.currentState!.pop();
-
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                SnackBar(
-                                                                                  backgroundColor: Theme.of(context).cardTheme.color,
-                                                                                  content: Text(
-                                                                                    "Reset email link sent to ${_forgotPasswordEmail.text.toString()}",
-                                                                                    style: TextStyle(
-                                                                                      color: Theme.of(context).colorScheme.onPrimary,
-                                                                                    ),
-                                                                                  ),
-                                                                                  duration: const Duration(seconds: 10),
-                                                                                  action: SnackBarAction(
-                                                                                    label: "Dismiss",
-                                                                                    onPressed: () {
-                                                                                      // ignore: deprecated_member_use
-                                                                                      _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                                                    },
-                                                                                  ),
-                                                                                ),
-                                                                              );
-                                                                            });
-                                                                          }
-                                                                        },
-                                                                      ),
-                                                                    ),
-                                                                  ],
+                                                        signIn(
+                                                            context,
+                                                            AuthAttempt(
+                                                              _signInEmail.text,
+                                                              _signInPass.text,
+                                                            ), (error) async {
+                                                          // ignore: deprecated_member_use
+                                                          // ignore: deprecated_member_use
+                                                          _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                          // ignore: deprecated_member_use
+                                                          _scaffoldKey.currentState!.showSnackBar(
+                                                            SnackBar(
+                                                              backgroundColor: Theme.of(context).cardTheme.color,
+                                                              content: Text(
+                                                                error,
+                                                                style: TextStyle(
+                                                                  color: Theme.of(context).colorScheme.onPrimary,
                                                                 ),
                                                               ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      );
+                                                              duration: const Duration(seconds: 10),
+                                                              action: SnackBarAction(
+                                                                label: "Dismiss",
+                                                                onPressed: () {
+                                                                  // ignore: deprecated_member_use
+                                                                  _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                                },
+                                                              ),
+                                                            ),
+                                                          );
+                                                        });
+                                                      }
                                                     },
-                                                  );
-                                                },
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: ElevatedButton(
+                                                  child: const Text("Forgot password?"),
+                                                  onPressed: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return SimpleDialog(
+                                                          contentPadding: const EdgeInsets.all(25),
+                                                          children: [
+                                                            Column(
+                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  mainAxisSize: MainAxisSize.max,
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      height: 50,
+                                                                      child: Image.asset(
+                                                                        'assets/images/logo-small.png',
+                                                                        width: 120,
+                                                                      ),
+                                                                    ),
+                                                                    const Text(
+                                                                      'Forgot Password',
+                                                                      style: TextStyle(
+                                                                        fontSize: 16,
+                                                                        fontWeight: FontWeight.bold,
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                Form(
+                                                                  key: _forgotPasswordFormKey,
+                                                                  child: Column(
+                                                                    mainAxisSize: MainAxisSize.min,
+                                                                    children: <Widget>[
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.all(8.0),
+                                                                        child: TextFormField(
+                                                                          controller: _forgotPasswordEmail,
+                                                                          decoration: InputDecoration(
+                                                                            labelText: 'Email',
+                                                                            labelStyle: TextStyle(
+                                                                              color: Theme.of(context).textTheme.bodyText1!.color,
+                                                                            ),
+                                                                            hintText: 'Confirm your password',
+                                                                            hintStyle: TextStyle(
+                                                                              color: Theme.of(context).cardTheme.color,
+                                                                            ),
+                                                                          ),
+                                                                          keyboardType: TextInputType.emailAddress,
+                                                                          validator: (String? value) {
+                                                                            if (value!.isEmpty) {
+                                                                              return 'Please enter your email';
+                                                                            } else if (!validEmail(value)) {
+                                                                              return 'Invalid email address';
+                                                                            }
+
+                                                                            return null;
+                                                                          },
+                                                                        ),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.all(8.0),
+                                                                        child: ElevatedButton(
+                                                                          child: const Text("Send reset email"),
+                                                                          onPressed: () {
+                                                                            if (_forgotPasswordFormKey.currentState!.validate()) {
+                                                                              FirebaseAuth.instance.sendPasswordResetEmail(email: _forgotPasswordEmail.text.toString()).then((value) {
+                                                                                _forgotPasswordEmail.text = "";
+
+                                                                                navigatorKey.currentState!.pop();
+                                                                                navigatorKey.currentState!.pop();
+
+                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                  SnackBar(
+                                                                                    backgroundColor: Theme.of(context).cardTheme.color,
+                                                                                    content: Text(
+                                                                                      "Reset email link sent to ${_forgotPasswordEmail.text.toString()}",
+                                                                                      style: TextStyle(
+                                                                                        color: Theme.of(context).colorScheme.onPrimary,
+                                                                                      ),
+                                                                                    ),
+                                                                                    duration: const Duration(seconds: 10),
+                                                                                    action: SnackBarAction(
+                                                                                      label: "Dismiss",
+                                                                                      onPressed: () {
+                                                                                        // ignore: deprecated_member_use
+                                                                                        _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                                                      },
+                                                                                    ),
+                                                                                  ),
+                                                                                );
+                                                                              });
+                                                                            }
+                                                                          },
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            _showPolicyDialog();
+                          }
                         },
                       ),
                     ),
@@ -498,186 +538,231 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           onPressed: () {
-                            setState(() {
-                              _hidePassword = true;
-                            });
+                            if (_termsAccepted ?? false) {
+                              setState(() {
+                                _hidePassword = true;
+                              });
 
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return SimpleDialog(
-                                  contentPadding: const EdgeInsets.all(25),
-                                  children: [
-                                    SingleChildScrollView(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              SizedBox(
-                                                height: 50,
-                                                child: Image.asset(
-                                                  'assets/images/logo-small.png',
-                                                  width: 120,
-                                                ),
-                                              ),
-                                              const Text(
-                                                'SIGN UP',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Form(
-                                            key: _signUpFormKey,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: _signUpEmail,
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Email',
-                                                      labelStyle: TextStyle(
-                                                        color: Theme.of(context).colorScheme.onPrimary,
-                                                      ),
-                                                      hintText: 'Enter your email',
-                                                      hintStyle: TextStyle(
-                                                        color: Theme.of(context).cardTheme.color,
-                                                      ),
-                                                    ),
-                                                    keyboardType: TextInputType.emailAddress,
-                                                    validator: (String? value) {
-                                                      if (value!.isEmpty) {
-                                                        return 'Please enter your email';
-                                                      }
-                                                      if (!validEmail(value)) {
-                                                        return 'Invalid email address';
-                                                      }
-
-                                                      return null;
-                                                    },
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return SimpleDialog(
+                                    contentPadding: const EdgeInsets.all(25),
+                                    children: [
+                                      SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                SizedBox(
+                                                  height: 50,
+                                                  child: Image.asset(
+                                                    'assets/images/logo-small.png',
+                                                    width: 120,
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: _signUpPass,
-                                                    obscureText: _hidePassword,
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Password',
-                                                      labelStyle: TextStyle(
-                                                        color: Theme.of(context).colorScheme.onPrimary,
-                                                      ),
-                                                      hintText: 'Enter your password',
-                                                      hintStyle: TextStyle(
-                                                        color: Theme.of(context).cardTheme.color,
-                                                      ),
-                                                    ),
-                                                    keyboardType: TextInputType.visiblePassword,
-                                                    validator: (String? value) {
-                                                      if (value!.isEmpty) {
-                                                        return 'Please enter a password';
-                                                      } else if (!validPassword(value)) {
-                                                        return 'Please enter a stronger password';
-                                                      }
-
-                                                      return null;
-                                                    },
+                                                const Text(
+                                                  'SIGN UP',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: TextFormField(
-                                                    controller: _signUpConfirmPass,
-                                                    obscureText: _hidePassword,
-                                                    decoration: InputDecoration(
-                                                      labelText: 'Confirm Password',
-                                                      labelStyle: TextStyle(
-                                                        color: Theme.of(context).colorScheme.onPrimary,
+                                              ],
+                                            ),
+                                            Form(
+                                              key: _signUpFormKey,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: TextFormField(
+                                                      controller: _signUpEmail,
+                                                      decoration: InputDecoration(
+                                                        labelText: 'Email',
+                                                        labelStyle: TextStyle(
+                                                          color: Theme.of(context).colorScheme.onPrimary,
+                                                        ),
+                                                        hintText: 'Enter your email',
+                                                        hintStyle: TextStyle(
+                                                          color: Theme.of(context).cardTheme.color,
+                                                        ),
                                                       ),
-                                                      hintText: 'Confirm your password',
-                                                      hintStyle: TextStyle(
-                                                        color: Theme.of(context).cardTheme.color,
-                                                      ),
-                                                    ),
-                                                    keyboardType: TextInputType.visiblePassword,
-                                                    validator: (String? value) {
-                                                      if (value!.isEmpty) {
-                                                        return 'Please confirm your password';
-                                                      } else if (value != _signUpPass.text) {
-                                                        return 'Passwords do not match';
-                                                      }
-
-                                                      return null;
-                                                    },
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: SizedBox(
-                                                    width: double.infinity,
-                                                    child: ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(
-                                                        primary: Theme.of(context).primaryColor,
-                                                        onPrimary: Colors.white,
-                                                      ),
-                                                      child: const Text("Sign up"),
-                                                      onPressed: () async {
-                                                        if (_signUpFormKey.currentState!.validate()) {
-                                                          _signUpFormKey.currentState!.save();
-
-                                                          signUp(
-                                                              context,
-                                                              AuthAttempt(
-                                                                _signUpEmail.text,
-                                                                _signUpPass.text,
-                                                              ), (error) async {
-                                                            // ignore: deprecated_member_use
-                                                            _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                            // ignore: deprecated_member_use
-                                                            _scaffoldKey.currentState!.showSnackBar(
-                                                              SnackBar(
-                                                                backgroundColor: Theme.of(context).cardTheme.color,
-                                                                content: Text(
-                                                                  error,
-                                                                  style: TextStyle(
-                                                                    color: Theme.of(context).colorScheme.onPrimary,
-                                                                  ),
-                                                                ),
-                                                                duration: const Duration(seconds: 10),
-                                                                action: SnackBarAction(
-                                                                  label: "Dismiss",
-                                                                  onPressed: () {
-                                                                    // ignore: deprecated_member_use
-                                                                    _scaffoldKey.currentState!.hideCurrentSnackBar();
-                                                                  },
-                                                                ),
-                                                              ),
-                                                            );
-                                                          });
+                                                      keyboardType: TextInputType.emailAddress,
+                                                      validator: (String? value) {
+                                                        if (value!.isEmpty) {
+                                                          return 'Please enter your email';
                                                         }
+                                                        if (!validEmail(value)) {
+                                                          return 'Invalid email address';
+                                                        }
+
+                                                        return null;
                                                       },
                                                     ),
                                                   ),
-                                                )
-                                              ],
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: TextFormField(
+                                                      controller: _signUpPass,
+                                                      obscureText: _hidePassword,
+                                                      decoration: InputDecoration(
+                                                        labelText: 'Password',
+                                                        labelStyle: TextStyle(
+                                                          color: Theme.of(context).colorScheme.onPrimary,
+                                                        ),
+                                                        hintText: 'Enter your password',
+                                                        hintStyle: TextStyle(
+                                                          color: Theme.of(context).cardTheme.color,
+                                                        ),
+                                                      ),
+                                                      keyboardType: TextInputType.visiblePassword,
+                                                      validator: (String? value) {
+                                                        if (value!.isEmpty) {
+                                                          return 'Please enter a password';
+                                                        } else if (!validPassword(value)) {
+                                                          return 'Please enter a stronger password';
+                                                        }
+
+                                                        return null;
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: TextFormField(
+                                                      controller: _signUpConfirmPass,
+                                                      obscureText: _hidePassword,
+                                                      decoration: InputDecoration(
+                                                        labelText: 'Confirm Password',
+                                                        labelStyle: TextStyle(
+                                                          color: Theme.of(context).colorScheme.onPrimary,
+                                                        ),
+                                                        hintText: 'Confirm your password',
+                                                        hintStyle: TextStyle(
+                                                          color: Theme.of(context).cardTheme.color,
+                                                        ),
+                                                      ),
+                                                      keyboardType: TextInputType.visiblePassword,
+                                                      validator: (String? value) {
+                                                        if (value!.isEmpty) {
+                                                          return 'Please confirm your password';
+                                                        } else if (value != _signUpPass.text) {
+                                                          return 'Passwords do not match';
+                                                        }
+
+                                                        return null;
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: SizedBox(
+                                                      width: double.infinity,
+                                                      child: ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(
+                                                          primary: Theme.of(context).primaryColor,
+                                                          onPrimary: Colors.white,
+                                                        ),
+                                                        child: const Text("Sign up"),
+                                                        onPressed: () async {
+                                                          if (_signUpFormKey.currentState!.validate()) {
+                                                            _signUpFormKey.currentState!.save();
+
+                                                            signUp(
+                                                                context,
+                                                                AuthAttempt(
+                                                                  _signUpEmail.text,
+                                                                  _signUpPass.text,
+                                                                ), (error) async {
+                                                              // ignore: deprecated_member_use
+                                                              _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                              // ignore: deprecated_member_use
+                                                              _scaffoldKey.currentState!.showSnackBar(
+                                                                SnackBar(
+                                                                  backgroundColor: Theme.of(context).cardTheme.color,
+                                                                  content: Text(
+                                                                    error,
+                                                                    style: TextStyle(
+                                                                      color: Theme.of(context).colorScheme.onPrimary,
+                                                                    ),
+                                                                  ),
+                                                                  duration: const Duration(seconds: 10),
+                                                                  action: SnackBarAction(
+                                                                    label: "Dismiss",
+                                                                    onPressed: () {
+                                                                      // ignore: deprecated_member_use
+                                                                      _scaffoldKey.currentState!.hideCurrentSnackBar();
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            });
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              _showPolicyDialog();
+                            }
                           },
                         ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 40),
+                            child: Checkbox(
+                              value: _termsAccepted,
+                              materialTapTargetSize: MaterialTapTargetSize.padded,
+                              onChanged: (val) {
+                                setState(() {
+                                  _termsAccepted = val;
+                                  prefs.setBool('terms_accepted', val ?? false);
+                                });
+                              },
+                            ),
+                          ),
+                          Container(
+                            height: 60,
+                            child: Text(
+                              "Accept ",
+                              style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic),
+                            ),
+                          ),
+                          Container(
+                            height: 60,
+                            child: GestureDetector(
+                              onTap: () {
+                                _showPolicyDialog();
+                              },
+                              child: Text(
+                                _policyLabel,
+                                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontStyle: FontStyle.italic),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -687,6 +772,58 @@ class _LoginState extends State<Login> {
           ],
         ),
       ),
+    );
+  }
+
+  _showPolicyDialog() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Html(
+                      data: _policyText,
+                      style: preferences.darkMode ? HomeTheme.darkHtmlStyle : HomeTheme.lightHtmlStyle,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        navigatorKey.currentState!.pop();
+                      },
+                      child: Text(
+                        "Close",
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        navigatorKey.currentState!.pop();
+                        setState(() {
+                          _termsAccepted = true;
+                          prefs.setBool('terms_accepted', true);
+                        });
+                      },
+                      child: Text(
+                        "Accept",
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
