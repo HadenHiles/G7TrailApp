@@ -270,9 +270,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                               backgroundColor: MaterialStateProperty.all(Colors.transparent),
                             ),
                             onPressed: () async {
-                              String link = "https://github.com/HadenHiles";
-                              await canLaunch(link).then((can) {
-                                launch(link).catchError((err) {
+                              Uri link = Uri(host: "github.com", path: "HadenHiles");
+                              await canLaunchUrl(link).then((can) {
+                                launchUrl(link).catchError((err) {
                                   // ignore: avoid_print
                                   print(err);
                                 });
@@ -307,9 +307,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                                 backgroundColor: MaterialStateProperty.all(Colors.transparent),
                               ),
                               onPressed: () async {
-                                String link = "http://www.groupofseventrail.com/";
-                                await canLaunch(link).then((can) {
-                                  launch(link).catchError((err) {
+                                Uri link = Uri(host: "www.groupofseventrail.com");
+                                await canLaunchUrl(link).then((can) {
+                                  launchUrl(link).catchError((err) {
                                     // ignore: avoid_print
                                     print(err);
                                   });

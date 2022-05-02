@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const APP_URL = 'http://groupofseventrail.com';
+const APP_HOST = 'groupofseventrail.com';
 
 versionCheck(context) async {
   //Get Current installed version of app
@@ -71,7 +71,7 @@ _showVersionDialog(context) async {
                       color: Theme.of(context).primaryColor,
                     ),
                   ),
-                  onPressed: () => _launchURL(APP_URL),
+                  onPressed: () => _launchURL(Uri(host: APP_HOST)),
                 ),
               ],
             )
@@ -102,7 +102,7 @@ _showVersionDialog(context) async {
                       color: Theme.of(context).primaryColor,
                     ),
                   ),
-                  onPressed: () => _launchURL(APP_URL),
+                  onPressed: () => _launchURL(Uri(host: APP_HOST)),
                 ),
               ],
             );
@@ -110,9 +110,9 @@ _showVersionDialog(context) async {
   );
 }
 
-_launchURL(String url) async {
-  if (await canLaunch(url)) {
-    await launch(url);
+_launchURL(Uri url) async {
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
   } else {
     throw 'Could not launch $url';
   }
