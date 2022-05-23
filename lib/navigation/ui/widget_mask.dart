@@ -9,7 +9,7 @@ class RenderWidgetMask extends RenderStack {
       required TextDirection textDirection,
       required StackFit fit,
       // ignore: deprecated_member_use
-      required Overflow overflow})
+      required Clip overflow})
       : super(children: children, alignment: alignment, textDirection: textDirection, fit: fit);
 
   @override
@@ -64,7 +64,7 @@ class WidgetMask extends Stack {
       textDirection: textDirection ?? Directionality.of(context),
       fit: fit,
       // ignore: deprecated_member_use
-      overflow: overflow,
+      overflow: clipBehavior,
       children: [],
     );
   }

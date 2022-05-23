@@ -96,7 +96,7 @@ class _FullScreenPageState extends State<FullScreenPage> {
                       maxScale: 8,
                       child: Builder(
                         builder: (context) {
-                          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                             final renderBox = context.findRenderObject() as RenderBox?;
                             final childSize = renderBox?.size ?? Size.zero;
                             if (childSize != Size.zero) {
