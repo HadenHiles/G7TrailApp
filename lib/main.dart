@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:g7trailapp/intro_screen.dart';
@@ -11,13 +12,14 @@ import 'package:g7trailapp/services/session.dart';
 import 'package:g7trailapp/theme/preferences_state_notifier.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_beacon/flutter_beacon.dart';
+
+import 'firebase_options.dart';
 
 // Setup a navigation key so that we can navigate without context
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -34,7 +36,10 @@ void main() async {
   await NotificationService().init();
 
   // Initialize the connection to our firebase project
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   final appleSignInAvailable = await AppleSignInAvailable.check();
 
   // Load user preferences

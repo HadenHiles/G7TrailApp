@@ -113,7 +113,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     return Consumer<BeaconRangingService>(
       builder: (context, service, child) {
         if (service.nearbyBeacon != null) {
-          SchedulerBinding.instance!.addPostFrameCallback((_) {
+          SchedulerBinding.instance.addPostFrameCallback((_) {
             setState(() {
               _nearestBeacon = service.nearbyBeacon!;
             });

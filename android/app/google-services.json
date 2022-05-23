@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "1063785186004-98avi1iagnp46ncj3kig8qg63i6raj2a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.groupofseven.g7trailapp",
+            "certificate_hash": "fc105c7e28b296173113dec2f394189b742c843b"
+          }
+        },
+        {
+          "client_id": "1063785186004-a8t8q271ndorddlub76663iojh3ukav3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.groupofseven.g7trailapp",
+            "certificate_hash": "302f96c8c96a9b484e3cc810b786cfc7d0606e6a"
+          }
+        },
+        {
           "client_id": "1063785186004-l3mifb4g4f1f7ien99qvqn4v12deahq7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -37,6 +53,13 @@
             {
               "client_id": "1063785186004-7akf8uq9dhvo4a9togior03adi3tf7tk.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1063785186004-4tcivveibsmlooqn6i6dh037qhb3t7mr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.g7trailapp"
+              }
             }
           ]
         }

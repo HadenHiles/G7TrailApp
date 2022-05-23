@@ -447,7 +447,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
           body: Consumer<BeaconRangingService>(
             builder: (context, service, child) {
               if (service.nearbyBeacon != null) {
-                SchedulerBinding.instance!.addPostFrameCallback((_) {
+                SchedulerBinding.instance.addPostFrameCallback((_) {
                   setState(() {
                     _previousBeacon = _nearestBeacon;
                     _nearestBeacon = service.nearbyBeacon!;
