@@ -206,7 +206,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
               IconButton(
                 onPressed: () {
                   navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-                    return DestinationPanoView();
+                    return DestinationPanoView(destination: widget.destination);
                   }));
                 },
                 icon: Icon(Icons.streetview_rounded),
