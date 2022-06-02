@@ -356,6 +356,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
+  flutter_google_street_view:
+    dependency: "direct main"
+    description:
+      name: flutter_google_street_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.8"
   flutter_html:
     dependency: "direct main"
     description:
@@ -485,6 +492,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0-nullsafety.1"
+  google_maps:
+    dependency: transitive
+    description:
+      name: google_maps
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.1.0"
   google_maps_flutter:
     dependency: "direct main"
     description:
@@ -583,6 +597,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.4"
+  js_wrapping:
+    dependency: transitive
+    description:
+      name: js_wrapping
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.4"
+  kotlin_scope_function:
+    dependency: transitive
+    description:
+      name: kotlin_scope_function
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   lints:
     dependency: transitive
     description:
@@ -896,6 +924,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  street_view_platform_interface:
+    dependency: transitive
+    description:
+      name: street_view_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.6"
   string_scanner:
     dependency: transitive
     description:

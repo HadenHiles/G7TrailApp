@@ -12,6 +12,7 @@ import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/navigation/nav.dart';
 import 'package:g7trailapp/screens/destination/art.dart';
 import 'package:g7trailapp/screens/destination/audio_player_manager.dart';
+import 'package:g7trailapp/screens/destination/street_view.dart';
 import 'package:g7trailapp/theme/preferences_state_notifier.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
@@ -202,6 +203,14 @@ class _DestinationScreenState extends State<DestinationScreen> {
               icon: Icon(Icons.arrow_back),
             ),
             actions: [
+              IconButton(
+                onPressed: () {
+                  navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+                    return DestinationPanoView();
+                  }));
+                },
+                icon: Icon(Icons.streetview_rounded),
+              ),
               IconButton(
                 onPressed: () {
                   navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {

@@ -65,6 +65,7 @@ dependencies:
   font_awesome_flutter: ^9.2.0
   simple_animations: ^4.0.1
   google_maps_flutter: ^2.1.1
+  flutter_google_street_view: ^2.2.8-dev.1
   flutter_html: ^2.2.1
   video_player: 2.2.17
   assets_audio_player: ^3.0.4+3
