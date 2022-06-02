@@ -203,13 +203,13 @@ class Home extends StatelessWidget {
       Workmanager().registerOneOffTask(
         "1-beaconMonitorScan",
         rescheduledTaskKey,
-        constraints: Constraints(
-          networkType: NetworkType.not_required,
-          requiresBatteryNotLow: false,
-          requiresCharging: false,
-          requiresDeviceIdle: true,
-          requiresStorageNotLow: false,
-        ),
+        // constraints: Constraints(
+        //   networkType: NetworkType.not_required,
+        //   requiresBatteryNotLow: false,
+        //   requiresCharging: false,
+        //   // requiresDeviceIdle: true,
+        //   requiresStorageNotLow: false,
+        // ),
         inputData: <String, dynamic>{
           'key': math.Random().nextInt(64000),
         },
