@@ -18,11 +18,28 @@ class Destination {
   String beaconId;
   double latitude;
   double longitude;
+  String panoId;
   int order;
   String? imgURL;
   DocumentReference? reference;
 
-  Destination(this.flMeta, this.images, this.art, this.audio, this.destinationName, this.destinationSummary, this.difficulty, this.entryPoint, this.nearbyDestinations, this.beaconTitle, this.beaconId, this.latitude, this.longitude, this.order);
+  Destination(
+    this.flMeta,
+    this.images,
+    this.art,
+    this.audio,
+    this.destinationName,
+    this.destinationSummary,
+    this.difficulty,
+    this.entryPoint,
+    this.nearbyDestinations,
+    this.beaconTitle,
+    this.beaconId,
+    this.latitude,
+    this.longitude,
+    this.panoId,
+    this.order,
+  );
 
   Destination.fromMap(Map<String, dynamic> map, {this.reference})
       : id = map['id'],
@@ -55,6 +72,7 @@ class Destination {
         beaconId = map['beaconInfo']['beaconId'] ?? "",
         latitude = (map['beaconInfo']['latitude'] == "" || map['beaconInfo']['latitude'] == null) ? 0.0 : map['beaconInfo']['latitude'],
         longitude = (map['beaconInfo']['longitude'] == "" || map['beaconInfo']['longitude'] == null) ? 0.0 : map['beaconInfo']['longitude'],
+        panoId = (map['beaconInfo']['panoId'] == "" || map['beaconInfo']['panoId'] == null) ? "" : map['beaconInfo']['panoId'], // TODO: replace default empty string with a panoId of parking lot or something
         order = map['order'];
 
   Map<String, dynamic> toMap() {
@@ -90,6 +108,7 @@ class Destination {
         'beaconId': beaconId,
         'latitude': latitude,
         'longitude': longitude,
+        'panoId': panoId,
       },
       'order': order,
     };

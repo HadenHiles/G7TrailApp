@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_google_street_view/flutter_google_street_view.dart';
 import 'package:g7trailapp/main.dart';
+import 'package:g7trailapp/models/firestore/destination.dart';
 
 class DestinationPanoView extends StatefulWidget {
-  DestinationPanoView({Key? key}) : super(key: key);
+  DestinationPanoView({Key? key, required this.destination}) : super(key: key);
+
+  final Destination destination;
 
   @override
   State<DestinationPanoView> createState() => _DestinationPanoViewState();
@@ -24,7 +27,7 @@ class _DestinationPanoViewState extends State<DestinationPanoView> {
                  * do not feed param to both of them, or you should get assert error
                  */
               // initPos: LatLng(37.769263, -122.450727),
-              initPanoId: "RJd2HuqmShMAAAQfCa3ulg",
+              initPanoId: widget.destination.panoId,
 
               /**
                  *  It is worked while you set initPos or initPanoId.
@@ -36,19 +39,19 @@ class _DestinationPanoViewState extends State<DestinationPanoView> {
                  *  It is worked while you set initPos or initPanoId.
                  *  initBearing can set default bearing of camera.
                  */
-              initBearing: 30,
+              initBearing: 0,
 
               /**
                  *  It is worked while you set initPos or initPanoId.
                  *  initTilt can set default tilt of camera.
                  */
-              initTilt: 30,
+              initTilt: 0,
 
               /**
                  *  It is worked while you set initPos or initPanoId.
                  *  initZoom can set default zoom of camera.
                  */
-              initZoom: 1.5,
+              initZoom: 1,
 
               /**
                  *  iOS Only
@@ -87,7 +90,7 @@ class _DestinationPanoViewState extends State<DestinationPanoView> {
                  *  And you can using [StreetViewController] object(controller) to control street view.
                  */
               onStreetViewCreated: (controller) async {
-                controller.animateTo(duration: 50, camera: StreetViewPanoramaCamera(bearing: 15, tilt: 10, zoom: 3));
+                controller.animateTo(duration: 50, camera: StreetViewPanoramaCamera(bearing: 0, tilt: 0, zoom: 1));
               },
             ),
             Positioned(
