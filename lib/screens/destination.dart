@@ -203,14 +203,16 @@ class _DestinationScreenState extends State<DestinationScreen> {
               icon: Icon(Icons.arrow_back),
             ),
             actions: [
-              IconButton(
-                onPressed: () {
-                  navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
-                    return DestinationPanoView(destination: widget.destination);
-                  }));
-                },
-                icon: Icon(Icons.streetview_rounded),
-              ),
+              widget.destination.panoId.isNotEmpty
+                  ? IconButton(
+                      onPressed: () {
+                        navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+                          return DestinationPanoView(destination: widget.destination);
+                        }));
+                      },
+                      icon: Icon(Icons.streetview_rounded),
+                    )
+                  : Container(),
               IconButton(
                 onPressed: () {
                   navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
