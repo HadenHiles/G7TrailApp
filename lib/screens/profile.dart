@@ -2,6 +2,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:g7trailapp/models/firestore/hike.dart';
+import 'package:g7trailapp/screens/profile/hike_summary.dart';
 import 'package:g7trailapp/screens/profile/login.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/user_profile.dart';
@@ -315,6 +316,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         // Load a hike summary screen
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Container(
+                              height: MediaQuery.of(context).size.height,
+                              color: Theme.of(context).colorScheme.primary,
+                              child: SafeArea(
+                                child: Container(
+                                  child: Column(
+                                    children: [
+                                      HikeSummary(hike: hike),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          enableDrag: true,
+                          isScrollControlled: true,
+                          isDismissible: true,
+                        );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
