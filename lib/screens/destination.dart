@@ -59,7 +59,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
   initState() {
     if (widget.destination.audio.length > 0) {
       loadFirestoreFile(widget.destination.audio[0].file).then((url) {
-        _audioPlayerManager = AudioPlayerManager(url!, preferences.autoPlayAudio);
+        _audioPlayerManager = AudioPlayerManager(widget.destination.audio[0].title, url!, preferences.autoPlayAudio);
 
         setState(() {
           _audioPlayerInitialized = true;
@@ -353,7 +353,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                       await loadFirestoreFile(widget.destination.audio[i].file).then((url) {
                                         if (url!.isNotEmpty) {
                                           _audioPlayerManager.dispose();
-                                          _audioPlayerManager = AudioPlayerManager(url, true);
+                                          _audioPlayerManager = AudioPlayerManager(widget.destination.audio[i].title, url, true);
                                         }
                                       });
                                     } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
@@ -376,7 +376,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                   await loadFirestoreFile(widget.destination.audio[i].file).then((url) {
                                     if (url!.isNotEmpty) {
                                       _audioPlayerManager.dispose();
-                                      _audioPlayerManager = AudioPlayerManager(url, true);
+                                      _audioPlayerManager = AudioPlayerManager(widget.destination.audio[i].title, url, true);
                                     }
                                   });
                                 } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
