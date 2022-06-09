@@ -15,19 +15,19 @@ class AudioPlayerManager {
 
   late AssetsAudioPlayer _audioPlayer;
 
-  AudioPlayerManager(String url, bool? autoPlay) {
+  AudioPlayerManager(String title, String url, bool? autoPlay) {
     _audioPlayer = AssetsAudioPlayer();
-    init(url, autoPlay != null ? autoPlay : false);
+    init(title, url, autoPlay != null ? autoPlay : false);
   }
 
-  void init(String url, bool autoPlay) async {
+  void init(String title, String url, bool autoPlay) async {
     try {
       await _audioPlayer.open(
         Audio.network(
           url,
           metas: Metas(
-            title: "Beacon Audio Tour",
-            artist: "Group of Seven Lake Superior Trail",
+            title: title,
+            artist: "Audio Tour - Group of Seven Lake Superior Trail",
             album: "G7 Trail Audio Tour",
             image: MetasImage.asset("assets/images/app-icon.png"),
           ),
