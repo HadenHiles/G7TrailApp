@@ -1,63 +1,29 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/models/firestore/hike.dart';
-import 'package:g7trailapp/models/hike_destination.dart';
 import 'package:g7trailapp/navigation/nav.dart';
+import 'package:g7trailapp/screens/destination.dart';
+import 'package:g7trailapp/services/utility.dart';
 import 'package:g7trailapp/theme/theme.dart';
-import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:html/parser.dart';
 
 class HikeSummary extends StatefulWidget {
-  HikeSummary({Key? key, required this.hike}) : super(key: key);
+  HikeSummary({Key? key, required this.hike, required this.destinations, required this.viewContext}) : super(key: key);
 
   final Hike hike;
+  final List<Destination> destinations;
+  final BuildContext viewContext;
 
   @override
   State<HikeSummary> createState() => _HikeSummaryState();
 }
 
 class _HikeSummaryState extends State<HikeSummary> {
-  List<Destination> _hikeDestinations = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadHikeDestinations();
-  }
-
-  @override
-  void didUpdateWidget(HikeSummary oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _loadHikeDestinations();
-  }
-
-  Future<void> _loadHikeDestinations() async {
-    setState(() {
-      _hikeDestinations = [];
-    });
-
-    String? data = widget.hike.data;
-    if (data.isNotEmpty) {
-      List<HikeDestination> hikeDestinations = HikeDestination.decode(data);
-      for (HikeDestination hd in hikeDestinations) {
-        await FirebaseFirestore.instance.collection('fl_content').doc(hd.id).get().then((snapshot) async {
-          Destination d = Destination.fromSnapshot(snapshot);
-          if (!d.entryPoint && d.images.isNotEmpty) {
-            await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
-
-            _hikeDestinations.add(d);
-          }
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height,
+      height: MediaQuery.of(widget.viewContext).size.height - MediaQuery.of(widget.viewContext).padding.top,
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
@@ -72,39 +38,21 @@ class _HikeSummaryState extends State<HikeSummary> {
           ),
           Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      navigatorKey.currentState!.pop();
-                    },
-                    focusColor: darken(Theme.of(context).primaryColor, 0.6),
-                    enableFeedback: true,
-                    borderRadius: BorderRadius.circular(30),
-                    child: Icon(
-                      Icons.close_rounded,
-                      color: Theme.of(context).colorScheme.onSecondary,
-                    ),
-                  ),
-                ],
-              ),
-              _hikeDestinations.length < 1
+              widget.destinations.length < 1
                   ? Container()
                   : Container(
-                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
-                      padding: EdgeInsets.only(top: 0, right: 15, bottom: 8, left: 15),
+                      padding: EdgeInsets.only(top: 20, right: 15, bottom: 20, left: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "Destinations visited".toUpperCase(),
+                            printWeekday(widget.hike.date).toUpperCase() + " Hike".toUpperCase(),
                             style: TextStyle(
-                              color: Theme.of(context).textTheme.headline5!.color,
+                              color: Theme.of(context).colorScheme.onSecondary,
                               fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
-                              fontSize: 18,
-                              fontWeight: Theme.of(context).textTheme.headline5!.fontWeight,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -114,11 +62,11 @@ class _HikeSummaryState extends State<HikeSummary> {
                 child: Stack(
                   children: [
                     ListView.builder(
-                      itemCount: _hikeDestinations.length,
-                      shrinkWrap: true,
+                      itemCount: widget.destinations.length,
+                      shrinkWrap: false,
                       padding: EdgeInsets.only(bottom: 100),
                       itemBuilder: (context, i) {
-                        var doc = parse(_hikeDestinations[i].destinationSummary);
+                        var doc = parse(widget.destinations[i].destinationSummary);
                         var summaryParagraph = doc.getElementsByTagName('p').first.text;
                         summaryParagraph = summaryParagraph.isEmpty ? "<p></p>" : summaryParagraph;
 
@@ -127,10 +75,10 @@ class _HikeSummaryState extends State<HikeSummary> {
                             Container(
                               height: 100,
                               decoration: BoxDecoration(
-                                image: _hikeDestinations[i].imgURL != null
+                                image: widget.destinations[i].imgURL != null
                                     ? DecorationImage(
                                         fit: BoxFit.cover,
-                                        image: NetworkImage(_hikeDestinations[i].imgURL!),
+                                        image: NetworkImage(widget.destinations[i].imgURL!),
                                       )
                                     : DecorationImage(
                                         fit: BoxFit.cover,
@@ -152,13 +100,13 @@ class _HikeSummaryState extends State<HikeSummary> {
                                           onTap: () {
                                             sessionPanelController.close();
                                             Future.delayed(Duration(milliseconds: 500), () {
-                                              navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
-                                                return FluidNavigationBar(defaultTab: 1, highlightedDestination: _hikeDestinations[i]);
+                                              navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) {
+                                                return DestinationScreen(destination: widget.destinations[i]);
                                               }));
                                             });
                                           },
                                           title: Text(
-                                            _hikeDestinations[i].destinationName.toUpperCase(),
+                                            widget.destinations[i].destinationName.toUpperCase(),
                                             style: TextStyle(
                                               color: HomeTheme.darkTheme.textTheme.headline5!.color,
                                               fontFamily: HomeTheme.darkTheme.textTheme.headline5!.fontFamily,
@@ -180,7 +128,7 @@ class _HikeSummaryState extends State<HikeSummary> {
                                             onTap: () {
                                               Future.delayed(Duration.zero, () {
                                                 navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
-                                                  return FluidNavigationBar(defaultTab: 1, highlightedDestination: _hikeDestinations[i]);
+                                                  return FluidNavigationBar(defaultTab: 1, highlightedDestination: widget.destinations[i]);
                                                 }));
                                               });
                                             },
@@ -223,6 +171,23 @@ class _HikeSummaryState extends State<HikeSummary> {
                 ),
               ),
             ],
+          ),
+          Positioned(
+            top: 15,
+            left: 15,
+            child: InkWell(
+              onTap: () {
+                navigatorKey.currentState!.pop();
+              },
+              focusColor: darken(Theme.of(context).primaryColor, 0.6),
+              enableFeedback: true,
+              borderRadius: BorderRadius.circular(30),
+              child: Icon(
+                Icons.close_rounded,
+                size: 34,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+            ),
           ),
         ],
       ),
