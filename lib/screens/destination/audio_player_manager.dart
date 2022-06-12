@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:g7trailapp/main.dart';
 
 class AudioPlayerManager {
   final buttonNotifier = ValueNotifier<ButtonState>(ButtonState.paused);
@@ -32,7 +33,7 @@ class AudioPlayerManager {
             image: MetasImage.asset("assets/images/app-icon.png"),
           ),
         ),
-        autoStart: autoPlay,
+        autoStart: autoPlay && sessionService.isRunning,
         showNotification: true,
       );
     } catch (t) {
