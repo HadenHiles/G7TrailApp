@@ -275,11 +275,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     (printWeekday(hike.date) + " Hike").toUpperCase(),
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
-                  trailing: IconButton(
-                    icon: Icon(
-                      Icons.more_vert_rounded,
-                    ),
-                    onPressed: () {},
+                  trailing: PopupMenuButton<String>(
+                    // Callback that sets the selected popup menu item.
+                    onSelected: (String value) {
+                      if (value == "delete") {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(
+                              "Delete ${printWeekday(hike.date)} Hike?",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                            content: Text("This cannot be undone."),
+                            actions: [
+                              TextButton(
+                                onPressed: () => navigatorKey.currentState!.pop(),
+                                child: new Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  FirebaseFirestore.instance.collection("hikes").doc(user!.uid).collection("hikes").doc(hike.reference!.id).delete().then((value) {
+                                    navigatorKey.currentState!.pop();
+                                    _loadHikes();
+                                  });
+                                },
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                      const PopupMenuItem<String>(
+                        value: "delete",
+                        child: Text(
+                          "Delete",
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 ListTile(
