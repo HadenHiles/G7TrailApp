@@ -17,9 +17,9 @@ import 'package:g7trailapp/theme/preferences_state_notifier.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/utility/fullscreen_image.dart';
+import 'package:g7trailapp/widgets/icon_spinner.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_animations/stateless_animation/custom_animation.dart';
 
 class DestinationScreen extends StatefulWidget {
   const DestinationScreen({Key? key, required this.destination}) : super(key: key);
@@ -221,25 +221,31 @@ class _DestinationScreenState extends State<DestinationScreen> {
                 },
                 icon: Icon(Icons.location_on),
               ),
-              CustomAnimation<double>(
-                control: CustomAnimationControl.mirror,
-                tween: Tween(begin: 24.0, end: 30.0),
-                duration: const Duration(milliseconds: 750),
-                delay: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-                startPosition: 0,
-                animationStatusListener: (status) {
-                  // print('status updated: $status');
+              RawMaterialButton(
+                fillColor: Colors.white,
+                shape: CircleBorder(),
+                constraints: BoxConstraints(
+                  minWidth: 28.0,
+                  maxWidth: 28.0,
+                  minHeight: 28.0,
+                  maxHeight: 28.0,
+                ),
+                onPressed: () {
+                  _scaffoldKey.currentState!.openEndDrawer();
                 },
-                builder: (context, child, value) {
-                  return IconButton(
-                    onPressed: () {
-                      _scaffoldKey.currentState!.openEndDrawer();
-                    },
-                    icon: Icon(Icons.audiotrack_rounded),
-                    iconSize: value,
-                  );
-                },
+                child: (_autoPlayAudio && sessionService.isRunning)
+                    ? Spinner(
+                        icon: Icon(
+                          Icons.audiotrack,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      )
+                    : Icon(
+                        Icons.audiotrack,
+                        size: 18,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
               ),
             ],
             backgroundColor: Theme.of(context).colorScheme.secondary,
