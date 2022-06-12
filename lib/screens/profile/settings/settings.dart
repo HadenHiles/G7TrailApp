@@ -129,7 +129,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         ),
                         SettingsTile.switchTile(
                           titleTextStyle: Theme.of(context).textTheme.bodyText1,
-                          title: 'Notify me when near a beacon',
+                          title: 'Vibrate when near a beacon',
+                          subtitle: "(while app is open)",
                           leading: Icon(
                             Icons.vibration_rounded,
                             color: Theme.of(context).textTheme.bodyText1!.color,
