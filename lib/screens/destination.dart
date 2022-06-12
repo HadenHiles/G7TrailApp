@@ -353,7 +353,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                       await loadFirestoreFile(widget.destination.audio[i].file).then((url) {
                                         if (url!.isNotEmpty) {
                                           _audioPlayerManager.dispose();
-                                          _audioPlayerManager = AudioPlayerManager(widget.destination.audio[i].title, url, true);
+                                          _audioPlayerManager = AudioPlayerManager(widget.destination.audio[i].title, url, _autoPlayAudio);
                                         }
                                       });
                                     } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
@@ -376,7 +376,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                   await loadFirestoreFile(widget.destination.audio[i].file).then((url) {
                                     if (url!.isNotEmpty) {
                                       _audioPlayerManager.dispose();
-                                      _audioPlayerManager = AudioPlayerManager(widget.destination.audio[i].title, url, true);
+                                      _audioPlayerManager = AudioPlayerManager(widget.destination.audio[i].title, url, _autoPlayAudio);
                                     }
                                   });
                                 } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
