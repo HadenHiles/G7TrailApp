@@ -528,11 +528,11 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
     }
 
     if (preferences.beaconFoundAlert && (_previousBeacon != d || _previousBeacon == null) && (destinations.length < 1 || destinations.last!.id != d.id)) {
-      if (await Vibration.hasVibrator() ?? false) {
-        Vibration.vibrate();
-      }
-
       if (d.entryPoint) {
+        if (await Vibration.hasVibrator() ?? false) {
+          Vibration.vibrate();
+        }
+
         showOverlayNotification(
           (context) {
             return Card(
@@ -575,7 +575,11 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
           },
           duration: Duration(seconds: 30),
         );
-      } else {
+      } else if (sessionService.isRunning) {
+        if (await Vibration.hasVibrator() ?? false) {
+          Vibration.vibrate();
+        }
+
         showOverlayNotification(
           (context) {
             return Card(
