@@ -651,6 +651,10 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
         _hikeDestinations.clear();
         prefs.setString("hike_data", "");
       });
+
+      navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+        return FluidNavigationBar(defaultTab: 2);
+      }));
     } else if (save) {
       showDialog(
           context: context,
