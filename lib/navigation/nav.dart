@@ -563,6 +563,10 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                       _startHike();
                     } else {
                       _finishHike(true);
+
+                      navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
+                        return FluidNavigationBar(defaultTab: 3);
+                      }));
                     }
                   },
                 ),
