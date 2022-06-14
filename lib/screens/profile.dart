@@ -1,9 +1,7 @@
 // ignore_for_file: file_names
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/models/firestore/hike.dart';
-import 'package:g7trailapp/models/hike_destination.dart';
 import 'package:g7trailapp/screens/profile/hike_summary.dart';
 import 'package:g7trailapp/screens/profile/login.dart';
 import 'package:g7trailapp/main.dart';
@@ -13,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:g7trailapp/screens/profile/settings/settings.dart';
 import 'package:g7trailapp/services/utility.dart';
 import 'package:g7trailapp/theme/theme.dart';
-import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/widgets/user_avatar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -63,31 +60,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
       }
     });
-  }
-
-  Future<List<Destination>> _getDestinations(Hike hike) async {
-    String? data = hike.data;
-    List<Destination> destinations = [];
-    if (data.isNotEmpty) {
-      List<HikeDestination> hikeDestinations = HikeDestination.decode(data);
-      int i = 1;
-      for (HikeDestination hd in hikeDestinations) {
-        await FirebaseFirestore.instance.collection('fl_content').doc(hd.id).get().then((snapshot) async {
-          Destination d = Destination.fromSnapshot(snapshot);
-          if (!d.entryPoint && d.images.isNotEmpty) {
-            await loadFirestoreImage(d.images[0].image, 1).then((url) => d.imgURL = url);
-
-            destinations.add(d);
-          }
-        });
-
-        if (i++ == hikeDestinations.length) {
-          return destinations;
-        }
-      }
-    }
-
-    return [];
   }
 
   @override
@@ -225,28 +197,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildHikes(List<Hike> hikes) {
     List<Widget> hikeCards = [];
     for (Hike h in hikes) {
-      hikeCards.add(
-        FutureBuilder(
-          future: _getDestinations(h),
-          builder: (context, destinations) {
-            if (destinations.connectionState == ConnectionState.waiting) {
-              return LinearProgressIndicator();
-            }
-
-            if (destinations.hasData) {
-              return _buildHike(h, destinations.data as List<Destination>);
-            }
-
-            return Container();
-          },
-        ),
-      );
+      hikeCards.add(_buildHike(h));
     }
 
     return Column(children: hikeCards);
   }
 
-  Widget _buildHike(Hike hike, List<Destination> destinations) {
+  Widget _buildHike(Hike hike) {
     return Card(
       elevation: 1,
       shape: RoundedRectangleBorder(
@@ -404,30 +361,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         BuildContext mainContext = context;
-                        // Load a hike summary screen
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return Container(
-                              height: MediaQuery.of(context).size.height - MediaQuery.of(mainContext).padding.top,
-                              color: Theme.of(mainContext).colorScheme.primary,
-                              child: SafeArea(
-                                child: Container(
-                                  child: Column(
-                                    children: [
-                                      HikeSummary(hike: hike, destinations: destinations, viewContext: mainContext),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          enableDrag: true,
-                          isScrollControlled: true,
-                          isDismissible: true,
-                        );
+                        // show the hike summary screen
+                        _showHikeSummary(mainContext, hike);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -440,7 +377,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: 10,
                           ),
                           Text(
-                            "View Summary",
+                            "Places Visited",
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
@@ -465,6 +402,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showHikeSummary(BuildContext mainContext, Hike hike) {
+    showModalBottomSheet(
+      context: mainContext,
+      builder: (context) {
+        return SafeArea(
+          top: true,
+          bottom: true,
+          child: Container(
+            height: MediaQuery.of(mainContext).size.height - MediaQuery.of(mainContext).padding.top,
+            color: Theme.of(mainContext).colorScheme.primary,
+            child: SafeArea(
+              child: Container(
+                child: Column(
+                  children: [
+                    HikeSummary(hike: hike, viewContext: mainContext),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      enableDrag: true,
+      isScrollControlled: true,
+      isDismissible: true,
     );
   }
 

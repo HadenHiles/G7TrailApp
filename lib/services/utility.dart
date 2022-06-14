@@ -52,3 +52,10 @@ String printWeekday(DateTime date) {
       return "";
   }
 }
+
+List<T> splice<T>(List<T> list, int index, [num howMany = 0, /*<T | List<T>>*/ elements]) {
+  var endIndex = index + howMany.truncate();
+  list.removeRange(index, endIndex >= list.length ? list.length : endIndex);
+  if (elements != null) list.insertAll(index, elements is List<T> ? elements : <T>[elements]);
+  return list;
+}
