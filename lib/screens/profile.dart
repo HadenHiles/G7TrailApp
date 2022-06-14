@@ -185,7 +185,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
-                    _buildHikes(_hikes),
+                    _hikes.length < 1
+                        ? Container(
+                            padding: EdgeInsets.all(25),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "No hikes yet",
+                                  style: Theme.of(context).textTheme.headline5,
+                                  textAlign: TextAlign.center,
+                                ),
+                                Text(
+                                  "Start a hike using the banner below.",
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          )
+                        : _buildHikes(_hikes),
                     SizedBox(height: 15),
                   ],
                 ),
