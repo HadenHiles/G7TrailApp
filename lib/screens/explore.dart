@@ -227,117 +227,138 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               ],
                             ),
                       SizedBox(height: 15),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text(
-                          "Easy".toUpperCase(),
-                          style: Theme.of(context).textTheme.headline4,
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 310,
-                        child: _easyDestinations.isEmpty
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
-                                    child: LinearProgressIndicator(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
+                      _easyDestinations.length < 1
+                          ? Container()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    "Easy".toUpperCase(),
+                                    style: Theme.of(context).textTheme.headline4,
+                                    textAlign: TextAlign.start,
                                   ),
-                                ],
-                              )
-                            : ListView.builder(
-                                padding: EdgeInsets.only(left: 10),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _easyDestinations.length,
-                                itemBuilder: (context, i) {
-                                  return _buildDestination(_easyDestinations[i]);
-                                },
-                              ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(right: 15),
-                        child: Divider(
-                          color: darken(Theme.of(context).colorScheme.background, 0.25),
-                        ),
-                      ),
+                                ),
+                                SizedBox(
+                                  height: 310,
+                                  child: _easyDestinations.isEmpty
+                                      ? Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+                                              child: LinearProgressIndicator(
+                                                color: Theme.of(context).primaryColor,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : ListView.builder(
+                                          padding: EdgeInsets.only(left: 10),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: _easyDestinations.length,
+                                          itemBuilder: (context, i) {
+                                            return _buildDestination(_easyDestinations[i]);
+                                          },
+                                        ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(right: 15),
+                                  child: Divider(
+                                    color: darken(Theme.of(context).colorScheme.background, 0.25),
+                                  ),
+                                ),
+                              ],
+                            ),
                       SizedBox(height: 15),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text(
-                          "Moderate".toUpperCase(),
-                          style: Theme.of(context).textTheme.headline4,
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 310,
-                        child: _moderateDestinations.isEmpty
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
-                                    child: LinearProgressIndicator(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
+                      _moderateDestinations.length < 1
+                          ? Container()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    "Moderate".toUpperCase(),
+                                    style: Theme.of(context).textTheme.headline4,
+                                    textAlign: TextAlign.start,
                                   ),
-                                ],
-                              )
-                            : ListView.builder(
-                                padding: EdgeInsets.only(left: 10),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _moderateDestinations.length,
-                                itemBuilder: (context, i) {
-                                  return _buildDestination(_moderateDestinations[i]);
-                                },
-                              ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(right: 15),
-                        child: Divider(
-                          color: darken(Theme.of(context).colorScheme.background, 0.25),
-                        ),
-                      ),
+                                ),
+                                SizedBox(
+                                  height: 310,
+                                  child: _moderateDestinations.isEmpty
+                                      ? Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+                                              child: LinearProgressIndicator(
+                                                color: Theme.of(context).primaryColor,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : ListView.builder(
+                                          padding: EdgeInsets.only(left: 10),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: _moderateDestinations.length,
+                                          itemBuilder: (context, i) {
+                                            return _buildDestination(_moderateDestinations[i]);
+                                          },
+                                        ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(right: 15),
+                                  child: Divider(
+                                    color: darken(Theme.of(context).colorScheme.background, 0.25),
+                                  ),
+                                ),
+                              ],
+                            ),
                       SizedBox(height: 15),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Text(
-                          "Difficult".toUpperCase(),
-                          style: Theme.of(context).textTheme.headline4,
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 310,
-                        child: _difficultDestinations.isEmpty
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
-                                    child: LinearProgressIndicator(
-                                      color: Theme.of(context).primaryColor,
-                                    ),
+                      _difficultDestinations.length < 1
+                          ? Container()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    "Difficult".toUpperCase(),
+                                    style: Theme.of(context).textTheme.headline4,
+                                    textAlign: TextAlign.start,
                                   ),
-                                ],
-                              )
-                            : ListView.builder(
-                                padding: EdgeInsets.only(left: 10),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _difficultDestinations.length,
-                                itemBuilder: (context, i) {
-                                  return _buildDestination(_difficultDestinations[i]);
-                                },
-                              ),
-                      ),
-                      SizedBox(height: 50),
+                                ),
+                                SizedBox(
+                                  height: 310,
+                                  child: _difficultDestinations.isEmpty
+                                      ? Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+                                              child: LinearProgressIndicator(
+                                                color: Theme.of(context).primaryColor,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : ListView.builder(
+                                          padding: EdgeInsets.only(left: 10),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: _difficultDestinations.length,
+                                          itemBuilder: (context, i) {
+                                            return _buildDestination(_difficultDestinations[i]);
+                                          },
+                                        ),
+                                ),
+                                SizedBox(height: 50),
+                              ],
+                            ),
                     ],
                   ),
                 ),
