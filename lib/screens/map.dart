@@ -11,6 +11,7 @@ import 'package:g7trailapp/models/firestore/path.dart';
 import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/theme/map_style.dart';
+import 'package:g7trailapp/utility/general.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
@@ -154,8 +155,7 @@ class _MapScreenState extends State<MapScreen> {
             for (var p in lPoints) {
               if (p.latitude != 0 || p.longitude != 0) {
                 // Get the raw image data for the landmark icon
-                var iconRequest = await http.get(Uri.parse(l.iconURL!));
-                var iconBytes = await iconRequest.bodyBytes;
+                var iconBytes = await getBytesFromUrl(l.iconURL!, 100);
 
                 LatLng latLng = LatLng(p.latitude, p.longitude);
                 landmarkers.add(
