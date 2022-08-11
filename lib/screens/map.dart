@@ -5,12 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
+import 'package:g7trailapp/models/firestore/landmark.dart';
 import 'package:g7trailapp/models/firestore/legend.dart';
 import 'package:g7trailapp/models/firestore/path.dart';
 import 'package:g7trailapp/screens/destination.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/theme/map_style.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key, this.highlightedDestination}) : super(key: key);
@@ -32,6 +34,7 @@ class _MapScreenState extends State<MapScreen> {
   List<Destination> _destinations = [];
   Legend? _legend;
   Set<Marker> _markers = {};
+  List<Landmark> _landmarks = [];
   Marker? highlightedMarker;
   MapType _mapType = MapType.normal;
   Set<Polyline> _polylines = {};
@@ -57,7 +60,7 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void _loadMarkers() async {
+  Future<void> _loadMarkers() async {
     Set<Marker> markers = {};
     int i = 0;
     int? highlightedMarkerIdx;
@@ -126,6 +129,51 @@ class _MapScreenState extends State<MapScreen> {
         setState(() {
           _polylines = polylines;
         });
+      }
+    });
+  }
+
+  Future<void> _loadLandmarks() async {
+    await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "landmarks").get().then((snapshot) async {
+      if (snapshot.docs.isNotEmpty) {
+        for (var doc in snapshot.docs) {
+          Landmark l = Landmark.fromSnapshot(doc);
+          setState(() {
+            _landmarks.add(l);
+          });
+        }
+
+        Set<Marker> landmarkers = {};
+        int i = 0;
+        for (var l in _landmarks) {
+          await loadFirestoreImage(l.icon, 1).then((url) => l.iconURL = url).then((_) async {
+            List<LatLng> lPoints = l.points.map<LatLng>((m) {
+              return LatLng(m.latitude, m.longitude);
+            }).toList();
+
+            for (var p in lPoints) {
+              if (p.latitude != 0 || p.longitude != 0) {
+                // Get the raw image data for the landmark icon
+                var iconRequest = await http.get(Uri.parse(l.iconURL!));
+                var iconBytes = await iconRequest.bodyBytes;
+
+                LatLng latLng = LatLng(p.latitude, p.longitude);
+                landmarkers.add(
+                  Marker(
+                    markerId: MarkerId("landmark-" + (i++).toString()),
+                    position: latLng,
+                    infoWindow: InfoWindow(title: l.title),
+                    icon: l.iconURL!.isEmpty ? BitmapDescriptor.defaultMarker : await BitmapDescriptor.fromBytes(iconBytes),
+                  ),
+                );
+              }
+            }
+
+            setState(() {
+              _markers.addAll(landmarkers);
+            });
+          });
+        }
       }
     });
   }
@@ -223,7 +271,9 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     _loadDestinations().then((_) {
       _loadPolyines().then((_) {
-        _loadMarkers();
+        _loadMarkers().then((_) {
+          _loadLandmarks();
+        });
       });
     });
 
