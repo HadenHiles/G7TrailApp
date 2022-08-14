@@ -13,7 +13,6 @@ import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/theme/map_style.dart';
 import 'package:g7trailapp/utility/general.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key, this.highlightedDestination}) : super(key: key);
