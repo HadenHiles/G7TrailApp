@@ -16,7 +16,7 @@ class NotificationService {
   );
 
   // IOS Configurations
-  final IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
+  final DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails(
     presentAlert: true, // Present an alert when the notification is displayed and the application is in the foreground (only from iOS 10 onwards)
     presentBadge: true, // Present the badge number when the notification is displayed and the application is in the foreground (only from iOS 10 onwards)
     presentSound: true, // Play a sound when the notification is displayed and the application is in the foreground (only from iOS 10 onwards)
@@ -32,7 +32,7 @@ class NotificationService {
   Future<void> init() async {
     final AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
 
-    final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings(
+    final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
       requestSoundPermission: false,
       requestBadgePermission: false,
       requestAlertPermission: false,
@@ -40,10 +40,10 @@ class NotificationService {
 
     final InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsIOS, macOS: null);
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: selectNotification);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: selectNotification);
   }
 
-  Future selectNotification(String? payload) async {
+  Future selectNotification(NotificationResponse? payload) async {
     //Handle notification tapped logic here
   }
 
