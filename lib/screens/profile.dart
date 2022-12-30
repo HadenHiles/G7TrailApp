@@ -406,7 +406,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size.fromHeight(50),
-                        primary: Theme.of(context).primaryColor,
+                        backgroundColor: Theme.of(context).primaryColor,
                         padding: EdgeInsets.symmetric(vertical: 10),
                         elevation: 2,
                         textStyle: TextStyle(
