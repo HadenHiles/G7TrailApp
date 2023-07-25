@@ -109,7 +109,7 @@ class _LoginState extends State<Login> {
                           fontFamily: "LGCafe",
                           fontSize: 22,
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).textTheme.bodyText1!.color,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -206,7 +206,7 @@ class _LoginState extends State<Login> {
                             child: Text(
                               'Or'.toUpperCase(),
                               style: TextStyle(
-                                color: Theme.of(context).textTheme.bodyText1!.color,
+                                color: Theme.of(context).textTheme.bodyLarge!.color,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -291,7 +291,7 @@ class _LoginState extends State<Login> {
                                                   decoration: InputDecoration(
                                                     labelText: 'Email',
                                                     labelStyle: TextStyle(
-                                                      color: Theme.of(context).textTheme.bodyText1!.color,
+                                                      color: Theme.of(context).textTheme.bodyLarge!.color,
                                                     ),
                                                     hintText: 'Enter your email',
                                                     hintStyle: TextStyle(
@@ -317,7 +317,7 @@ class _LoginState extends State<Login> {
                                                   decoration: InputDecoration(
                                                     labelText: 'Password',
                                                     labelStyle: TextStyle(
-                                                      color: Theme.of(context).textTheme.bodyText1!.color,
+                                                      color: Theme.of(context).textTheme.bodyLarge!.color,
                                                     ),
                                                     hintText: 'Enter your password',
                                                     hintStyle: TextStyle(
@@ -426,7 +426,7 @@ class _LoginState extends State<Login> {
                                                                           decoration: InputDecoration(
                                                                             labelText: 'Email',
                                                                             labelStyle: TextStyle(
-                                                                              color: Theme.of(context).textTheme.bodyText1!.color,
+                                                                              color: Theme.of(context).textTheme.bodyLarge!.color,
                                                                             ),
                                                                             hintText: 'Confirm your password',
                                                                             hintStyle: TextStyle(
@@ -735,7 +735,7 @@ class _LoginState extends State<Login> {
                             height: 60,
                             child: Text(
                               "Accept ",
-                              style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic),
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontStyle: FontStyle.italic),
                             ),
                           ),
                           Container(
@@ -746,7 +746,7 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(
                                 _policyLabel,
-                                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontStyle: FontStyle.italic),
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor, fontStyle: FontStyle.italic),
                               ),
                             ),
                           ),
@@ -789,7 +789,7 @@ class _LoginState extends State<Login> {
                       },
                       child: Text(
                         "Close",
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ),
                     TextButton(
@@ -802,7 +802,7 @@ class _LoginState extends State<Login> {
                       },
                       child: Text(
                         "Accept",
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).primaryColor),
                       ),
                     ),
                   ],

@@ -150,7 +150,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             pinned: true,
             flexibleSpace: DecoratedBox(
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
               ),
               child: FlexibleSpaceBar(
                 collapseMode: CollapseMode.parallax,
@@ -194,7 +194,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     children: [
                                       Text(
                                         "Near Me".toUpperCase(),
-                                        style: Theme.of(context).textTheme.headline4,
+                                        style: Theme.of(context).textTheme.headlineMedium,
                                         textAlign: TextAlign.start,
                                       ),
                                       SizedBox(
@@ -202,7 +202,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                       ),
                                       Text(
                                         "(" + _nearestBeacon!.destinationName.toUpperCase() + ")",
-                                        style: Theme.of(context).textTheme.headline6,
+                                        style: Theme.of(context).textTheme.titleLarge,
                                       ),
                                     ],
                                   ),
@@ -236,7 +236,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   margin: EdgeInsets.only(left: 10),
                                   child: Text(
                                     "Easy".toUpperCase(),
-                                    style: Theme.of(context).textTheme.headline4,
+                                    style: Theme.of(context).textTheme.headlineMedium,
                                     textAlign: TextAlign.start,
                                   ),
                                 ),
@@ -282,7 +282,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   margin: EdgeInsets.only(left: 10),
                                   child: Text(
                                     "Moderate".toUpperCase(),
-                                    style: Theme.of(context).textTheme.headline4,
+                                    style: Theme.of(context).textTheme.headlineMedium,
                                     textAlign: TextAlign.start,
                                   ),
                                 ),
@@ -328,7 +328,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   margin: EdgeInsets.only(left: 10),
                                   child: Text(
                                     "Difficult".toUpperCase(),
-                                    style: Theme.of(context).textTheme.headline4,
+                                    style: Theme.of(context).textTheme.headlineMedium,
                                     textAlign: TextAlign.start,
                                   ),
                                 ),
@@ -383,7 +383,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Widget _buildDestination(Destination destination) {
     String title = destination.destinationName;
     String? imgURL = destination.imgURL;
-    Widget trailing = Text(destination.difficulty.capitalize(), style: Theme.of(context).textTheme.bodyText1);
+    Widget trailing = Text(destination.difficulty.capitalize(), style: Theme.of(context).textTheme.bodyLarge);
     Image img = imgURL != null ? Image(image: CachedNetworkImageProvider(imgURL)) : Image(image: AssetImage("assets/images/avatar.png"));
 
     return SizedBox(
@@ -414,7 +414,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   title.toUpperCase(),
                   maxLines: 1,
                   maxFontSize: 22,
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 trailing: trailing,
               ),

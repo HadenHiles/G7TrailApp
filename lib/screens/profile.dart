@@ -77,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             pinned: true,
             flexibleSpace: DecoratedBox(
               decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
               ),
               child: FlexibleSpaceBar(
                 collapseMode: CollapseMode.parallax,
@@ -116,12 +116,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: 140,
                         child: AutoSizeText(
                           "Your Hikes".toUpperCase(),
-                          maxFontSize: Theme.of(context).textTheme.headline5!.fontSize ?? 22,
+                          maxFontSize: Theme.of(context).textTheme.headlineSmall!.fontSize ?? 22,
                           minFontSize: 10,
                           maxLines: 2,
                           style: TextStyle(
-                            fontSize: Theme.of(context).textTheme.headline5!.fontSize,
-                            fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                            fontSize: Theme.of(context).textTheme.headlineSmall!.fontSize,
+                            fontFamily: Theme.of(context).textTheme.headlineSmall!.fontFamily,
                             color: Theme.of(context).colorScheme.onPrimary,
                           ),
                           textAlign: TextAlign.start,
@@ -145,7 +145,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   radius: 34,
                   child: Icon(
                     Icons.settings,
-                    color: Theme.of(context).textTheme.bodyText1!.color,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
                     size: 28,
                   ),
                   onTap: () {
@@ -180,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           child: Text(
                             "Past Hikes".toUpperCase(),
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ),
                       ],
@@ -194,12 +194,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children: [
                                 Text(
                                   "No hikes yet",
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headlineSmall,
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(
                                   "Start a hike using the banner below.",
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context).textTheme.bodyLarge,
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -250,7 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   title: Text(
                     (printWeekday(hike.date) + " Hike").toUpperCase(),
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   trailing: PopupMenuButton<String>(
                     // Callback that sets the selected popup menu item.
@@ -261,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           builder: (context) => AlertDialog(
                             title: Text(
                               "Delete ${printWeekday(hike.date)} Hike?",
-                              style: Theme.of(context).textTheme.headline4,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                             content: Text("This cannot be undone."),
                             actions: [
@@ -309,13 +309,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ListTile(
                   title: Text(
                     printDate(hike.date),
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
                 ListTile(
                   title: Text(
                     "Duration",
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   trailing: Text(
                     hike.duration.inMinutes < 1
@@ -324,7 +324,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             hike.duration,
                             false,
                           ),
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
               ],

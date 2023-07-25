@@ -227,7 +227,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                       children: [
                                         Text(
                                           "Start a hike".toUpperCase(),
-                                          style: Theme.of(context).textTheme.headline4,
+                                          style: Theme.of(context).textTheme.headlineMedium,
                                         ),
                                       ],
                                     ),
@@ -266,10 +266,10 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                 Text(
                                   "Destinations visited".toUpperCase(),
                                   style: TextStyle(
-                                    color: Theme.of(context).textTheme.headline5!.color,
-                                    fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                                    color: Theme.of(context).textTheme.headlineSmall!.color,
+                                    fontFamily: Theme.of(context).textTheme.headlineSmall!.fontFamily,
                                     fontSize: 18,
-                                    fontWeight: Theme.of(context).textTheme.headline5!.fontWeight,
+                                    fontWeight: Theme.of(context).textTheme.headlineSmall!.fontWeight,
                                   ),
                                 ),
                               ],
@@ -325,17 +325,17 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                                 title: Text(
                                                   _hikeDestinations[i].destinationName.toUpperCase(),
                                                   style: TextStyle(
-                                                    color: HomeTheme.darkTheme.textTheme.headline5!.color,
-                                                    fontFamily: HomeTheme.darkTheme.textTheme.headline5!.fontFamily,
+                                                    color: HomeTheme.darkTheme.textTheme.headlineSmall!.color,
+                                                    fontFamily: HomeTheme.darkTheme.textTheme.headlineSmall!.fontFamily,
                                                     fontSize: 26,
-                                                    fontWeight: HomeTheme.darkTheme.textTheme.headline5!.fontWeight,
+                                                    fontWeight: HomeTheme.darkTheme.textTheme.headlineSmall!.fontWeight,
                                                   ),
                                                 ),
                                                 subtitle: Text(
                                                   summaryParagraph.length >= 40 ? summaryParagraph.substring(0, 39) + ".." : summaryParagraph.substring(0, summaryParagraph.length) + "..",
                                                   style: TextStyle(
-                                                    color: HomeTheme.darkTheme.textTheme.bodyText2!.color,
-                                                    fontFamily: HomeTheme.darkTheme.textTheme.bodyText2!.fontFamily,
+                                                    color: HomeTheme.darkTheme.textTheme.bodyMedium!.color,
+                                                    fontFamily: HomeTheme.darkTheme.textTheme.bodyMedium!.fontFamily,
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.w300,
                                                   ),
@@ -352,7 +352,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                                   child: Icon(
                                                     Icons.arrow_right_alt_rounded,
                                                     size: 36,
-                                                    color: HomeTheme.darkTheme.textTheme.headline5!.color,
+                                                    color: HomeTheme.darkTheme.textTheme.headlineSmall!.color,
                                                   ),
                                                 ),
                                               ),
@@ -401,8 +401,8 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                             child: Text(
                                               "Cancel".toUpperCase(),
                                               style: TextStyle(
-                                                fontSize: Theme.of(context).textTheme.headline6!.fontSize,
-                                                fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                                                fontSize: Theme.of(context).textTheme.titleLarge!.fontSize,
+                                                fontFamily: Theme.of(context).textTheme.headlineSmall!.fontFamily,
                                                 color: Color(0xffCC3333),
                                               ),
                                             ),
@@ -420,8 +420,8 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                             child: Text(
                                               "Save".toUpperCase(),
                                               style: TextStyle(
-                                                fontSize: Theme.of(context).textTheme.headline6!.fontSize,
-                                                fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                                                fontSize: Theme.of(context).textTheme.titleLarge!.fontSize,
+                                                fontFamily: Theme.of(context).textTheme.headlineSmall!.fontFamily,
                                                 color: Theme.of(context).colorScheme.onSecondary,
                                               ),
                                             ),
@@ -667,7 +667,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                 content: Container(
                   child: Text(
                     "Please login to save hikes.",
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
                 actions: [

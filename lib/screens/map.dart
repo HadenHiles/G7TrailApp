@@ -355,7 +355,7 @@ class _MapScreenState extends State<MapScreen> {
                                   ),
                             title: Text(
                               _legend!.items[i].title,
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           );
                         },

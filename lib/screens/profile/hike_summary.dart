@@ -96,7 +96,7 @@ class _HikeSummaryState extends State<HikeSummary> {
                             printWeekday(widget.hike.date).toUpperCase() + " Hike".toUpperCase(),
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onSecondary,
-                              fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                              fontFamily: Theme.of(context).textTheme.headlineSmall!.fontFamily,
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                             ),
@@ -167,17 +167,17 @@ class _HikeSummaryState extends State<HikeSummary> {
                                                 title: Text(
                                                   _destinations[i].destinationName.toUpperCase(),
                                                   style: TextStyle(
-                                                    color: HomeTheme.darkTheme.textTheme.headline5!.color,
-                                                    fontFamily: HomeTheme.darkTheme.textTheme.headline5!.fontFamily,
+                                                    color: HomeTheme.darkTheme.textTheme.headlineSmall!.color,
+                                                    fontFamily: HomeTheme.darkTheme.textTheme.headlineSmall!.fontFamily,
                                                     fontSize: 26,
-                                                    fontWeight: HomeTheme.darkTheme.textTheme.headline5!.fontWeight,
+                                                    fontWeight: HomeTheme.darkTheme.textTheme.headlineSmall!.fontWeight,
                                                   ),
                                                 ),
                                                 subtitle: Text(
                                                   summaryParagraph.length >= 40 ? summaryParagraph.substring(0, 39) + ".." : summaryParagraph.substring(0, summaryParagraph.length) + "..",
                                                   style: TextStyle(
-                                                    color: HomeTheme.darkTheme.textTheme.bodyText2!.color,
-                                                    fontFamily: HomeTheme.darkTheme.textTheme.bodyText2!.fontFamily,
+                                                    color: HomeTheme.darkTheme.textTheme.bodyMedium!.color,
+                                                    fontFamily: HomeTheme.darkTheme.textTheme.bodyMedium!.fontFamily,
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.w300,
                                                   ),
@@ -194,7 +194,7 @@ class _HikeSummaryState extends State<HikeSummary> {
                                                   child: Icon(
                                                     Icons.arrow_right_alt_rounded,
                                                     size: 36,
-                                                    color: HomeTheme.darkTheme.textTheme.headline5!.color,
+                                                    color: HomeTheme.darkTheme.textTheme.headlineSmall!.color,
                                                   ),
                                                 ),
                                               ),

@@ -194,7 +194,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
         length: 3,
         child: Scaffold(
           key: _scaffoldKey,
-          backgroundColor: preferences.darkMode ? Theme.of(context).backgroundColor : Colors.white,
+          backgroundColor: preferences.darkMode ? Theme.of(context).colorScheme.background : Colors.white,
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
@@ -253,7 +253,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
               widget.destination.destinationName.toUpperCase(),
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSecondary,
-                fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                fontFamily: Theme.of(context).textTheme.headlineSmall!.fontFamily,
                 fontSize: 22,
               ),
             ),
@@ -274,7 +274,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
               ],
               labelStyle: TextStyle(
                 color: Theme.of(context).colorScheme.onPrimary,
-                fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+                fontFamily: Theme.of(context).textTheme.headlineSmall!.fontFamily,
               ),
             ),
           ),
@@ -309,9 +309,9 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                             child: Text(
                                               "Listen".toUpperCase(),
                                               style: TextStyle(
-                                                color: Theme.of(context).backgroundColor,
+                                                color: Theme.of(context).colorScheme.background,
                                                 fontSize: 20,
-                                                fontFamily: Theme.of(context).textTheme.headline1!.fontFamily,
+                                                fontFamily: Theme.of(context).textTheme.displayLarge!.fontFamily,
                                               ),
                                             ),
                                           ),
@@ -320,8 +320,8 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                               Text(
                                                 "Autoplay".toUpperCase(),
                                                 style: TextStyle(
-                                                  color: Theme.of(context).backgroundColor,
-                                                  fontFamily: Theme.of(context).textTheme.bodyText2!.fontFamily,
+                                                  color: Theme.of(context).colorScheme.background,
+                                                  fontFamily: Theme.of(context).textTheme.bodyMedium!.fontFamily,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -488,7 +488,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                               child: Card(
                                 margin: EdgeInsets.all(0),
                                 elevation: 1,
-                                color: i % 2 != 0 ? Theme.of(context).cardTheme.color : (preferences.darkMode ? Theme.of(context).backgroundColor : Colors.white),
+                                color: i % 2 != 0 ? Theme.of(context).cardTheme.color : (preferences.darkMode ? Theme.of(context).colorScheme.background : Colors.white),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
@@ -529,10 +529,10 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                               padding: EdgeInsets.only(left: 25),
                                               child: AutoSizeText(
                                                 widget.destination.art[i].title.toUpperCase(),
-                                                maxFontSize: Theme.of(context).textTheme.bodyText1!.fontSize ?? 14,
+                                                maxFontSize: Theme.of(context).textTheme.bodyLarge!.fontSize ?? 14,
                                                 minFontSize: 10,
                                                 maxLines: 2,
-                                                style: Theme.of(context).textTheme.bodyText1,
+                                                style: Theme.of(context).textTheme.bodyLarge,
                                               ),
                                             ),
                                           ),

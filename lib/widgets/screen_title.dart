@@ -12,12 +12,12 @@ class ScreenTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget t = AutoSizeText(
       title.toUpperCase(),
-      maxFontSize: Theme.of(context).textTheme.headline5!.fontSize ?? 22,
+      maxFontSize: Theme.of(context).textTheme.headlineSmall!.fontSize ?? 22,
       minFontSize: 10,
       maxLines: 2,
       style: TextStyle(
-        fontSize: Theme.of(context).textTheme.headline5!.fontSize,
-        fontFamily: Theme.of(context).textTheme.headline5!.fontFamily,
+        fontSize: Theme.of(context).textTheme.headlineSmall!.fontSize,
+        fontFamily: Theme.of(context).textTheme.headlineSmall!.fontFamily,
         color: Theme.of(context).colorScheme.onPrimary,
       ),
       textAlign: TextAlign.start,

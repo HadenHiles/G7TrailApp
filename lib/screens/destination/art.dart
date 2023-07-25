@@ -26,7 +26,7 @@ class _ArtScreenState extends State<ArtScreen> {
       },
       initialData: NetworkStatus.Online,
       child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
@@ -40,7 +40,7 @@ class _ArtScreenState extends State<ArtScreen> {
                   child: IconButton(
                     icon: Icon(
                       Icons.arrow_back,
-                      color: Theme.of(context).textTheme.bodyText1!.color,
+                      color: Theme.of(context).textTheme.bodyLarge!.color,
                       size: 28,
                     ),
                     onPressed: () {
@@ -50,7 +50,7 @@ class _ArtScreenState extends State<ArtScreen> {
                 ),
                 flexibleSpace: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).colorScheme.background,
                   ),
                   child: FlexibleSpaceBar(
                     collapseMode: CollapseMode.none,
@@ -104,7 +104,7 @@ class _ArtScreenState extends State<ArtScreen> {
                 padding: EdgeInsets.symmetric(vertical: 25, horizontal: 10),
                 child: Text(
                   widget.art!.description,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                   textAlign: TextAlign.start,
                 ),
               ),

@@ -53,7 +53,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       },
       initialData: NetworkStatus.Online,
       child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
@@ -67,7 +67,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   child: IconButton(
                     icon: Icon(
                       Icons.arrow_back,
-                      color: Theme.of(context).textTheme.bodyText1!.color,
+                      color: Theme.of(context).textTheme.bodyLarge!.color,
                       size: 28,
                     ),
                     onPressed: () {
@@ -77,7 +77,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 ),
                 flexibleSpace: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).colorScheme.background,
                   ),
                   child: FlexibleSpaceBar(
                     collapseMode: CollapseMode.none,
@@ -100,14 +100,14 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   sections: [
                     SettingsSection(
                       title: 'Preferences',
-                      titleTextStyle: Theme.of(context).textTheme.headline6,
+                      titleTextStyle: Theme.of(context).textTheme.titleLarge,
                       tiles: [
                         SettingsTile.switchTile(
-                          titleTextStyle: Theme.of(context).textTheme.bodyText1,
+                          titleTextStyle: Theme.of(context).textTheme.bodyLarge,
                           title: 'Dark Mode',
                           leading: Icon(
                             Icons.brightness_2,
-                            color: Theme.of(context).textTheme.bodyText1!.color,
+                            color: Theme.of(context).textTheme.bodyLarge!.color,
                           ),
                           switchValue: _darkMode,
                           onToggle: (bool value) async {
@@ -128,12 +128,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           },
                         ),
                         SettingsTile.switchTile(
-                          titleTextStyle: Theme.of(context).textTheme.bodyText1,
+                          titleTextStyle: Theme.of(context).textTheme.bodyLarge,
                           title: 'Vibrate when near a beacon',
                           subtitle: "(while app is open)",
                           leading: Icon(
                             Icons.vibration_rounded,
-                            color: Theme.of(context).textTheme.bodyText1!.color,
+                            color: Theme.of(context).textTheme.bodyLarge!.color,
                           ),
                           switchValue: _beaconFoundAlert,
                           onToggle: (bool value) async {
@@ -154,12 +154,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           },
                         ),
                         SettingsTile.switchTile(
-                          titleTextStyle: Theme.of(context).textTheme.bodyText1,
+                          titleTextStyle: Theme.of(context).textTheme.bodyLarge,
                           title: 'Auto Play Audio',
                           subtitle: 'Play destination audio automatically',
                           leading: Icon(
                             Icons.audiotrack,
-                            color: Theme.of(context).textTheme.bodyText1!.color,
+                            color: Theme.of(context).textTheme.bodyLarge!.color,
                           ),
                           switchValue: _autoPlayAudio,
                           onToggle: (bool value) async {
@@ -182,17 +182,17 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       ],
                     ),
                     SettingsSection(
-                      titleTextStyle: Theme.of(context).textTheme.headline6,
+                      titleTextStyle: Theme.of(context).textTheme.titleLarge,
                       title: 'Account',
                       tiles: [
                         user == null
                             ? SettingsTile(
                                 title: 'Sign In',
-                                titleTextStyle: Theme.of(context).textTheme.bodyText1,
-                                subtitleTextStyle: Theme.of(context).textTheme.bodyText2,
+                                titleTextStyle: Theme.of(context).textTheme.bodyLarge,
+                                subtitleTextStyle: Theme.of(context).textTheme.bodyMedium,
                                 leading: Icon(
                                   Icons.login,
-                                  color: Theme.of(context).textTheme.bodyText1!.color,
+                                  color: Theme.of(context).textTheme.bodyLarge!.color,
                                 ),
                                 onPressed: (BuildContext context) {
                                   navigatorKey.currentState!.pop();
@@ -202,9 +202,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                                 title: 'Logout',
                                 titleTextStyle: TextStyle(
                                   color: Colors.red,
-                                  fontSize: Theme.of(context).textTheme.bodyText1!.fontSize,
+                                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
                                 ),
-                                subtitleTextStyle: Theme.of(context).textTheme.bodyText2,
+                                subtitleTextStyle: Theme.of(context).textTheme.bodyMedium,
                                 leading: const Icon(
                                   Icons.logout,
                                   color: Colors.red,
