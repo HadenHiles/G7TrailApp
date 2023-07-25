@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/style.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class HomeTheme {
   HomeTheme._();
 
-  static final Map<String, dynamic> lightHtmlStyle = {
+  static final Map<String, Style> lightHtmlStyle = {
     'h1': Style(
       color: lightTheme.textTheme.displayLarge!.color,
       fontFamily: lightTheme.textTheme.displayLarge!.fontFamily,
@@ -42,7 +42,7 @@ class HomeTheme {
       fontFamily: lightTheme.textTheme.bodyLarge!.fontFamily,
       fontSize: FontSize(darkTheme.textTheme.bodyLarge!.fontSize ?? 16, Unit.px),
       lineHeight: LineHeight(1.75, units: 'em'),
-      padding: EdgeInsets.symmetric(vertical: 5),
+      padding: HtmlPaddings.symmetric(vertical: 5),
     ),
     'em': Style(
       color: lightTheme.textTheme.bodyLarge!.color,
@@ -57,7 +57,7 @@ class HomeTheme {
       fontWeight: FontWeight.bold,
     ),
   };
-  static final Map<String, dynamic> darkHtmlStyle = {
+  static final Map<String, Style> darkHtmlStyle = {
     'h1': Style(
       color: darkTheme.textTheme.displayLarge!.color,
       fontFamily: darkTheme.textTheme.displayLarge!.fontFamily,

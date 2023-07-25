@@ -51,7 +51,7 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.show(
       12345,
       title ?? "Trail Beacon Found",
-      body ?? "You discovered a painting site!",
+      body ?? "You discovered a paint site!",
       Platform.isAndroid ? NotificationDetails(android: androidPlatformChannelSpecifics) : NotificationDetails(iOS: iOSPlatformChannelSpecifics),
       payload: 'data',
     );
@@ -64,7 +64,7 @@ class NotificationService {
       body ?? "A scheduled notification from G7 Trail",
       tz.TZDateTime.from(date ?? DateTime.now().add(Duration(minutes: 5)), tz.local),
       Platform.isAndroid ? NotificationDetails(android: androidPlatformChannelSpecifics) : NotificationDetails(iOS: iOSPlatformChannelSpecifics),
-      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
