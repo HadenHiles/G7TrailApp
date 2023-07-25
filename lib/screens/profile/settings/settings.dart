@@ -273,8 +273,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                               Uri link = Uri(scheme: "https", host: "github.com", path: "HadenHiles");
                               await canLaunchUrl(link).then((can) {
                                 launchUrl(link).catchError((err) {
-                                  // ignore: avoid_print
                                   print(err);
+                                  return false;
                                 });
                               });
                             },
@@ -310,8 +310,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                                 Uri link = Uri(scheme: "https", host: "www.groupofseventrail.com");
                                 await canLaunchUrl(link).then((can) {
                                   launchUrl(link).catchError((err) {
-                                    // ignore: avoid_print
                                     print(err);
+                                    return false;
                                   });
                                 });
                               },
