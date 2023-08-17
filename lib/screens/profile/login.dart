@@ -838,7 +838,6 @@ class _LoginState extends State<Login> {
 
         bootstrap();
 
-        navigatorKey.currentState!.pop();
         navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
           return FluidNavigationBar(defaultTab: 2);
         }));
@@ -886,7 +885,6 @@ class _LoginState extends State<Login> {
 
         bootstrap();
 
-        navigatorKey.currentState!.pop();
         navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
           return FluidNavigationBar(defaultTab: 2);
         }));
@@ -934,7 +932,6 @@ class _LoginState extends State<Login> {
 
         bootstrap();
 
-        navigatorKey.currentState!.pop();
         navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
           return FluidNavigationBar(defaultTab: 2);
         }));
@@ -974,7 +971,6 @@ class _LoginState extends State<Login> {
 
         bootstrap();
 
-        navigatorKey.currentState!.pop();
         navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (context) {
           return FluidNavigationBar(defaultTab: 2);
         }));
