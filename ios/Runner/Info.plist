@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>G7trailapp</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -39,26 +41,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<!-- When in use -->
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is required to detect when you are near trail beacons</string>
-	<!-- Always -->
-	<!-- for iOS 11 + -->
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Your location is required to detect when you are near trail beacons</string>
-	<!-- for iOS 9/10 -->
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is required to detect when you are near trail beacons</string>
-	<!-- Bluetooth Privacy -->
-	<!-- for iOS 13 + -->
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Your location is required to detect when you are near trail beacons</string>
-	<!--Background permission-->
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>dev.flutter.background.refresh</string>
-	</array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

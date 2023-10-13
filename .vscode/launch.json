@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "G7TrailApp",
+            "name": "g7trailapp",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "G7TrailApp (profile mode)",
+            "name": "g7trailapp (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "G7TrailApp (release mode)",
+            "name": "g7trailapp (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
