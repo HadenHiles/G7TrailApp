@@ -99,17 +99,21 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 child: SettingsList(
                   sections: [
                     SettingsSection(
-                      title: 'Preferences',
-                      titleTextStyle: Theme.of(context).textTheme.titleLarge,
+                      title: Text(
+                        'Preferences',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                       tiles: [
                         SettingsTile.switchTile(
-                          titleTextStyle: Theme.of(context).textTheme.bodyLarge,
-                          title: 'Dark Mode',
+                          title: Text(
+                            'Dark Mode',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
                           leading: Icon(
                             Icons.brightness_2,
                             color: Theme.of(context).textTheme.bodyLarge!.color,
                           ),
-                          switchValue: _darkMode,
+                          initialValue: _darkMode,
                           onToggle: (bool value) async {
                             SharedPreferences prefs = await SharedPreferences.getInstance();
                             setState(() {
@@ -128,14 +132,19 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           },
                         ),
                         SettingsTile.switchTile(
-                          titleTextStyle: Theme.of(context).textTheme.bodyLarge,
-                          title: 'Vibrate when near a beacon',
-                          subtitle: "(while app is open)",
+                          title: Text(
+                            'Vibrate when near a beacon',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          description: Text(
+                            '(while app is open)',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
                           leading: Icon(
                             Icons.vibration_rounded,
                             color: Theme.of(context).textTheme.bodyLarge!.color,
                           ),
-                          switchValue: _beaconFoundAlert,
+                          initialValue: _beaconFoundAlert,
                           onToggle: (bool value) async {
                             SharedPreferences prefs = await SharedPreferences.getInstance();
                             setState(() {
@@ -154,14 +163,19 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           },
                         ),
                         SettingsTile.switchTile(
-                          titleTextStyle: Theme.of(context).textTheme.bodyLarge,
-                          title: 'Auto Play Audio',
-                          subtitle: 'Play destination audio automatically',
+                          title: Text(
+                            'Auto Play Audio',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          description: Text(
+                            'Play destination audio automatically',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
                           leading: Icon(
                             Icons.audiotrack,
                             color: Theme.of(context).textTheme.bodyLarge!.color,
                           ),
-                          switchValue: _autoPlayAudio,
+                          initialValue: _autoPlayAudio,
                           onToggle: (bool value) async {
                             SharedPreferences prefs = await SharedPreferences.getInstance();
                             setState(() {
@@ -182,14 +196,17 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       ],
                     ),
                     SettingsSection(
-                      titleTextStyle: Theme.of(context).textTheme.titleLarge,
-                      title: 'Account',
+                      title: Text(
+                        'Account',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                       tiles: [
                         user == null
                             ? SettingsTile(
-                                title: 'Sign In',
-                                titleTextStyle: Theme.of(context).textTheme.bodyLarge,
-                                subtitleTextStyle: Theme.of(context).textTheme.bodyMedium,
+                                title: Text(
+                                  'Sign In',
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
                                 leading: Icon(
                                   Icons.login,
                                   color: Theme.of(context).textTheme.bodyLarge!.color,
@@ -199,12 +216,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                                 },
                               )
                             : SettingsTile(
-                                title: 'Logout',
-                                titleTextStyle: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                                title: Text(
+                                  'Logout',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize,
+                                  ),
                                 ),
-                                subtitleTextStyle: Theme.of(context).textTheme.bodyMedium,
                                 leading: const Icon(
                                   Icons.logout,
                                   color: Colors.red,
