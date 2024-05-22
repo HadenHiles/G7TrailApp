@@ -150,7 +150,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             pinned: true,
             flexibleSpace: DecoratedBox(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
               ),
               child: FlexibleSpaceBar(
                 collapseMode: CollapseMode.parallax,
@@ -221,7 +221,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 Container(
                                   padding: EdgeInsets.only(right: 15),
                                   child: Divider(
-                                    color: darken(Theme.of(context).colorScheme.background, 0.25),
+                                    color: darken(Theme.of(context).colorScheme.surface, 0.25),
                                   ),
                                 ),
                               ],
@@ -267,7 +267,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 Container(
                                   padding: EdgeInsets.only(right: 15),
                                   child: Divider(
-                                    color: darken(Theme.of(context).colorScheme.background, 0.25),
+                                    color: darken(Theme.of(context).colorScheme.surface, 0.25),
                                   ),
                                 ),
                               ],
@@ -313,7 +313,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 Container(
                                   padding: EdgeInsets.only(right: 15),
                                   child: Divider(
-                                    color: darken(Theme.of(context).colorScheme.background, 0.25),
+                                    color: darken(Theme.of(context).colorScheme.surface, 0.25),
                                   ),
                                 ),
                               ],
@@ -420,7 +420,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             ],
           ),
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),

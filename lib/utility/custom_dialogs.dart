@@ -7,7 +7,7 @@ void dialog(BuildContext context, ConfirmDialog dialog) {
     child: Text(
       dialog.cancelText,
       style: TextStyle(
-        color: Theme.of(context).colorScheme.onBackground,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     ),
     onPressed: dialog.cancelCallback(),
@@ -29,7 +29,7 @@ void dialog(BuildContext context, ConfirmDialog dialog) {
         fontSize: 20,
       ),
     ),
-    backgroundColor: Theme.of(context).colorScheme.background,
+    backgroundColor: Theme.of(context).colorScheme.surface,
     content: dialog.body,
     actions: [
       cancelButton,

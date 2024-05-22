@@ -113,7 +113,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
     return SessionServiceProvider(
       service: sessionService,
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         extendBody: true,
         body: SlidingUpPanel(
           backdropEnabled: false,
@@ -407,8 +407,8 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                               ),
                                             ),
                                             style: ButtonStyle(
-                                              padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12, horizontal: 2)),
-                                              backgroundColor: MaterialStateProperty.all(darken(Theme.of(context).colorScheme.primary, 0.05)),
+                                              padding: WidgetStateProperty.all(EdgeInsets.symmetric(vertical: 12, horizontal: 2)),
+                                              backgroundColor: WidgetStateProperty.all(darken(Theme.of(context).colorScheme.primary, 0.05)),
                                             ),
                                             onPressed: () => _finishHike(false),
                                           ),
@@ -426,8 +426,8 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
                                               ),
                                             ),
                                             style: ButtonStyle(
-                                              padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 12, horizontal: 2)),
-                                              backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
+                                              padding: WidgetStateProperty.all(EdgeInsets.symmetric(vertical: 12, horizontal: 2)),
+                                              backgroundColor: WidgetStateProperty.all(Theme.of(context).primaryColor),
                                             ),
                                             onPressed: () => _finishHike(true),
                                           ),

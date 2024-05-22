@@ -53,7 +53,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
       },
       initialData: NetworkStatus.Online,
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
@@ -77,7 +77,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                 ),
                 flexibleSpace: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.background,
+                    color: Theme.of(context).colorScheme.surface,
                   ),
                   child: FlexibleSpaceBar(
                     collapseMode: CollapseMode.none,
@@ -284,8 +284,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                               ),
                             ),
                             style: ButtonStyle(
-                              padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 0, horizontal: 10)),
-                              backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                              padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 0, horizontal: 10)),
+                              backgroundColor: WidgetStateProperty.all(Colors.transparent),
                             ),
                             onPressed: () async {
                               Uri link = Uri(scheme: "https", host: "github.com", path: "HadenHiles");
@@ -321,8 +321,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                                 ),
                               ),
                               style: ButtonStyle(
-                                padding: MaterialStateProperty.all(const EdgeInsets.only(bottom: 2, left: 5)),
-                                backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                                padding: WidgetStateProperty.all(const EdgeInsets.only(bottom: 2, left: 5)),
+                                backgroundColor: WidgetStateProperty.all(Colors.transparent),
                               ),
                               onPressed: () async {
                                 Uri link = Uri(scheme: "https", host: "www.groupofseventrail.com");

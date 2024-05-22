@@ -241,7 +241,7 @@ class _IntroScreenState extends State<IntroScreen> {
                                       ),
                                     ),
                                     style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(darken(_background, 0.1)),
+                                      backgroundColor: WidgetStateProperty.all(darken(_background, 0.1)),
                                     ),
                                   ),
                                 ),
@@ -268,7 +268,7 @@ class _IntroScreenState extends State<IntroScreen> {
                                       ),
                                     ),
                                     style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(
+                                      backgroundColor: WidgetStateProperty.all(
                                         darken(_buttonColor, 0.1),
                                       ),
                                     ),

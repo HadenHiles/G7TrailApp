@@ -17,7 +17,7 @@ class _DestinationPanoViewState extends State<DestinationPanoView> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: Stack(
           children: [
             FlutterGoogleStreetView(
