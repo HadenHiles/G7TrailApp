@@ -194,7 +194,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
         length: 3,
         child: Scaffold(
           key: _scaffoldKey,
-          backgroundColor: preferences.darkMode ? Theme.of(context).colorScheme.background : Colors.white,
+          backgroundColor: preferences.darkMode ? Theme.of(context).colorScheme.surface : Colors.white,
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
@@ -309,7 +309,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                             child: Text(
                                               "Listen".toUpperCase(),
                                               style: TextStyle(
-                                                color: Theme.of(context).colorScheme.background,
+                                                color: Theme.of(context).colorScheme.surface,
                                                 fontSize: 20,
                                                 fontFamily: Theme.of(context).textTheme.displayLarge!.fontFamily,
                                               ),
@@ -320,7 +320,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                               Text(
                                                 "Autoplay".toUpperCase(),
                                                 style: TextStyle(
-                                                  color: Theme.of(context).colorScheme.background,
+                                                  color: Theme.of(context).colorScheme.surface,
                                                   fontFamily: Theme.of(context).textTheme.bodyMedium!.fontFamily,
                                                   fontSize: 12,
                                                 ),
@@ -413,7 +413,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                   final Duration pos = asyncSnapshot.data!;
                                   return ProgressBar(
                                     progressBarColor: Theme.of(context).primaryColor,
-                                    baseBarColor: darken(Theme.of(context).colorScheme.background, 0.2),
+                                    baseBarColor: darken(Theme.of(context).colorScheme.surface, 0.2),
                                     thumbColor: Theme.of(context).colorScheme.secondary,
                                     thumbGlowColor: lighten(Theme.of(context).colorScheme.secondary, 0.225),
                                     progress: pos,
@@ -488,7 +488,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                               child: Card(
                                 margin: EdgeInsets.all(0),
                                 elevation: 1,
-                                color: i % 2 != 0 ? Theme.of(context).cardTheme.color : (preferences.darkMode ? Theme.of(context).colorScheme.background : Colors.white),
+                                color: i % 2 != 0 ? Theme.of(context).cardTheme.color : (preferences.darkMode ? Theme.of(context).colorScheme.surface : Colors.white),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [

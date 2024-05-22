@@ -61,7 +61,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   overlay_support: ^2.1.0
   auto_size_text: ^3.0.0
-  vibration: ^1.7.5
+  vibration: ^1.8.4
   fluttertoast: ^8.0.8
   font_awesome_flutter: ^9.2.0
   simple_animations: ^5.0.0+3

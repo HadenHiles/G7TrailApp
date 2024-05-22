@@ -26,7 +26,7 @@ class _ArtScreenState extends State<ArtScreen> {
       },
       initialData: NetworkStatus.Online,
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return [
@@ -50,7 +50,7 @@ class _ArtScreenState extends State<ArtScreen> {
                 ),
                 flexibleSpace: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.background,
+                    color: Theme.of(context).colorScheme.surface,
                   ),
                   child: FlexibleSpaceBar(
                     collapseMode: CollapseMode.none,

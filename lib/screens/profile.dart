@@ -77,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             pinned: true,
             flexibleSpace: DecoratedBox(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
               ),
               child: FlexibleSpaceBar(
                 collapseMode: CollapseMode.parallax,

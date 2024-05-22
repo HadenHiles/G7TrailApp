@@ -318,7 +318,7 @@ class _MapScreenState extends State<MapScreen> {
                 });
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
+                backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.secondary),
               ),
               child: Icon(
                 _mapType == MapType.normal ? Icons.terrain : Icons.map_rounded,
@@ -376,7 +376,7 @@ class _MapScreenState extends State<MapScreen> {
                 );
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
+                backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.secondary),
               ),
               child: Icon(
                 Icons.info_rounded,
