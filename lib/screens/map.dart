@@ -75,7 +75,7 @@ class _MapScreenState extends State<MapScreen> {
               markerId: MarkerId("beacon-" + (i++).toString()),
               position: latLng,
               infoWindow: InfoWindow(title: d.destinationName),
-              icon: await BitmapDescriptor.fromAssetImage(
+              icon: await BitmapDescriptor.asset(
                 ImageConfiguration(devicePixelRatio: 1.75),
                 d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
               ),
@@ -162,7 +162,7 @@ class _MapScreenState extends State<MapScreen> {
                     markerId: MarkerId("landmark-" + (i++).toString()),
                     position: latLng,
                     infoWindow: InfoWindow(title: l.title),
-                    icon: l.iconURL!.isEmpty ? BitmapDescriptor.defaultMarker : await BitmapDescriptor.fromBytes(iconBytes),
+                    icon: l.iconURL!.isEmpty ? BitmapDescriptor.defaultMarker : await BitmapDescriptor.bytes(iconBytes),
                   ),
                 );
               }
