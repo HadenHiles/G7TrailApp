@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "g7trailapp",
             "request": "launch",
@@ -22,24 +23,19 @@
             "flutterMode": "release"
         },
         {
-            "name": "flutter_beacon-0.5.1-g7",
-            "cwd": "flutter_beacon-0.5.1-g7",
+            "name": "Samsung Galaxy S10+ (debug)",
             "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "flutter_beacon-0.5.1-g7 (profile mode)",
-            "cwd": "flutter_beacon-0.5.1-g7",
-            "request": "launch",
+            "deviceId": "R38M202APMW",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "debug"
         },
         {
-            "name": "flutter_beacon-0.5.1-g7 (release mode)",
-            "cwd": "flutter_beacon-0.5.1-g7",
+            "name": "Samsung Galaxy S10+ (release)",
             "request": "launch",
+            "deviceId": "R38M202APMW",
             "type": "dart",
             "flutterMode": "release"
-        }
+        },
+        
     ]
 }
