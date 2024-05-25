@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "g7trailapp",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "g7trailapp (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "g7trailapp (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "Samsung Galaxy S10+ (debug)",
+            "request": "launch",
+            "deviceId": "R38M202APMW",
+            "type": "dart",
+            "flutterMode": "debug"
+        },
+        {
+            "name": "Samsung Galaxy S10+ (release)",
+            "request": "launch",
+            "deviceId": "R38M202APMW",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        
+    ]
+}
