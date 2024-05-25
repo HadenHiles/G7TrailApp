@@ -64,6 +64,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'group-of-seven-trail.appspot.com',
     androidClientId: '1063785186004-98avi1iagnp46ncj3kig8qg63i6raj2a.apps.googleusercontent.com',
     iosClientId: '1063785186004-4tcivveibsmlooqn6i6dh037qhb3t7mr.apps.googleusercontent.com',
-    iosBundleId: 'com.example.g7trailapp',
+    iosBundleId: 'com.groupofseven.g7trailapp',
   );
 }
