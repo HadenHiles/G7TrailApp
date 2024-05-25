@@ -221,7 +221,7 @@ class _LoginState extends State<Login> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
-                          backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                          backgroundColor: Colors.blueGrey,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -230,15 +230,15 @@ class _LoginState extends State<Login> {
                               margin: const EdgeInsets.only(right: 15),
                               child: Icon(
                                 Icons.email,
-                                color: Theme.of(context).primaryColor,
+                                color: Colors.white,
                               ),
                             ),
                             Container(
                               margin: const EdgeInsets.only(right: 50),
-                              child: const Text(
+                              child: Text(
                                 'Sign in with Email',
                                 style: TextStyle(
-                                  color: Colors.black54,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
