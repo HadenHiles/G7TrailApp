@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -8,18 +7,12 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
-import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/navigation/nav.dart';
 import 'package:g7trailapp/screens/destination/art.dart';
-import 'package:g7trailapp/screens/destination/audio_player_manager.dart';
 import 'package:g7trailapp/screens/destination/street_view.dart';
-import 'package:g7trailapp/theme/preferences_state_notifier.dart';
 import 'package:g7trailapp/theme/theme.dart';
 import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/utility/fullscreen_image.dart';
-import 'package:g7trailapp/widgets/icon_spinner.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DestinationScreen extends StatefulWidget {
   const DestinationScreen({Key? key, required this.destination}) : super(key: key);
@@ -34,10 +27,6 @@ enum TtsState { playing, stopped, paused, continued }
 
 class _DestinationScreenState extends State<DestinationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-
-  late AudioPlayerManager _audioPlayerManager;
-  bool _audioPlayerInitialized = false;
-  bool _autoPlayAudio = preferences.autoPlayAudio;
 
   // TEXT TO SPEECH VARIABLES
   late FlutterTts _flutterTTS;
@@ -57,16 +46,6 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   @override
   initState() {
-    if (widget.destination.audio.length > 0) {
-      loadFirestoreFile(widget.destination.audio[0].file).then((url) {
-        _audioPlayerManager = AudioPlayerManager(widget.destination.audio[0].title, url!, preferences.autoPlayAudio);
-
-        setState(() {
-          _audioPlayerInitialized = true;
-        });
-      });
-    }
-
     initTTS();
     super.initState();
   }
@@ -181,7 +160,6 @@ class _DestinationScreenState extends State<DestinationScreen> {
 
   @override
   void dispose() {
-    _audioPlayerManager.dispose();
     _flutterTTS.stop();
     super.dispose();
   }
@@ -220,32 +198,6 @@ class _DestinationScreenState extends State<DestinationScreen> {
                   }));
                 },
                 icon: Icon(Icons.location_on),
-              ),
-              RawMaterialButton(
-                fillColor: Colors.white,
-                shape: CircleBorder(),
-                constraints: BoxConstraints(
-                  minWidth: 28.0,
-                  maxWidth: 28.0,
-                  minHeight: 28.0,
-                  maxHeight: 28.0,
-                ),
-                onPressed: () {
-                  _scaffoldKey.currentState!.openEndDrawer();
-                },
-                child: (_autoPlayAudio && sessionService.isRunning)
-                    ? Spinner(
-                        icon: Icon(
-                          Icons.audiotrack,
-                          size: 18,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      )
-                    : Icon(
-                        Icons.audiotrack,
-                        size: 18,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
               ),
             ],
             backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -325,25 +277,6 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                                   fontSize: 12,
                                                 ),
                                               ),
-                                              Switch(
-                                                value: _autoPlayAudio,
-                                                onChanged: (value) async {
-                                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                  setState(() {
-                                                    _autoPlayAudio = value;
-                                                    prefs.setBool('auto_play_audio', value);
-                                                  });
-
-                                                  Provider.of<PreferencesStateNotifier>(context, listen: false).updateSettings(
-                                                    Preferences(
-                                                      preferences.darkMode,
-                                                      preferences.beaconFoundAlert,
-                                                      value,
-                                                      preferences.fcmToken,
-                                                    ),
-                                                  );
-                                                },
-                                              ),
                                             ],
                                           )
                                         ],
@@ -354,15 +287,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                                 ListTile(
                                   title: Text(widget.destination.audio[i].title.toUpperCase()),
                                   onTap: () async {
-                                    if (widget.destination.audio[i].file != null) {
-                                      // Play audio file
-                                      await loadFirestoreFile(widget.destination.audio[i].file).then((url) {
-                                        if (url!.isNotEmpty) {
-                                          _audioPlayerManager.dispose();
-                                          _audioPlayerManager = AudioPlayerManager(widget.destination.audio[i].title, url, _autoPlayAudio);
-                                        }
-                                      });
-                                    } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
+                                    if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
                                       // Speak text - play/pause toggle
                                       if (ttsState != TtsState.playing) {
                                         _speak(widget.destination.audio[i].textToSpeech);
@@ -377,15 +302,7 @@ class _DestinationScreenState extends State<DestinationScreen> {
                           : ListTile(
                               title: Text(widget.destination.audio[i].title.toUpperCase()),
                               onTap: () async {
-                                if (widget.destination.audio[i].file != null) {
-                                  // Play audio file
-                                  await loadFirestoreFile(widget.destination.audio[i].file).then((url) {
-                                    if (url!.isNotEmpty) {
-                                      _audioPlayerManager.dispose();
-                                      _audioPlayerManager = AudioPlayerManager(widget.destination.audio[i].title, url, _autoPlayAudio);
-                                    }
-                                  });
-                                } else if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
+                                if (widget.destination.audio[i].textToSpeech.isNotEmpty) {
                                   // Speak text - play/pause toggle
                                   if (ttsState != TtsState.playing) {
                                     _speak(widget.destination.audio[i].textToSpeech);
@@ -398,58 +315,6 @@ class _DestinationScreenState extends State<DestinationScreen> {
                     },
                   ),
                 ),
-                !_audioPlayerInitialized
-                    ? Container()
-                    : Container(
-                        height: 140,
-                        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            StreamBuilder(
-                                stream: _audioPlayerManager.position(),
-                                builder: (context, AsyncSnapshot<Duration> asyncSnapshot) {
-                                  final Duration pos = asyncSnapshot.data!;
-                                  return ProgressBar(
-                                    progressBarColor: Theme.of(context).primaryColor,
-                                    baseBarColor: darken(Theme.of(context).colorScheme.surface, 0.2),
-                                    thumbColor: Theme.of(context).colorScheme.secondary,
-                                    thumbGlowColor: lighten(Theme.of(context).colorScheme.secondary, 0.225),
-                                    progress: pos,
-                                    total: _audioPlayerManager.currentDuration(),
-                                    onSeek: _audioPlayerManager.seek,
-                                  );
-                                }),
-                            ValueListenableBuilder<ButtonState>(
-                              valueListenable: _audioPlayerManager.buttonNotifier,
-                              builder: (_, value, __) {
-                                switch (value) {
-                                  case ButtonState.loading:
-                                    return Container(
-                                      margin: const EdgeInsets.all(8.0),
-                                      width: 32.0,
-                                      height: 32.0,
-                                      child: const CircularProgressIndicator(),
-                                    );
-                                  case ButtonState.paused:
-                                    return IconButton(
-                                      icon: const Icon(Icons.play_arrow),
-                                      iconSize: 32.0,
-                                      onPressed: _audioPlayerManager.play,
-                                    );
-                                  case ButtonState.playing:
-                                    return IconButton(
-                                      icon: const Icon(Icons.pause),
-                                      iconSize: 32.0,
-                                      onPressed: _audioPlayerManager.pause,
-                                    );
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
               ],
             ),
           ),
