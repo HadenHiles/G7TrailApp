@@ -45,5 +45,20 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- When in use -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app uses your location to detect bluetooth beacons for paint sites in your area.</string>
+	<!-- Always -->
+	<!-- for iOS 11 + -->
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app uses your location to detect bluetooth beacons for paint sites in your area.</string>
+	<!-- for iOS 9/10 -->
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app uses your location to detect bluetooth beacons for paint sites in your area.</string>
+	<!-- Bluetooth Privacy -->
+	<!-- for iOS 13 + -->
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app uses your location to detect bluetooth beacons for paint sites in your area.</string>
 </dict>
 </plist>

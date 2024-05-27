@@ -98,9 +98,6 @@ void main() async {
     FirebaseMessaging.onMessageOpenedApp.listen(_messageClickHandler);
   }
 
-  // Inject flutter beacon as a dependency - hopefully
-  di.registerSingleton<FlutterBeacon>(FlutterBeacon());
-
   runApp(
     Provider<AppleSignInAvailable>.value(
       value: appleSignInAvailable,
