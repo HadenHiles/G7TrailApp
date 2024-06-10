@@ -75,7 +75,10 @@ class _MapScreenState extends State<MapScreen> {
               markerId: MarkerId("beacon-" + (i++).toString()),
               position: latLng,
               infoWindow: InfoWindow(title: d.destinationName),
-              icon: await BitmapDescriptor.asset(
+              // TODO: Switch this once dependency conflict with google_maps_flutter and flutter_google_street_view is resolved
+              // https://github.com/flutter/flutter/issues/149183#issuecomment-2144964067
+              // https://github.com/flutter/packages/pull/6826
+              icon: await BitmapDescriptor.fromAssetImage(
                 ImageConfiguration(devicePixelRatio: 1.75),
                 d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
               ),
