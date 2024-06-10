@@ -23,6 +23,10 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream()) 
+def segmentGoogleMapsApiKey = properties.getProperty('segment.googleMapsApiKey')
+
 android {
     namespace = "com.groupofseven.g7trailapp"
     compileSdk = flutter.compileSdkVersion
@@ -57,6 +61,8 @@ android {
         }
     }
 }
+
+manifestPlaceholders = [segmentGoogleMapsApiKey: segmentGoogleMapsApiKey]
 
 flutter {
     source = "../.."

@@ -4,7 +4,6 @@ import 'dart:math' as math;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:g7trailapp/intro_screen.dart';
 import 'package:g7trailapp/models/preferences.dart';
 import 'package:g7trailapp/navigation/nav.dart';
@@ -40,7 +39,6 @@ final di = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterConfig.loadEnvVariables();
   await NotificationService().init();
 
   // Initialize the connection to our firebase project
