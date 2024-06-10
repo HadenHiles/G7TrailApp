@@ -1,0 +1,1 @@
+-keep class com.groupofseven.g7trailapp.BuildConfig { *; }
