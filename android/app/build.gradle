@@ -54,15 +54,15 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+            manifestPlaceholders = [googleMapsApiKey: segmentGoogleMapsApiKey]
         }
         debug {
             minifyEnabled true
             signingConfig = signingConfigs.debug
+            manifestPlaceholders = [googleMapsApiKey: segmentGoogleMapsApiKey]
         }
     }
 }
-
-manifestPlaceholders = [segmentGoogleMapsApiKey: segmentGoogleMapsApiKey]
 
 flutter {
     source = "../.."
