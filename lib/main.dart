@@ -223,7 +223,7 @@ class Home extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: preferences.darkMode ? HomeTheme.darkTheme : HomeTheme.lightTheme,
             darkTheme: HomeTheme.darkTheme,
-            themeMode: preferences.darkMode ? ThemeMode.dark : ThemeMode.system,
+            themeMode: preferences.darkMode ? ThemeMode.dark : ThemeMode.light,
             navigatorObservers: [
               FirebaseAnalyticsObserver(analytics: analytics),
             ],
