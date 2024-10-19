@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -38,6 +39,13 @@ void main() async {
   // Initialize the connection to our firebase project
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Activate app check after initialization, but before
+  // usage of any Firebase services.
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug,
+    appleProvider: AppleProvider.debug,
   );
 
   final appleSignInAvailable = await AppleSignInAvailable.check();
