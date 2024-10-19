@@ -78,6 +78,7 @@ class _MapScreenState extends State<MapScreen> {
               // TODO: Switch this once dependency conflict with google_maps_flutter and flutter_google_street_view is resolved
               // https://github.com/flutter/flutter/issues/149183#issuecomment-2144964067
               // https://github.com/flutter/packages/pull/6826
+              // ignore: deprecated_member_use
               icon: await BitmapDescriptor.fromAssetImage(
                 ImageConfiguration(devicePixelRatio: 1.75),
                 d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
