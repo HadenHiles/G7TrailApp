@@ -20,7 +20,6 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 // Setup a navigation key so that we can navigate without context
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
