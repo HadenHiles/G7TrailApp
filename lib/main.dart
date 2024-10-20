@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:beacon_scanner/beacon_scanner.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -18,7 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_beacon/flutter_beacon.dart';
 import 'firebase_options.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -31,6 +31,7 @@ Preferences preferences = Preferences(false, true, null);
 final sessionService = SessionService();
 bool introShown = false;
 late SharedPreferences prefs;
+final BeaconScanner beaconScanner = BeaconScanner.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -127,26 +128,11 @@ Future<void> _messageClickHandler(RemoteMessage message) async {
 // Request permissions for iBeacon functionality. See https://pub.dev/packages/flutter_beacon#how-to
 Future<void> initializeBeaconPermissions() async {
   try {
-    // Manually ask for necessary permissions
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.location,
-      Permission.bluetooth,
-      Permission.bluetoothScan,
-      Permission.bluetoothConnect,
-    ].request();
-
-    if (statuses[Permission.location]!.isDenied || statuses[Permission.bluetooth]!.isDenied || statuses[Permission.bluetoothScan]!.isDenied || statuses[Permission.bluetoothConnect]!.isDenied) {
-      log('permissions denied - do something more clear than logging it.');
-    }
-
-    // if you want to manage manual checking about the required permissions
-    await flutterBeacon.initializeScanning;
-
-    // or if you want to include automatic checking permission
-    // await flutterBeacon.initializeAndCheckScanning;
+    // false - if you want to manage manual checking about the required permissions
+    await beaconScanner.initialize(true);
   } on PlatformException catch (e) {
     // library failed to initialize, check code and message
-    log(e.message ?? "There was an error requesting bluetooth beacon location permissions", error: e);
+    log("Error initializing beacon scanner: $e");
   }
 }
 

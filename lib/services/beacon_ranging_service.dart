@@ -1,8 +1,9 @@
 // ignore: unused_import
 import 'dart:async';
+import 'package:beacon_scanner/beacon_scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_beacon/flutter_beacon.dart';
+import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
 
 class BeaconRangingService extends ChangeNotifier {
@@ -32,8 +33,12 @@ class BeaconRangingService extends ChangeNotifier {
         regions.add(
           Region(
             identifier: beacon.beaconTitle,
-            proximityUUID: 'f7826da6-4fa2-4e98-8024-bc5b71e0893e',
-            major: int.parse(beacon.beaconId),
+            beaconId: IBeaconId(
+              proximityUUID: "f7826da6-4fa2-4e98-8024-bc5b71e0893e",
+              majorId: int.parse(
+                beacon.beaconId,
+              ),
+            ),
           ),
         );
       }
@@ -41,14 +46,14 @@ class BeaconRangingService extends ChangeNotifier {
   }
 
   void startRanging() {
-    _streamRanging = flutterBeacon.ranging(regions).listen((RangingResult result) {
+    _streamRanging = beaconScanner.ranging(regions).listen((ScanResult result) {
       // result contains a region and list of beacons found
       // list can be empty if no matching beacons were found in range
       if (result.beacons.isNotEmpty) {
         if (!nearbyBeacons.contains(result.beacons[0])) {
           nearbyBeacons.add(result.beacons[0]);
         } else {
-          int i = nearbyBeacons.indexWhere((b) => b.major == result.beacons[0].major);
+          int i = nearbyBeacons.indexWhere((b) => b.id.majorId == result.beacons[0].id.majorId);
           nearbyBeacons[i] = result.beacons[0];
         }
       }
@@ -58,7 +63,7 @@ class BeaconRangingService extends ChangeNotifier {
       // Find the closest beacon and notify the beacon service listeners there's a new beacon
       nearbyBeacons.sort((a, b) => a.accuracy.compareTo(b.accuracy));
       if (nearbyBeacons.isNotEmpty) {
-        nearbyBeacon = beacons.where((b) => int.parse(b.beaconId) == nearbyBeacons[0].major).toList()[0];
+        nearbyBeacon = beacons.where((b) => int.parse(b.beaconId) == nearbyBeacons[0].id.majorId).toList()[0];
       }
     });
   }
