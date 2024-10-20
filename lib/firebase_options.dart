@@ -58,12 +58,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDWavRzJeivPw32lhn3TfOojTnyAKyufnk',
-    appId: '1:1063785186004:ios:e56d62d750ba29fef33141',
+    appId: '1:1063785186004:ios:ec6513e0d7e9c5bef33141',
     messagingSenderId: '1063785186004',
     projectId: 'group-of-seven-trail',
     storageBucket: 'group-of-seven-trail.appspot.com',
     androidClientId: '1063785186004-98avi1iagnp46ncj3kig8qg63i6raj2a.apps.googleusercontent.com',
-    iosClientId: '1063785186004-4tcivveibsmlooqn6i6dh037qhb3t7mr.apps.googleusercontent.com',
+    iosClientId: '1063785186004-ku1a8edoh4fs4m4ck60psfnvuhj0ti6h.apps.googleusercontent.com',
     iosBundleId: 'com.groupofseven.g7trailapp',
   );
+
 }

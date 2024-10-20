@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1063785186004-ku1a8edoh4fs4m4ck60psfnvuhj0ti6h.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1063785186004-ku1a8edoh4fs4m4ck60psfnvuhj0ti6h</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1063785186004-98avi1iagnp46ncj3kig8qg63i6raj2a.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDWavRzJeivPw32lhn3TfOojTnyAKyufnk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1063785186004</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.groupofseven.g7trailapp</string>
+	<key>PROJECT_ID</key>
+	<string>group-of-seven-trail</string>
+	<key>STORAGE_BUCKET</key>
+	<string>group-of-seven-trail.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1063785186004:ios:ec6513e0d7e9c5bef33141</string>
+</dict>
+</plist>
