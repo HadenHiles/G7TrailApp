@@ -43,7 +43,7 @@ class BeaconRangingService extends ChangeNotifier {
   }
 
   void startRanging() {
-    _streamRanging = beaconScanner.ranging(regions).listen((RangingResult result) {
+    _streamRanging = flutterBeacon.ranging(regions).listen((RangingResult result) {
       // result contains a region and list of beacons found
       // list can be empty if no matching beacons were found in range
       if (result.beacons.isNotEmpty) {
