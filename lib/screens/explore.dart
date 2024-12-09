@@ -36,7 +36,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Future<void> _loadDestinations() async {
-    await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").get().then((snapshot) async {
+    await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").where('active', isEqualTo: true).get().then((snapshot) async {
       if (snapshot.docs.isNotEmpty) {
         List<Destination> easy = [];
         List<Destination> moderate = [];

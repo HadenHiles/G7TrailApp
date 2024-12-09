@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:beacon_scanner/beacon_scanner.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -30,7 +29,6 @@ Preferences preferences = Preferences(false, true, null);
 final sessionService = SessionService();
 bool introShown = false;
 late SharedPreferences prefs;
-final BeaconScanner beaconScanner = BeaconScanner.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
