@@ -13,6 +13,7 @@ class Destination {
   String destinationSummary;
   String difficulty;
   bool entryPoint;
+  bool active;
   List<DocumentReference> nearbyDestinations;
   String beaconTitle;
   String beaconId;
@@ -32,6 +33,7 @@ class Destination {
     this.destinationSummary,
     this.difficulty,
     this.entryPoint,
+    this.active,
     this.nearbyDestinations,
     this.beaconTitle,
     this.beaconId,
@@ -63,6 +65,7 @@ class Destination {
         destinationSummary = map['content']['destinationSummary'],
         difficulty = map['content']['difficulty'],
         entryPoint = map['entryPoint'],
+        active = map['active'],
         nearbyDestinations = map['nearbyDestinations'].isEmpty
             ? []
             : map['nearbyDestinations'].map<DocumentReference>((map) {
@@ -95,6 +98,7 @@ class Destination {
       '_fl_meta_': flMeta,
       'destinationName': destinationName,
       'entryPoint': entryPoint,
+      'active': active,
       'content': {
         'images': mappedImages,
         'art': mappedArt,
