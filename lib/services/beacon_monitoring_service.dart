@@ -1,6 +1,6 @@
 import 'dart:developer';
-import 'package:beacon_scanner/beacon_scanner.dart';
-import 'package:g7trailapp/main.dart';
+import 'dart:io';
+import 'package:dchs_flutter_beacon/dchs_flutter_beacon.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/services/notification_service.dart';
 
@@ -12,24 +12,28 @@ class BeaconMonitoringService {
   List<Destination> beacons = [];
 
   BeaconMonitoringService() {
-    regions.add(
-      Region(
-        identifier: "Group of Seven Lake Superior Trail",
-        beaconId: IBeaconId(
+    if (Platform.isIOS) {
+      // iOS platform, at least set identifier and proximityUUID for region scanning
+      regions.add(
+        Region(
+          identifier: "Group of Seven Lake Superior Trail",
           proximityUUID: "f7826da6-4fa2-4e98-8024-bc5b71e0893e",
         ),
-      ),
-    );
+      );
+    } else {
+      // Android platform, it can ranging out of beacon that filter all of Proximity UUID
+      regions.add(Region(identifier: 'com.beacon'));
+    }
 
     monitor();
   }
 
   void monitor() {
-    _streamMonitoring = beaconScanner.monitoring(regions).listen((MonitoringResult result) {
+    _streamMonitoring = flutterBeacon.monitoring(regions).listen((MonitoringResult result) {
       // result contains a region, event type and event state
-      log("Beacon found: " + result.region.identifier + ":" + result.region.beaconId!.majorId.toString());
-      Destination d = beacons.where((b) => int.parse(b.beaconId) == result.region.beaconId!.majorId).toList()[0];
-      NotificationService().notify(result.region.beaconId!.majorId, "Trail Beacon Found", "You discovered \"${d.destinationName}\"!");
+      log("Beacon found: " + result.region.identifier + ":" + result.region.major.toString());
+      Destination d = beacons.where((b) => int.parse(b.beaconId) == result.region.major).toList()[0];
+      NotificationService().notify(result.region.major!, "Trail Beacon Found", "You discovered \"${d.destinationName}\"!");
     });
   }
 

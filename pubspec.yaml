@@ -7,7 +7,6 @@ environment:
 dependencies:
   ac_inet_connectivity_checker: ^0.1.6
   auto_size_text: ^3.0.0
-  beacon_scanner: ^0.0.4
   cached_network_image: ^3.3.1
   cloud_firestore: ^5.4.4
   cupertino_icons: ^1.0.8
