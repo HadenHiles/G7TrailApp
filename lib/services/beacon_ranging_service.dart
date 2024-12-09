@@ -16,7 +16,7 @@ class BeaconRangingService extends ChangeNotifier {
   BeaconRangingService() {
     loadBeacons().then((value) {
       startRanging();
-      Duration notifyDelayTime = Duration(seconds: 2);
+      Duration notifyDelayTime = Duration(milliseconds: 500);
       Timer.periodic(notifyDelayTime, (_) async {
         notifyListeners();
       });

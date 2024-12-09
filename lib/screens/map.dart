@@ -53,9 +53,11 @@ class _MapScreenState extends State<MapScreen> {
           destinations.add(d);
         }
 
-        setState(() {
-          _destinations = destinations;
-        });
+        if (mounted) {
+          setState(() {
+            _destinations = destinations;
+          });
+        }
       }
     });
   }
@@ -158,7 +160,7 @@ class _MapScreenState extends State<MapScreen> {
             for (var p in lPoints) {
               if (p.latitude != 0 || p.longitude != 0) {
                 // Get the raw image data for the landmark icon
-                var iconBytes = await getBytesFromUrl(l.iconURL!, 100);
+                var iconBytes = await getBytesFromUrl(l.iconURL!, 45);
 
                 LatLng latLng = LatLng(p.latitude, p.longitude);
                 landmarkers.add(
