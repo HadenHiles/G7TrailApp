@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:dchs_flutter_beacon/dchs_flutter_beacon.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -125,8 +126,11 @@ Future<void> _messageClickHandler(RemoteMessage message) async {
 // Request permissions for iBeacon functionality. See https://pub.dev/packages/flutter_beacon#how-to
 Future<void> initializeBeaconPermissions() async {
   try {
-    // false - if you want to manage manual checking about the required permissions
-    await beaconScanner.initialize(true);
+    // if you want to manage manual checking about the required permissions
+    // await flutterBeacon.initializeScanning;
+
+    // or if you want to include automatic checking permission
+    await flutterBeacon.initializeAndCheckScanning;
   } on PlatformException catch (e) {
     // library failed to initialize, check code and message
     log("Error initializing beacon scanner: $e");
