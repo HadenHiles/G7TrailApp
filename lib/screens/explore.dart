@@ -81,8 +81,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 await ref.get().then((snap) async {
                   if (snap.exists) {
                     Destination n = Destination.fromSnapshot(snap);
-                    await loadFirestoreImage(n.images[0].image, 1).then((url) => n.imgURL = url);
-                    nearby.add(n);
+                    if (n.active) {
+                      await loadFirestoreImage(n.images[0].image, 1).then((url) => n.imgURL = url);
+                      nearby.add(n);
+                    }
                   }
                 });
               }
