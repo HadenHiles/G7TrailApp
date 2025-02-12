@@ -153,7 +153,7 @@ class _FluidNavigationBarState extends State<FluidNavigationBar> {
             child: Stack(
               children: [
                 Container(
-                  decoration: BoxDecoration(color: darken(Theme.of(context).colorScheme.secondary, 0.5).withOpacity(0.55)),
+                  decoration: BoxDecoration(color: darken(Theme.of(context).colorScheme.secondary, 0.5).withValues(alpha: 0.55)),
                 ),
                 Column(
                   children: [
