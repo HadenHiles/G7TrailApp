@@ -425,11 +425,12 @@ packages:
   flutter_google_street_view:
     dependency: "direct main"
     description:
-      name: flutter_google_street_view
-      sha256: "0f68d965f27ef9b284f35b86d55491da78d02ba3ea3623a14e80ae9b6522243d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.4"
+      path: flutter_google_street_view
+      ref: master
+      resolved-ref: f0a3b77e238b9d70d90584004a13e8f9ee9f2678
+      url: "https://github.com/liorboyango/flutter_street_view.git"
+    source: git
+    version: "3.2.0"
   flutter_html:
     dependency: "direct main"
     description:
@@ -620,10 +621,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps
-      sha256: "555d5d736339b0478e821167ac521c810d7b51c3b2734e6802a9f046b64ea37a"
+      sha256: "4d6e199c561ca06792c964fa24b2bac7197bf4b401c2e1d23e345e5f9939f531"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.0"
+    version: "8.1.1"
   google_maps_flutter:
     dependency: "direct main"
     description:
@@ -660,10 +661,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_web
-      sha256: "6245721c160d6f531c1ef568cf9bef8d660cd585a982aa75121269030163785a"
+      sha256: a9fd5356d46f54744ced1ebedbbf212f3d2cb71e95d79b1d08690c1ec33dc584
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.4+3"
+    version: "0.5.10+1"
   google_sign_in:
     dependency: "direct main"
     description:
@@ -752,22 +753,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.14"
-  js:
-    dependency: transitive
-    description:
-      name: js
-      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.7"
-  js_wrapping:
-    dependency: transitive
-    description:
-      name: js_wrapping
-      sha256: e385980f7c76a8c1c9a560dfb623b890975841542471eade630b2871d243851c
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.4"
   json_annotation:
     dependency: transitive
     description:
@@ -1248,11 +1233,12 @@ packages:
   street_view_platform_interface:
     dependency: transitive
     description:
-      name: street_view_platform_interface
-      sha256: "0f7a259e95c1192b9054328b1e3591f4867b045ce279dec4e0528f3f999f3ba8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.8"
+      path: street_view_platform_interface
+      ref: master
+      resolved-ref: f0a3b77e238b9d70d90584004a13e8f9ee9f2678
+      url: "https://github.com/liorboyango/flutter_street_view.git"
+    source: git
+    version: "1.1.0"
   string_scanner:
     dependency: transitive
     description:
