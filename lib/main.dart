@@ -17,6 +17,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -131,6 +132,11 @@ Future<void> initializeBeaconPermissions() async {
 
     // or if you want to include automatic checking permission
     await flutterBeacon.initializeAndCheckScanning;
+    // You can request multiple permissions at once.
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.locationWhenInUse,
+    ].request();
+    print(statuses[Permission.location]);
   } on PlatformException catch (e) {
     // library failed to initialize, check code and message
     log("Error initializing beacon scanner: $e");
