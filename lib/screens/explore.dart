@@ -403,7 +403,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 borderRadius: BorderRadius.circular(10.0),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
-                  height: (MediaQuery.of(context).size.width * 0.8) * .73,
+                  height: (MediaQuery.of(context).size.width * 0.8) * .70,
                   child: FittedBox(
                     clipBehavior: Clip.antiAlias,
                     fit: BoxFit.cover,
