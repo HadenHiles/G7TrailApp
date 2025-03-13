@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:g7trailapp/navigation/nav.dart';
+import 'package:g7trailapp/screens/explore.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_settings_ui/flutter_settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -167,6 +170,99 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       tiles: [
+                        SettingsTile(
+                          title: Row(
+                            children: [
+                              Text(
+                                'Delete Account',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: RotatedBox(
+                                  quarterTurns: 2,
+                                  child: Icon(
+                                    Icons.info_outlined,
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          leading: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: (BuildContext context) {
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return AlertDialog(
+                                  title: const Text(
+                                    "Are you absolutely sure you want to delete your account?",
+                                    style: TextStyle(
+                                      fontFamily: 'NovecentoSans',
+                                      fontSize: 24,
+                                    ),
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "All of your data will be lost, and there is no undoing this action. The app will close upon continuing with deletion.",
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onPrimary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Theme.of(context).colorScheme.primary,
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                      child: Text(
+                                        "Cancel".toUpperCase(),
+                                        style: TextStyle(
+                                          fontFamily: 'NovecentoSans',
+                                          color: Theme.of(context).colorScheme.onPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        FirebaseAuth.instance.currentUser!.delete().then((_) {
+                                          navigatorKey.currentState!.pop();
+                                          navigatorKey.currentState!.pushReplacement(MaterialPageRoute(builder: (_) {
+                                            return const ExploreScreen();
+                                          }));
+
+                                          SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                                        }).onError((FirebaseAuthException error, stackTrace) {
+                                          String msg = error.code == "requires-recent-login" ? "This action requires a recent login, please logout and try again." : "Error deleting account, please email info.g7trail@gmail.com for assistance";
+                                          Fluttertoast.showToast(
+                                            msg: msg,
+                                            toastLength: Toast.LENGTH_LONG,
+                                            gravity: ToastGravity.BOTTOM,
+                                            timeInSecForIosWeb: 1,
+                                            backgroundColor: Theme.of(context).cardTheme.color,
+                                            textColor: Theme.of(context).colorScheme.onPrimary,
+                                            fontSize: 16.0,
+                                          );
+                                        });
+                                      },
+                                      child: Text(
+                                        "Delete Account".toUpperCase(),
+                                        style: TextStyle(fontFamily: 'NovecentoSans', color: Theme.of(context).primaryColor),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
                         user == null
                             ? SettingsTile(
                                 title: Text(
