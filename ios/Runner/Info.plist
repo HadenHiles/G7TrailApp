@@ -31,7 +31,7 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
   	<string>This app uses your location to show where you are on the trail map so you can find paint sites, benches, etc. during your hike.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string><string>This app uses your location to show where you are on the trail map so you can find paint sites, benches, etc. during your hike.</string>
+	<string>This app uses your location to show where you are on the trail map so you can find paint sites, benches, etc. during your hike.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
