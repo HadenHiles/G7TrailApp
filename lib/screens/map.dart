@@ -13,6 +13,7 @@ import 'package:g7trailapp/utility/firebase_storage.dart';
 import 'package:g7trailapp/theme/map_style.dart';
 import 'package:g7trailapp/utility/general.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key, this.highlightedDestination}) : super(key: key);
@@ -32,6 +33,7 @@ class _MapScreenState extends State<MapScreen> {
   );
 
   List<Destination> _destinations = [];
+  bool _locationPermissionGranted = false;
   Legend? _legend;
   Set<Marker> _markers = {};
   List<Landmark> _landmarks = [];
@@ -41,6 +43,12 @@ class _MapScreenState extends State<MapScreen> {
   String? _selectedPathTitle;
 
   Future<void> _loadDestinations() async {
+    await Permission.locationWhenInUse.isGranted.then((granted) {
+      setState(() {
+        _locationPermissionGranted = granted;
+      });
+    });
+
     await FirebaseFirestore.instance.collection('fl_content').where('_fl_meta_.schema', isEqualTo: "destination").where('active', isEqualTo: true).get().then((snapshot) async {
       if (snapshot.docs.isNotEmpty) {
         List<Destination> destinations = [];
@@ -423,7 +431,7 @@ class _MapScreenState extends State<MapScreen> {
     return GoogleMap(
       mapType: mapType,
       compassEnabled: true,
-      myLocationEnabled: true,
+      myLocationEnabled: _locationPermissionGranted,
       zoomControlsEnabled: false,
       initialCameraPosition: _kTrail,
       polylines: _polylines,
