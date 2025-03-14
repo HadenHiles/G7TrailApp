@@ -132,11 +132,6 @@ Future<void> initializeBeaconPermissions() async {
 
     // or if you want to include automatic checking permission
     await flutterBeacon.initializeAndCheckScanning;
-    // You can request multiple permissions at once.
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.locationWhenInUse,
-    ].request();
-    print(statuses[Permission.location]);
   } on PlatformException catch (e) {
     // library failed to initialize, check code and message
     log("Error initializing beacon scanner: $e");
