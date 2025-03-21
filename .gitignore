@@ -46,3 +46,6 @@ app.*.map.json
 /android/app/release
 /.vscode
 *.env
+
+# Sensitive iOS config files (api keys etc. that should not be public on github)
+/ios/Runner/Keys.plist
