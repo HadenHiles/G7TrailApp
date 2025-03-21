@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:g7trailapp/main.dart';
@@ -101,10 +100,6 @@ class _MapScreenState extends State<MapScreen> {
               markerId: MarkerId("beacon-" + (i++).toString()),
               position: latLng,
               infoWindow: InfoWindow(title: d.destinationName),
-              // TODO: Switch this once dependency conflict with google_maps_flutter and flutter_google_street_view is resolved
-              // https://github.com/flutter/flutter/issues/149183#issuecomment-2144964067
-              // https://github.com/flutter/packages/pull/6826
-              // ignore: deprecated_member_use
               icon: await getBitmapDescriptorFromAssetBytes(
                 d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
                 (MediaQuery.of(context).size.width * 0.3).toInt(),
