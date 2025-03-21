@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as ui;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:g7trailapp/main.dart';
 import 'package:g7trailapp/models/firestore/destination.dart';
 import 'package:g7trailapp/models/firestore/landmark.dart';
@@ -70,6 +73,19 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  // Manually force resizing of map markers for iOS
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+  }
+
+  Future<BitmapDescriptor> getBitmapDescriptorFromAssetBytes(String path, int width) async {
+    final Uint8List imageData = await getBytesFromAsset(path, width);
+    return BitmapDescriptor.fromBytes(imageData);
+  }
+
   Future<void> _loadMarkers() async {
     Set<Marker> markers = {};
     int i = 0;
@@ -89,9 +105,9 @@ class _MapScreenState extends State<MapScreen> {
               // https://github.com/flutter/flutter/issues/149183#issuecomment-2144964067
               // https://github.com/flutter/packages/pull/6826
               // ignore: deprecated_member_use
-              icon: await BitmapDescriptor.fromAssetImage(
-                ImageConfiguration(devicePixelRatio: 1.75),
+              icon: await getBitmapDescriptorFromAssetBytes(
                 d.entryPoint ? "assets/images/map-pin.png" : "assets/images/map-marker.png",
+                (MediaQuery.of(context).size.width * 0.3).toInt(),
               ),
               onTap: () {
                 if (!d.entryPoint) {
