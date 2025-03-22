@@ -22,6 +22,19 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Google Sign In</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.1063785186004-ku1a8edoh4fs4m4ck60psfnvuhj0ti6h</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -29,7 +42,7 @@
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>This app uses bluetooth to detect beacons at paint sites in along the Group of Seven Trail.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-  	<string>This app uses your location to show where you are on the trail map so you can find paint sites, benches, etc. during your hike.</string>
+	<string>This app uses your location to show where you are on the trail map so you can find paint sites, benches, etc. during your hike.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app uses your location to show where you are on the trail map so you can find paint sites, benches, etc. during your hike.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
